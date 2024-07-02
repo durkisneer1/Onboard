@@ -1,13 +1,8 @@
-from enum import IntEnum, auto
-
 import pygame as pg
 
+from core.settings import *
 from core.surfaces import import_anim
-
-
-class AnimState(IntEnum):
-    WALK = auto()
-    IDLE = auto()
+from core.enums import AnimState
 
 
 class Player:
@@ -22,18 +17,19 @@ class Player:
         self.anim_state = AnimState.IDLE
         self.current_frame = 0
         self.frame = self.animations[AnimState.IDLE][0]
-        self.rect = self.frame.get_frect(center=(self.engine.screen.width / 2, self.engine.screen.height / 2))
-        self.anim_speed = 8
+        self.pos = pg.Vector2(self.engine.screen.width / 2, GROUND_HEIGHT)
+        self.rect = self.frame.get_frect(midbottom=self.pos)
+        self.anim_speed = 10
         self.left = False
 
         # kinematics
-        self.direction = pg.Vector2()
-        self.speed = 100
+        self.x_dir = 0
+        self.speed = 40
 
     def animate(self):
-        if self.direction.x:
+        if self.x_dir:
             self.anim_state = AnimState.WALK
-            self.left = self.direction.x < 0
+            self.left = self.x_dir < 0
         else:
             self.anim_state = AnimState.IDLE
 
@@ -43,19 +39,24 @@ class Player:
         self.frame = pg.transform.flip(
             self.animations[self.anim_state][int(self.current_frame)], self.left, False
         )
+        self.rect = self.frame.get_frect(midbottom=self.pos)
 
     def draw(self):
-        self.engine.screen.blit(self.frame, self.rect)
+        self.engine.screen.blit(self.frame, self.rect.move(-self.engine.camera))
 
     def update(self):
         keys = pg.key.get_pressed()
-        self.direction = pg.Vector2()
+        self.x_dir = 0
         if keys[pg.K_a]:
-            self.direction.x -= 1
+            self.x_dir -= 1
         if keys[pg.K_d]:
-            self.direction.x += 1
-
-        self.rect.topleft += self.direction * self.speed * self.engine.dt
+            self.x_dir += 1
 
         self.animate()
+
+        self.pos.x += self.x_dir * self.speed * self.engine.dt
+        self.rect.midbottom = self.pos
+
+        pos_from_mid = (WIN_WIDTH / 2) - self.pos.x
+
         self.draw()

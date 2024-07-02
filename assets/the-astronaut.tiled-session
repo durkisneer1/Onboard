@@ -1,0 +1,58 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "tilemap.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "cockpit.tmx": {
+            "scale": 1.4889423076923076,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 212.90280917016472,
+                "y": 17.462060058120755
+            }
+        },
+        "cockpit.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "tilemap.tmx": {
+            "scale": 4,
+            "selectedLayer": 1,
+            "viewCenter": {
+                "x": 17.25,
+                "y": 33.125
+            }
+        },
+        "tilesheet.tsx": {
+            "scaleInDock": 4,
+            "scaleInEditor": 1
+        }
+    },
+    "last.imagePath": "D:/Code/python/The-Astronaut/assets",
+    "map.height": 8,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 16,
+    "map.tileWidth": 16,
+    "map.width": 12,
+    "openFiles": [
+        "tilemap.tmx",
+        "tilesheet.tsx"
+    ],
+    "project": "the-astronaut.tiled-project",
+    "recentFiles": [
+        "tilesheet.tsx",
+        "tilemap.tmx",
+        "cockpit.tsx",
+        "cockpit.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 16,
+        "width": 16
+    }
+}

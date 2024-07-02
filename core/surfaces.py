@@ -99,7 +99,7 @@ def load_tmx_layers(
                         print(f"ERROR: Surface not found at {x}, {y}")
                         continue
 
-                    pos = pg.Vector2(x * TILE_WIDTH, y * TILE_HEIGHT)
+                    pos = pg.Vector2(x * TILE_WIDTH, y * TILE_HEIGHT) + MAP_OFFSET
                     tile = Tile(engine, pos, surface, layer.name)
                     if isinstance(targets, list):
                         targets.append(tile)
@@ -109,7 +109,13 @@ def load_tmx_layers(
 
 
 def new_image_load(*args, **kwargs):
-    print("Image loaded:", args[0])
+    current_frame = inspect.currentframe()
+    if current_frame is None or current_frame.f_back is None:
+        return
+
+    calling_file = current_frame.f_back.f_globals["__file__"]
+    calling_file = os.path.basename(calling_file)
+    print(f"IMAGE_LOAD: '{args[0]}' in '{calling_file}'")
     return image_load(*args, **kwargs)
 
 
@@ -120,7 +126,7 @@ def new_surface(*args, **kwargs):
 
     calling_file = current_frame.f_back.f_globals["__file__"]
     calling_file = os.path.basename(calling_file)
-    print(f"Surface created in {calling_file}")
+    print(f"NEW_SURFACE: '{calling_file}'")
     return pg_surface(*args, **kwargs)
 
 
