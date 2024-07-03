@@ -1,3 +1,4 @@
+import pygame
 import pygame as pg
 
 from core.settings import *
@@ -35,25 +36,33 @@ class Player:
         self.current_frame += self.anim_speed * self.engine.dt
 
     def draw(self):
+        dark = self.frame.copy()
+        dark.fill("white", special_flags=pygame.BLEND_RGB_SUB)
+        self.engine.screen.blit(dark, self.rect.move(3, 0))
         self.engine.screen.blit(self.frame, self.rect)
 
     def check_collisions(self, axis: Axis):
-        for tile in self.engine.collision_tiles:
-            if not self.rect.colliderect(tile.rect):
-                continue
+        pass
 
-            if axis == Axis.X:
-                if self.vel.x > 0:
-                    self.rect.right = tile.rect.left
-                elif self.vel.x < 0:
-                    self.rect.left = tile.rect.right
-            elif axis == Axis.Y:
-                if self.vel.y > 0:
-                    self.rect.bottom = tile.rect.top
-                    self.on_ground = True
-                elif self.vel.y < 0:
-                    self.rect.top = tile.rect.bottom
-                    self.vel.y = 0
+        if self.rect.bottom > GROUND_HEIGHT:
+            self.rect.bottom = GROUND_HEIGHT
+            self.on_ground = True
+        # for tile in self.engine.collision_tiles:
+        #     if not self.rect.colliderect(tile.rect):
+        #         continue
+        #
+        #     if axis == Axis.X:
+        #         if self.vel.x > 0:
+        #             self.rect.right = tile.rect.left
+        #         elif self.vel.x < 0:
+        #             self.rect.left = tile.rect.right
+        #     elif axis == Axis.Y:
+        #         if self.vel.y > 0:
+        #             self.rect.bottom = tile.rect.top
+        #             self.on_ground = True
+        #         elif self.vel.y < 0:
+        #             self.rect.top = tile.rect.bottom
+        #             self.vel.y = 0
 
     def update(self):
         keys = pg.key.get_pressed()
