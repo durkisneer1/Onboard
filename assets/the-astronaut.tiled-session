@@ -22,10 +22,10 @@
         },
         "tilemap.tmx": {
             "scale": 4,
-            "selectedLayer": 1,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 17.25,
-                "y": 33.125
+                "x": 116.5,
+                "y": 61.25
             }
         },
         "tilesheet.tsx": {

@@ -10,4 +10,4 @@ class Tile:
         self.rect = image.get_frect(bottomleft=pos)
 
     def draw(self):
-        self.engine.screen.blit(self.image, self.rect.move(-self.engine.camera))
+        self.engine.screen.blit(self.image, self.rect)

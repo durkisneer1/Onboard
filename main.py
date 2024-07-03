@@ -14,15 +14,15 @@ class Engine:
         pg.display.set_caption("The Astronaut")
 
         self.clock = pg.Clock()
-        self.camera = pg.Vector2()
         self.running = True
         self.dt = 0
 
         tile_set = load_pygame("assets/tilemap.tmx")
-        self.cockpit_tiles = []
-        self.decor_tiles = []
-        load_tmx_layers(self, tile_set, "Border", self.cockpit_tiles)
-        load_tmx_layers(self, tile_set, "Decor", self.decor_tiles)
+        self.collision_tiles = []
+        self.all_tiles = []
+        load_tmx_layers(self, tile_set, "Border", (self.collision_tiles, self.all_tiles))
+        load_tmx_layers(self, tile_set, "Wall", self.all_tiles)
+        load_tmx_layers(self, tile_set, "Decor", self.all_tiles)
 
         self.player = Player(self)
         self.state_dict = {
@@ -39,9 +39,6 @@ class Engine:
                     self.running = False
                 elif ev.type == pg.KEYDOWN and ev.key == pg.K_ESCAPE:
                     self.running = False
-
-            # new_cam_pos = -(pg.Vector2(WIN_SIZE) / 2 - pg.mouse.get_pos()) / 10
-            # self.camera = self.camera.lerp(new_cam_pos, self.dt * 25)
 
             self.screen.fill((30, 9, 13))
             self.state_dict[self.current_state].render()

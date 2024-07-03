@@ -6,7 +6,5 @@ class CockPit:
         self.engine = engine
 
     def render(self):
-        for tile in self.engine.cockpit_tiles:
-            tile.draw()
-        for tile in self.engine.decor_tiles:
+        for tile in self.engine.all_tiles:
             tile.draw()
