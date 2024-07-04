@@ -1,7 +1,9 @@
 import pygame as pg
+
 from core.enums import AppState
 from src.player import Player
 from src.states.cockpit import CockPit
+
 
 class Engine:
     def __init__(self) -> None:
@@ -14,9 +16,7 @@ class Engine:
         self.dt = 0
 
         self.player = Player(self)
-        self.state_dict = {
-            AppState.COCKPIT: CockPit(self)
-        }
+        self.state_dict = {AppState.COCKPIT: CockPit(self)}
         self.current_state = AppState.COCKPIT
 
     def run(self):
@@ -36,6 +36,6 @@ class Engine:
             pg.display.flip()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     engine = Engine()
     engine.run()
