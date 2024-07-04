@@ -3,6 +3,7 @@ import pygame as pg
 from core.enums import AppState
 from src.player import Player
 from src.states.cockpit import CockPit
+from src.states.pause import Pause
 
 
 class Engine:
@@ -15,8 +16,10 @@ class Engine:
         self.running = True
         self.dt = 0
 
-        self.player = Player(self)
-        self.state_dict = {AppState.COCKPIT: CockPit(self)}
+        self.state_dict = {
+            AppState.COCKPIT: CockPit(self),
+            AppState.PAUSE: Pause(self, AppState.COCKPIT),
+        }
         self.current_state = AppState.COCKPIT
 
     def run(self):
@@ -26,12 +29,13 @@ class Engine:
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:
                     self.running = False
-                elif ev.type == pg.KEYDOWN and ev.key == pg.K_ESCAPE:
-                    self.running = False
 
-            self.screen.fill((30, 9, 13))
+            # self.screen.fill((30, 9, 13))
             self.state_dict[self.current_state].render()
-            self.player.update()
+
+            # if we want to switch the state
+            if self.state_dict[self.current_state].next_state is not None:
+                self.current_state = self.state_dict[self.current_state].next_state
 
             pg.display.flip()
 
