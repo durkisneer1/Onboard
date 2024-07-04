@@ -1,68 +1,75 @@
-import pygame
+from typing import TYPE_CHECKING
+
 import pygame as pg
 
+from core.enums import AnimState, Axis
 from core.settings import *
 from core.surfaces import import_anim
-from core.enums import AnimState, Axis
+
+if TYPE_CHECKING:
+    from main import Engine
 
 
 class Player:
-    def __init__(self, engine) -> None:
+    def __init__(self, engine: "Engine") -> None:
         self.engine = engine
 
         # animation
         self.animations = {
             AnimState.WALK: import_anim("assets/astrowalk.png", 21, 30),
-            AnimState.IDLE: import_anim("assets/astroidle.png", 19, 30)
+            AnimState.IDLE: import_anim("assets/astroidle.png", 19, 30),
         }
         self.anim_state = AnimState.IDLE
         self.current_frame = 0
         self.frame = self.animations[AnimState.IDLE][0]
-        self.rect = self.frame.get_frect(midbottom=(self.engine.screen.width / 2, GROUND_HEIGHT))
         self.anim_speed = 10
+        self.left = False
 
         # kinematics
         self.speed = 40
         self.vel = pg.Vector2()
         self.on_ground = True
+        self.rect = self.frame.get_frect(
+            midbottom=(self.engine.screen.width / 2, GROUND_HEIGHT)
+        )
+
+    # @staticmethod
+    # def generate_shadow(anim_dict: dict[AnimState, list[pg.Surface]]) -> dict[AnimState, list[pg.Surface]]:
+    #     shadow_dict = {}
+    #     for key in anim_dict.keys():
+    #         shadow_frames = []
+    #         for frame in anim_dict[key]:
+    #             shadow = frame.copy()
+    #             shadow.fill("white", special_flags=pg.BLEND_RGB_SUB)
+    #             shadow_frames.append(shadow)
+    #         shadow_dict[key] = shadow_frames
+    #     return shadow_dict
 
     def animate(self):
-        self.anim_state = AnimState.WALK if self.vel.x else AnimState.IDLE
+        if self.vel.x:
+            self.anim_state = AnimState.WALK
+            self.left = self.vel.x < 0
+        else:
+            self.anim_state = AnimState.IDLE
 
         self.current_frame %= len(self.animations[self.anim_state])
         self.frame = pg.transform.flip(
-            self.animations[self.anim_state][int(self.current_frame)], self.vel.x < 0, False
+            self.animations[self.anim_state][int(self.current_frame)],
+            self.vel.x < 0,
+            False,
         )
         self.current_frame += self.anim_speed * self.engine.dt
 
     def draw(self):
         dark = self.frame.copy()
-        dark.fill("white", special_flags=pygame.BLEND_RGB_SUB)
+        dark.fill("white", special_flags=pg.BLEND_RGB_SUB)
         self.engine.screen.blit(dark, self.rect.move(3, 0))
         self.engine.screen.blit(self.frame, self.rect)
 
     def check_collisions(self, axis: Axis):
-        pass
-
         if self.rect.bottom > GROUND_HEIGHT:
             self.rect.bottom = GROUND_HEIGHT
             self.on_ground = True
-        # for tile in self.engine.collision_tiles:
-        #     if not self.rect.colliderect(tile.rect):
-        #         continue
-        #
-        #     if axis == Axis.X:
-        #         if self.vel.x > 0:
-        #             self.rect.right = tile.rect.left
-        #         elif self.vel.x < 0:
-        #             self.rect.left = tile.rect.right
-        #     elif axis == Axis.Y:
-        #         if self.vel.y > 0:
-        #             self.rect.bottom = tile.rect.top
-        #             self.on_ground = True
-        #         elif self.vel.y < 0:
-        #             self.rect.top = tile.rect.bottom
-        #             self.vel.y = 0
 
     def update(self):
         keys = pg.key.get_pressed()
