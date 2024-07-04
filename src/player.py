@@ -1,8 +1,8 @@
 import pygame as pg
 
+from core.enums import AnimState, Axis
 from core.settings import *
 from core.surfaces import import_anim
-from core.enums import AnimState, Axis
 
 
 class Player:

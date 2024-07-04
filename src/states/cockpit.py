@@ -1,11 +1,13 @@
 import random
-from typing import TYPE_CHECKING
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 
 import pygame as pg
 import pygame.surfarray
 
+from core.enums import AppState
 from core.surfaces import import_image
+from src.player import Player
 
 if TYPE_CHECKING:
     from main import Engine
@@ -29,6 +31,10 @@ class CockPit:
         self.particles: list[Particle] = []
         self.particle_timer = 0.0
 
+        self.player = Player(engine)
+
+        self.next_state = None
+
     @staticmethod
     def _surface_mask_color(
         surface: pygame.Surface, color: tuple[int, int, int]
@@ -40,6 +46,8 @@ class CockPit:
 
     def render(self):
         self.engine.screen.fill("black")
+        self.next_state = None
+        self.handle_pause()
         # self._render_particles()
 
         # FIXME: Inefficient Surface Instantiation
@@ -54,16 +62,18 @@ class CockPit:
                 circle_surf.blit(
                     img,
                     (
-                        -(int(self.engine.player.rect.centerx) - radius - 32),
-                        -(int(self.engine.player.rect.centery) - radius - 27),
+                        -(int(self.player.rect.centerx) - radius - 32),
+                        -(int(self.player.rect.centery) - radius - 27),
                     ),
                     special_flags=pg.BLEND_RGB_MAX,
                 )
 
                 circle_surf.set_colorkey("white", pg.RLEACCEL)
-                pos = pg.Vector2(self.engine.player.rect.center).elementwise() - radius
+                pos = pg.Vector2(self.player.rect.center).elementwise() - radius
                 self.engine.screen.blit(circle_surf, pos)
                 radius -= 16
+
+        self.player.update()
 
     def _render_particles(self):
         for particle in self.particles.copy():
@@ -80,3 +90,8 @@ class CockPit:
             self.particles.append(
                 Particle(x=27, y=random.randint(45, 85), vel=random.randint(100, 200))
             )
+
+    def handle_pause(self):
+        keys = pg.key.get_just_pressed()
+        if keys[pg.K_ESCAPE]:
+            self.next_state = AppState.PAUSE

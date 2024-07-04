@@ -3,6 +3,7 @@ from enum import IntEnum, auto
 
 class AppState(IntEnum):
     COCKPIT = auto()
+    PAUSE = auto()
 
 
 class AnimState(IntEnum):
