@@ -3,6 +3,7 @@ import pygame as pg
 from core.enums import AppState
 from src.player import Player
 from src.states.cockpit import CockPit
+from src.states.menu import Menu
 from src.states.pause import Pause
 
 
@@ -19,6 +20,7 @@ class Engine:
         self.state_dict = {
             AppState.COCKPIT: CockPit(self),
             AppState.PAUSE: Pause(self),
+            AppState.MENU: Menu(self),
         }
         self.current_state = AppState.COCKPIT
         self.last_state = self.current_state
@@ -34,6 +36,10 @@ class Engine:
 
             # self.screen.fill((30, 9, 13))
             self.state_dict[self.current_state].render()
+
+            font = pg.Font()
+            r = font.render(f"state: {self.current_state.name}", False, "white")
+            self.screen.blit(r, (0, 0))
 
             pg.display.flip()
 

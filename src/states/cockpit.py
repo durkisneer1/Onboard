@@ -6,7 +6,9 @@ import pygame as pg
 import pygame.surfarray
 
 from core.enums import AppState
+from core.settings import WIN_SIZE
 from core.surfaces import import_image
+from core.transitions import FadeTransition
 from src.player import Player
 
 if TYPE_CHECKING:
@@ -33,6 +35,8 @@ class CockPit:
 
         self.player = Player(engine)
 
+        self.transition = FadeTransition(True, 300, WIN_SIZE)
+
     @staticmethod
     def _surface_mask_color(
         surface: pygame.Surface, color: tuple[int, int, int]
@@ -47,7 +51,11 @@ class CockPit:
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = self.engine.screen.copy()
+                self.engine.state_dict[
+                    self.engine.current_state
+                ].last_frame = self.engine.screen.copy()
+            elif event.key == pg.K_RETURN:
+                self.transition.fade_in = False
 
     def render(self):
         self.engine.screen.fill("black")
@@ -77,6 +85,14 @@ class CockPit:
                 radius -= 16
 
         self.player.update()
+
+        self.transition.update(self.engine.dt)
+        self.transition.draw(self.engine.screen)
+
+        if self.transition.event:
+            self.engine.last_state = self.engine.current_state
+            self.engine.current_state = AppState.MENU
+            self.transition.fade_in = True
 
     def _render_particles(self):
         for particle in self.particles.copy():
