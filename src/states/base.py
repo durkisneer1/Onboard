@@ -1,4 +1,5 @@
 import pygame as pg
+
 from core.settings import WIN_SIZE
 
 

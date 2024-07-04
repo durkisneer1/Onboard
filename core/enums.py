@@ -4,6 +4,7 @@ from enum import IntEnum, auto
 class AppState(IntEnum):
     COCKPIT = auto()
     PAUSE = auto()
+    MENU = auto()
 
 
 class AnimState(IntEnum):
