@@ -1,8 +1,4 @@
 import pygame as pg
-from pytmx import load_pygame
-
-from core.settings import *
-from core.surfaces import load_tmx_layers
 from core.enums import AppState
 from src.player import Player
 from src.states.cockpit import CockPit
@@ -16,13 +12,6 @@ class Engine:
         self.clock = pg.Clock()
         self.running = True
         self.dt = 0
-
-        tile_set = load_pygame("assets/tilemap.tmx")
-        self.collision_tiles = []
-        self.all_tiles = []
-        load_tmx_layers(self, tile_set, "Border", (self.collision_tiles, self.all_tiles))
-        load_tmx_layers(self, tile_set, "Wall", self.all_tiles)
-        load_tmx_layers(self, tile_set, "Decor", self.all_tiles)
 
         self.player = Player(self)
         self.state_dict = {
