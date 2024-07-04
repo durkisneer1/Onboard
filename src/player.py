@@ -1,12 +1,17 @@
+from typing import TYPE_CHECKING
+
 import pygame as pg
 
 from core.enums import AnimState, Axis
 from core.settings import *
 from core.surfaces import import_anim
 
+if TYPE_CHECKING:
+    from main import Engine
+
 
 class Player:
-    def __init__(self, engine) -> None:
+    def __init__(self, engine: "Engine") -> None:
         self.engine = engine
 
         # animation
@@ -18,6 +23,7 @@ class Player:
         self.current_frame = 0
         self.frame = self.animations[AnimState.IDLE][0]
         self.anim_speed = 10
+        self.left = False
 
         # kinematics
         self.speed = 40
@@ -40,7 +46,11 @@ class Player:
     #     return shadow_dict
 
     def animate(self):
-        self.anim_state = AnimState.WALK if self.vel.x else AnimState.IDLE
+        if self.vel.x:
+            self.anim_state = AnimState.WALK
+            self.left = self.vel.x < 0
+        else:
+            self.anim_state = AnimState.IDLE
 
         self.current_frame %= len(self.animations[self.anim_state])
         self.frame = pg.transform.flip(

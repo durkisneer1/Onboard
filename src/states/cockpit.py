@@ -33,8 +33,6 @@ class CockPit:
 
         self.player = Player(engine)
 
-        self.next_state = None
-
     @staticmethod
     def _surface_mask_color(
         surface: pygame.Surface, color: tuple[int, int, int]
@@ -44,10 +42,15 @@ class CockPit:
         surface.set_colorkey(None)
         return pygame.surfarray.make_surface(array).convert()
 
+    def handle_events(self, event):
+        if event.type == pg.KEYDOWN:
+            if event.key == pg.K_ESCAPE:
+                self.engine.last_state = self.engine.current_state
+                self.engine.current_state = AppState.PAUSE
+                self.engine.state_dict[self.engine.current_state].last_frame = self.engine.screen.copy()
+
     def render(self):
         self.engine.screen.fill("black")
-        self.next_state = None
-        self.handle_pause()
         # self._render_particles()
 
         # FIXME: Inefficient Surface Instantiation
@@ -62,8 +65,8 @@ class CockPit:
                 circle_surf.blit(
                     img,
                     (
-                        -(int(self.player.rect.centerx) - radius - 32),
-                        -(int(self.player.rect.centery) - radius - 27),
+                        -(self.player.rect.centerx - radius - 32),
+                        -(self.player.rect.centery - radius - 27),
                     ),
                     special_flags=pg.BLEND_RGB_MAX,
                 )
@@ -90,8 +93,3 @@ class CockPit:
             self.particles.append(
                 Particle(x=27, y=random.randint(45, 85), vel=random.randint(100, 200))
             )
-
-    def handle_pause(self):
-        keys = pg.key.get_just_pressed()
-        if keys[pg.K_ESCAPE]:
-            self.next_state = AppState.PAUSE

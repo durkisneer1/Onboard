@@ -2,7 +2,7 @@ import pygame as pg
 
 
 class Tile:
-    def __init__(self, engine, pos: pg.Vector2, image: pg.Surface, name: str):
+    def __init__(self, engine, pos: pg.Vector2, image: pg.Surface, name: str) -> None:
         self.engine = engine
 
         self.name = name

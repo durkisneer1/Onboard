@@ -18,9 +18,10 @@ class Engine:
 
         self.state_dict = {
             AppState.COCKPIT: CockPit(self),
-            AppState.PAUSE: Pause(self, AppState.COCKPIT),
+            AppState.PAUSE: Pause(self),
         }
         self.current_state = AppState.COCKPIT
+        self.last_state = self.current_state
 
     def run(self):
         while self.running:
@@ -29,13 +30,10 @@ class Engine:
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:
                     self.running = False
+                self.state_dict[self.current_state].handle_events(ev)
 
             # self.screen.fill((30, 9, 13))
             self.state_dict[self.current_state].render()
-
-            # if we want to switch the state
-            if self.state_dict[self.current_state].next_state is not None:
-                self.current_state = self.state_dict[self.current_state].next_state
 
             pg.display.flip()
 
