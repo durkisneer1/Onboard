@@ -112,9 +112,9 @@ class CockPit:
 
     def _render_particles(self, surface, color):
         for particle in self.particles:
-            if (self.cockpit_image.get_at((particle.x, particle.y)) == (0,)*4
-                and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255)
-            ):
+            if self.cockpit_image.get_at((particle.x, particle.y)) == (
+                0,
+            ) * 4 and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255):
                 surface.set_at((particle.x, particle.y), color)
 
     def _move_particles(self):

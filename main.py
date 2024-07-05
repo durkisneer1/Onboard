@@ -22,7 +22,7 @@ class Engine:
             AppState.PAUSE: Pause(self),
             AppState.MENU: Menu(self),
         }
-        self.current_state = AppState.COCKPIT
+        self.current_state = AppState.MENU
         self.last_state = self.current_state
 
     def run(self):
