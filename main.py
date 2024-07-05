@@ -37,7 +37,7 @@ class Engine:
             # self.screen.fill((30, 9, 13))
             self.state_dict[self.current_state].render()
 
-            font = pg.Font()
+            font = pg.Font(size=18)
             r = font.render(f"state: {self.current_state.name}", False, "white")
             self.screen.blit(r, (0, 0))
 
