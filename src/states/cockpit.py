@@ -5,11 +5,11 @@ from typing import TYPE_CHECKING
 import pygame as pg
 import pygame.surfarray
 
+from core.buttons import NumButton
 from core.enums import AppState
 from core.settings import *
 from core.surfaces import import_image
 from core.transitions import FadeTransition
-from core.buttons import NumButton
 from src.player import Player
 
 if TYPE_CHECKING:
@@ -107,7 +107,7 @@ class CockPit:
         self.player.update()
 
         self.keypad_puzzle.render()
-        
+
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
         if self.transition.event:
@@ -117,9 +117,9 @@ class CockPit:
 
     def _render_particles(self, surface, color):
         for particle in self.particles:
-            if (self.cockpit_image.get_at((particle.x, particle.y)) == (0,)*4
-                and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255)
-            ):
+            if self.cockpit_image.get_at((particle.x, particle.y)) == (
+                0,
+            ) * 4 and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255):
                 surface.set_at((particle.x, particle.y), color)
 
     def _move_particles(self):
@@ -165,7 +165,7 @@ class KeyPad:
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
         self.buttons = [
-            NumButton(engine, 3*y + x, pg.Vector2(x, y) * 10, (10, 10))
+            NumButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, (10, 10))
             for x in range(1, 4)
             for y in range(0, 3)
         ]

@@ -42,10 +42,12 @@ class Button:
 
 
 class NumButton(Button):
-    def __init__(self, engine: "Engine", num: int, pos: tuple[int], size: tuple[int]) -> None:
+    def __init__(
+        self, engine: "Engine", num: int, pos: tuple[int], size: tuple[int]
+    ) -> None:
         shifted_pos = pos + (95, 55)
         super().__init__(engine, shifted_pos, size)
-        font = pg.font.SysFont('Arial', 8)
+        font = pg.font.SysFont("Arial", 8)
 
         self.num = num
         self.rect = pg.Rect(shifted_pos, size)
