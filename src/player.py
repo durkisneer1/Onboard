@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.enums import AnimState, Axis
+from core.enums import AnimState
 from core.settings import *
 from core.surfaces import import_anim
 
@@ -33,18 +33,6 @@ class Player:
             midbottom=(self.engine.screen.width / 2, GROUND_HEIGHT)
         )
 
-    # @staticmethod
-    # def generate_shadow(anim_dict: dict[AnimState, list[pg.Surface]]) -> dict[AnimState, list[pg.Surface]]:
-    #     shadow_dict = {}
-    #     for key in anim_dict.keys():
-    #         shadow_frames = []
-    #         for frame in anim_dict[key]:
-    #             shadow = frame.copy()
-    #             shadow.fill("white", special_flags=pg.BLEND_RGB_SUB)
-    #             shadow_frames.append(shadow)
-    #         shadow_dict[key] = shadow_frames
-    #     return shadow_dict
-
     def animate(self):
         if self.vel.x:
             self.anim_state = AnimState.WALK
@@ -55,7 +43,7 @@ class Player:
         self.current_frame %= len(self.animations[self.anim_state])
         self.frame = pg.transform.flip(
             self.animations[self.anim_state][int(self.current_frame)],
-            self.vel.x < 0,
+            self.left,
             False,
         )
         self.current_frame += self.anim_speed * self.engine.dt
@@ -65,13 +53,6 @@ class Player:
         dark.fill("white", special_flags=pg.BLEND_RGB_SUB)
         self.engine.screen.blit(dark, self.rect.move(3, 0))
         self.engine.screen.blit(self.frame, self.rect)
-
-    def check_collisions(self, axis: Axis):
-        pass
-
-        if self.rect.bottom > GROUND_HEIGHT:
-            self.rect.bottom = GROUND_HEIGHT
-            self.on_ground = True
 
     def update(self):
         keys = pg.key.get_pressed()
@@ -89,10 +70,10 @@ class Player:
             direction += 1
         self.vel.x = direction * self.speed
 
-        self.rect.x += self.vel.x * self.engine.dt
-        self.check_collisions(Axis.X)
-        self.rect.y += self.vel.y * self.engine.dt
-        self.check_collisions(Axis.Y)
+        self.rect.topleft += self.vel * self.engine.dt
+        if self.rect.bottom > GROUND_HEIGHT:
+            self.rect.bottom = GROUND_HEIGHT
+            self.on_ground = True
 
         self.animate()
         self.draw()

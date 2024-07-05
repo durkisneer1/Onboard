@@ -10,8 +10,3 @@ class AppState(IntEnum):
 class AnimState(IntEnum):
     WALK = auto()
     IDLE = auto()
-
-
-class Axis(IntEnum):
-    X = auto()
-    Y = auto()

@@ -6,7 +6,7 @@ import pygame as pg
 import pygame.surfarray
 
 from core.enums import AppState
-from core.settings import WIN_SIZE
+from core.settings import *
 from core.surfaces import import_image
 from core.transitions import FadeTransition
 from src.player import Player
@@ -31,10 +31,20 @@ class CockPit:
 
         self.particle_colors = [(26, 12, 49), (53, 54, 91), (104, 107, 114)]
         color_sets = [
-            [(26, 12, 49), (53, 54, 91), (104, 107, 114), (136, 151, 185), (195, 205, 220), (255, 255, 255)]
+            [
+                (26, 12, 49),
+                (53, 54, 91),
+                (104, 107, 114),
+                (136, 151, 185),
+                (195, 205, 220),
+                (255, 255, 255),
+            ]
         ]
         self.layers = [
-            self._shift_colors(surface=self.cockpit_image, color_sets=color_sets, n=2 - i) for i in range(3)
+            self._shift_colors(
+                surface=self.cockpit_image, color_sets=color_sets, n=2 - i
+            )
+            for i in range(3)
         ]
 
         self.particles: list[Particle] = []
@@ -45,7 +55,9 @@ class CockPit:
         self.transition = FadeTransition(True, 300, WIN_SIZE)
 
     @staticmethod
-    def _shift_colors(surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int) -> pg.Surface:
+    def _shift_colors(
+        surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
+    ) -> pg.Surface:
         surface = surface.copy()
         array = pg.PixelArray(surface)
         for colors in color_sets:
@@ -74,9 +86,11 @@ class CockPit:
             pg.draw.circle(
                 surf,
                 "black",
-                (int(self.player.rect.centerx) - 32,
-                 int(self.player.rect.centery) - 27),
-                radius
+                (
+                    int(self.player.rect.centerx) - 32,
+                    int(self.player.rect.centery) - 27,
+                ),
+                radius,
             )
             self._render_particles(surf, self.particle_colors[n])
             surf.blit(layer, (0, 0), special_flags=pg.BLEND_RGB_ADD)
@@ -87,7 +101,7 @@ class CockPit:
         self._move_particles()
 
         self.player.update()
-        
+
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
 
@@ -98,9 +112,8 @@ class CockPit:
 
     def _render_particles(self, surface, color):
         for particle in self.particles:
-            if (
-                    self.cockpit_image.get_at((particle.x, particle.y)) == (0, 0, 0, 0)
-                    and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255)
+            if (self.cockpit_image.get_at((particle.x, particle.y)) == (0,)*4
+                and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255)
             ):
                 surface.set_at((particle.x, particle.y), color)
 
@@ -117,9 +130,5 @@ class CockPit:
             self.particle_timer = 0
 
             self.particles.append(
-                Particle(
-                    x=0,
-                    y=random.randint(13, 53),
-                    vel=random.randint(100, 200)
-                )
+                Particle(x=0, y=random.randint(13, 53), vel=random.randint(100, 200))
             )
