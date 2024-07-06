@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 import pygame as pg
 import pygame.surfarray
 
+from core.buttons import NumButton
 from core.enums import AppState
 from core.settings import *
 from core.surfaces import import_image
@@ -52,6 +53,8 @@ class CockPit:
 
         self.player = Player(engine)
 
+        self.keypad_puzzle = KeyPadPuzzle(engine)
+
         self.transition = FadeTransition(True, 300, WIN_SIZE)
 
     @staticmethod
@@ -75,10 +78,11 @@ class CockPit:
                 ].last_frame = self.engine.screen.copy()
             elif event.key == pg.K_RETURN:
                 self.transition.fade_in = False
+            elif event.key == pg.K_BACKSPACE and not self.keypad_puzzle.active:
+                self.keypad_puzzle.active = True
 
     def render(self):
         self.engine.screen.fill("black")
-
         radius = 74
         for n, layer in enumerate(self.layers):
             surf = pg.Surface(layer.size)
@@ -102,9 +106,10 @@ class CockPit:
 
         self.player.update()
 
+        self.keypad_puzzle.render()
+
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
-
         if self.transition.event:
             self.engine.last_state = self.engine.current_state
             self.engine.current_state = AppState.MENU
@@ -112,9 +117,9 @@ class CockPit:
 
     def _render_particles(self, surface, color):
         for particle in self.particles:
-            if (self.cockpit_image.get_at((particle.x, particle.y)) == (0,)*4
-                and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255)
-            ):
+            if self.cockpit_image.get_at((particle.x, particle.y)) == (
+                0,
+            ) * 4 and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255):
                 surface.set_at((particle.x, particle.y), color)
 
     def _move_particles(self):
@@ -132,3 +137,52 @@ class CockPit:
             self.particles.append(
                 Particle(x=0, y=random.randint(13, 53), vel=random.randint(100, 200))
             )
+
+
+class KeyPadPuzzle:
+    def __init__(self, engine: "Engine"):
+        self.engine = engine
+        self.keypad = KeyPad(engine)
+
+        self.bg_dimmer = pg.Surface(WIN_SIZE)
+        self.bg_dimmer.set_alpha(180)
+
+        self.active = False
+
+    def render(self):
+        if self.active:
+            self.engine.screen.blit(self.bg_dimmer, (0, 0))
+
+            keys = pg.key.get_just_pressed()
+            if keys[pg.K_r]:
+                self.active = False
+                self.keypad.user_in = []
+
+            self.keypad.render()
+
+
+class KeyPad:
+    def __init__(self, engine: "Engine") -> None:
+        self.engine = engine
+        self.buttons = [
+            NumButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, (10, 10))
+            for x in range(1, 4)
+            for y in range(0, 3)
+        ]
+
+        self.code = [1, 2, 3, 4]
+        self.user_in = []
+
+    def render(self):
+        print(self.user_in)
+        for button in self.buttons:
+            button.render()
+            if not button.event:
+                continue
+
+            self.user_in.append(button.num)
+            if len(self.user_in) != len(self.code):
+                continue
+
+        if self.user_in == self.code:
+            print("correct!")
