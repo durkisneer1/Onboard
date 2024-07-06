@@ -32,8 +32,8 @@ class Player:
             midbottom=(self.engine.screen.width / 2, GROUND_HEIGHT)
         )
 
-    def animate(self):
-        if self.vel.x:
+    def animate(self, puzzle_active: bool):
+        if self.vel.x and not puzzle_active:
             self.anim_state = AnimState.WALK
             self.left = self.vel.x < 0
         else:
@@ -68,5 +68,5 @@ class Player:
     def update(self, puzzle_active: bool):
         if not puzzle_active:
             self.move()
-        self.animate()
+        self.animate(puzzle_active)
         self.draw()

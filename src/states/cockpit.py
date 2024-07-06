@@ -10,6 +10,7 @@ from core.enums import AppState
 from core.settings import *
 from core.surfaces import import_image
 from core.transitions import FadeTransition
+from src.interactable import Interactable
 from src.player import Player
 
 if TYPE_CHECKING:
@@ -53,6 +54,8 @@ class CockPit:
 
         self.player = Player(engine)
 
+        keypad_rect = pg.Rect(177, 77, 7, 9)
+        self.keypad = Interactable(self.player, self.engine, keypad_rect)
         self.keypad_puzzle = KeyPadPuzzle(engine)
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
@@ -79,8 +82,6 @@ class CockPit:
                 ].last_frame = self.engine.screen.copy()
             elif event.key == pg.K_RETURN:
                 self.transition.fade_in = False
-            elif event.key == pg.K_BACKSPACE and not self.keypad_puzzle.active:
-                self.keypad_puzzle.active = True
 
     def render(self):
         self.engine.screen.fill("black")
@@ -105,8 +106,13 @@ class CockPit:
 
         self._move_particles()
 
+        self.keypad.render()
+
         self.player.update(self.keypad_puzzle.active)
 
+        if self.keypad.event:
+            self.keypad_puzzle.keypad.user_in = []
+            self.keypad_puzzle.active = not self.keypad_puzzle.active
         self.keypad_puzzle.render()
 
         self.transition.update(self.engine.dt)
@@ -154,9 +160,6 @@ class KeyPadPuzzle:
         self.engine.screen.blit(self.bg_dimmer, (0, 0))
 
         keys = pg.key.get_just_pressed()
-        if keys[pg.K_r]:
-            self.active = False
-            self.keypad.user_in = []
 
         self.keypad.render()
 
