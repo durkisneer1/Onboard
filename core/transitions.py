@@ -1,12 +1,12 @@
-import pygame
+import pygame as pg
 
 
 class FadeTransition:
-    def __init__(self, fade_in: bool, fade_speed: float, size: tuple[int]) -> None:
+    def __init__(self, fade_in: bool, fade_speed: float, size: pg.Vector2) -> None:
         self.fade_in = fade_in
         self.init_fade = fade_in
         self.fade_speed = fade_speed
-        self.image = pygame.Surface(size)
+        self.image = pg.Surface(size)
 
         self.event = False
         self.alpha = 255 if fade_in else 0
@@ -31,12 +31,8 @@ class FadeTransition:
                 self.event = True
 
     def update(self, dt: float):
-        if self.fade_in:
-            self._handle_fade_in(dt)
-        else:
-            self._handle_fade_out(dt)
-
+        self._handle_fade_in(dt) if self.fade_in else self._handle_fade_out(dt)
         self.image.set_alpha(int(self.alpha))
 
-    def draw(self, screen: pygame.Surface):
+    def draw(self, screen: pg.Surface):
         screen.blit(self.image, (0, 0))

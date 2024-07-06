@@ -1,8 +1,13 @@
+from typing import TYPE_CHECKING
+
 import pygame as pg
+
+if TYPE_CHECKING:
+    from main import Engine
 
 
 class Button:
-    def __init__(self, engine: "Engine", pos: tuple[int], size: tuple[int]):
+    def __init__(self, engine: "Engine", pos: pg.Vector2, size: pg.Vector2):
         self.engine = engine
         self.surface = pg.Surface(size)
         self.pos = pos
@@ -25,25 +30,14 @@ class Button:
         self.engine.screen.blit(self.surface, self.rect)
 
     def handle_states(self):
-        mouse_pos = pg.mouse.get_pos()
-        self.hovering = False
-        if self.rect.collidepoint(mouse_pos):
-            self.hovering = True
-
-        mouse_pressed = pg.mouse.get_pressed()
-        self.holding = False
-        if mouse_pressed[0] and self.hovering:
-            self.holding = True
-
-        mouse_released = pg.mouse.get_just_released()
-        self.event = False
-        if mouse_released[0] and self.hovering:
-            self.event = True
+        self.hovering: bool = self.rect.collidepoint(pg.mouse.get_pos())
+        self.holding: bool = pg.mouse.get_pressed()[0] and self.hovering
+        self.event: bool = pg.mouse.get_just_released()[0] and self.hovering
 
 
 class NumButton(Button):
     def __init__(
-        self, engine: "Engine", num: int, pos: tuple[int], size: tuple[int]
+        self, engine: "Engine", num: int, pos: pg.Vector2, size: pg.Vector2
     ) -> None:
         shifted_pos = pos + (95, 55)
         super().__init__(engine, shifted_pos, size)
@@ -56,5 +50,4 @@ class NumButton(Button):
 
     def render(self):
         super().render()
-
         self.engine.screen.blit(self.text, self.text_rect)

@@ -28,7 +28,6 @@ class Player:
         # kinematics
         self.speed = 40
         self.vel = pg.Vector2()
-        self.on_ground = True
         self.rect = self.frame.get_frect(
             midbottom=(self.engine.screen.width / 2, GROUND_HEIGHT)
         )
@@ -54,14 +53,8 @@ class Player:
         self.engine.screen.blit(dark, self.rect.move(3, 0))
         self.engine.screen.blit(self.frame, self.rect)
 
-    def update(self):
+    def move(self):
         keys = pg.key.get_pressed()
-        if self.on_ground:
-            if keys[pg.K_SPACE] or keys[pg.K_UP]:
-                self.vel.y = -64
-                self.on_ground = False
-        else:
-            self.vel.y += GRAVITY * self.engine.dt
 
         direction = 0
         if keys[pg.K_a] or keys[pg.K_LEFT]:
@@ -71,9 +64,9 @@ class Player:
         self.vel.x = direction * self.speed
 
         self.rect.topleft += self.vel * self.engine.dt
-        if self.rect.bottom > GROUND_HEIGHT:
-            self.rect.bottom = GROUND_HEIGHT
-            self.on_ground = True
 
+    def update(self, puzzle_active: bool):
+        if not puzzle_active:
+            self.move()
         self.animate()
         self.draw()

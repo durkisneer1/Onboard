@@ -17,12 +17,11 @@ class Menu(BaseState):
         self.placeholder = pg.Surface(WIN_SIZE)
         self.placeholder.fill("purple")
 
-        self.transition = FadeTransition(True, 300, WIN_SIZE)
+        self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
 
     def handle_events(self, event):
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_RETURN:
-                self.transition.fade_in = False
+        if event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
+            self.transition.fade_in = False
 
     def render(self):
         self.engine.screen.blit(self.placeholder, (0, 0))

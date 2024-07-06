@@ -18,8 +18,8 @@ if TYPE_CHECKING:
 
 @dataclass
 class Particle:
-    x: int
-    y: int
+    x: float
+    y: float
     vel: float
 
 
@@ -55,7 +55,7 @@ class CockPit:
 
         self.keypad_puzzle = KeyPadPuzzle(engine)
 
-        self.transition = FadeTransition(True, 300, WIN_SIZE)
+        self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
 
     @staticmethod
     def _shift_colors(
@@ -66,6 +66,7 @@ class CockPit:
         for colors in color_sets:
             for old_color, new_color in zip(colors, [(0, 0, 0)] * n + colors):
                 array.replace(old_color, new_color)
+
         return surface
 
     def handle_events(self, event):
@@ -104,7 +105,7 @@ class CockPit:
 
         self._move_particles()
 
-        self.player.update()
+        self.player.update(self.keypad_puzzle.active)
 
         self.keypad_puzzle.render()
 
@@ -123,12 +124,9 @@ class CockPit:
                 surface.set_at((particle.x, particle.y), color)
 
     def _move_particles(self):
-        for particle in self.particles.copy():
-            if particle.x > 80:
-                self.particles.remove(particle)
-                continue
-
-            particle.x += particle.vel * self.engine.dt
+        self.particles = [p for p in self.particles if p.x <= 80]
+        for p in self.particles:
+            p.x += p.vel * self.engine.dt
 
         self.particle_timer += self.engine.dt
         if self.particle_timer > 0.5:
@@ -149,23 +147,25 @@ class KeyPadPuzzle:
 
         self.active = False
 
-    def render(self):
-        if self.active:
-            self.engine.screen.blit(self.bg_dimmer, (0, 0))
+    def render(self) -> None:
+        if not self.active:
+            return
 
-            keys = pg.key.get_just_pressed()
-            if keys[pg.K_r]:
-                self.active = False
-                self.keypad.user_in = []
+        self.engine.screen.blit(self.bg_dimmer, (0, 0))
 
-            self.keypad.render()
+        keys = pg.key.get_just_pressed()
+        if keys[pg.K_r]:
+            self.active = False
+            self.keypad.user_in = []
+
+        self.keypad.render()
 
 
 class KeyPad:
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
         self.buttons = [
-            NumButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, (10, 10))
+            NumButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, pg.Vector2(10, 10))
             for x in range(1, 4)
             for y in range(0, 3)
         ]
@@ -174,7 +174,6 @@ class KeyPad:
         self.user_in = []
 
     def render(self):
-        print(self.user_in)
         for button in self.buttons:
             button.render()
             if not button.event:
