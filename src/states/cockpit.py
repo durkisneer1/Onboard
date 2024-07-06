@@ -27,19 +27,32 @@ class Particle:
 class CockPit:
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
-        cockpit_image = import_image("assets/cockpit.png")
-
         self.cockpit_image = pg.image.load("assets/cockpit.png").convert_alpha()
 
-        self.particle_colors = [(26, 12, 49), (53, 54, 91), (104, 107, 114)]
+        self.particle_colors = [(26, 12, 49), (53, 54, 88), (104, 107, 114)]
         color_sets = [
             [
+                # Grey
                 (26, 12, 49),
-                (53, 54, 91),
+                (53, 54, 88),
                 (104, 107, 114),
                 (136, 151, 185),
                 (195, 205, 220),
                 (255, 255, 255),
+            ],
+            [
+                # Red
+                (30, 9, 13),
+                (114, 13, 13),
+                (140, 49, 0),
+                (238, 0, 14)
+            ],
+            [
+                # Blue
+                (0, 51, 58),
+                (14, 50, 174),
+                (0, 147, 226),
+                (0, 237, 235)
             ]
         ]
         self.layers = [
@@ -62,7 +75,7 @@ class CockPit:
 
     @staticmethod
     def _shift_colors(
-        surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
+            surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
     ) -> pg.Surface:
         surface = surface.copy()
         array = pg.PixelArray(surface)
@@ -125,7 +138,7 @@ class CockPit:
     def _render_particles(self, surface, color):
         for particle in self.particles:
             if self.cockpit_image.get_at((particle.x, particle.y)) == (
-                0,
+                    0,
             ) * 4 and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255):
                 surface.set_at((particle.x, particle.y), color)
 
