@@ -69,7 +69,7 @@ class CockPit:
 
         self.player = Player(engine)
 
-        keypad_rect = pg.Rect(177, 77, 7, 9)
+        keypad_rect = pg.FRect(177, 77, 7, 9)
         self.keypad = Interactable(self.player, self.engine, keypad_rect)
         self.keypad_puzzle = KeyPadPuzzle(engine)
 

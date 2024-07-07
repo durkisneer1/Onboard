@@ -20,11 +20,11 @@ class Button:
     def render(self):
         # just some placeholders
         if self.holding:
-            self.surface.fill("white")
+            self.surface.fill((197, 205, 219))
         elif self.hovering:
-            self.surface.fill("darkgray")
+            self.surface.fill((139, 151, 182))
         else:
-            self.surface.fill((25, 25, 25))
+            self.surface.fill((24, 13, 47))
 
         self.handle_states()
         self.engine.screen.blit(self.surface, self.rect)
@@ -45,7 +45,7 @@ class NumButton(Button):
 
         self.num = num
         self.rect = pg.Rect(shifted_pos, size)
-        self.text = font.render(str(num), False, "white")
+        self.text = font.render(str(num), False, (197, 205, 219))
         self.text_rect = self.text.get_rect(center=self.rect.center)
 
     def render(self):
