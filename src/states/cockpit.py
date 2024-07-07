@@ -75,6 +75,9 @@ class CockPit:
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
 
+        pg.mixer_music.load("assets/cockpit.mp3")
+        pg.mixer_music.play()
+
     @staticmethod
     def _shift_colors(
         surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
@@ -171,6 +174,9 @@ class KeyPadPuzzle:
         self.code = [1, 2, 3, 4]
         self.user_in = []
 
+        self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
+        self.success_sfx = pg.mixer.Sound("assets/success.mp3")
+
     def render(self) -> None:
         if not self.active:
             return
@@ -184,8 +190,10 @@ class KeyPadPuzzle:
 
             self.user_in.append(button.num)
             if len(self.user_in) != len(self.code):
+                self.boop_sfx.play()
                 continue
 
             if self.user_in == self.code:
                 self.active = False
                 self.done = True
+                self.success_sfx.play()

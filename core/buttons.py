@@ -49,5 +49,12 @@ class NumButton(Button):
         self.text_rect = self.text.get_rect(center=self.rect.center)
 
     def render(self):
-        super().render()
+        if self.hovering:
+            self.surface.fill((139, 151, 182))
+        else:
+            self.surface.fill((24, 13, 47))
+
+        self.handle_states()
+        self.engine.screen.blit(self.surface, self.rect)
+
         self.engine.screen.blit(self.text, self.text_rect)
