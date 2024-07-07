@@ -64,6 +64,8 @@ class Player:
         self.vel.x = direction * self.speed
 
         self.rect.topleft += self.vel * self.engine.dt
+        self.rect.left = max(0, self.rect.left)
+        self.rect.right = min(self.rect.right, WIN_WIDTH)
 
     def update(self, puzzle_active: bool):
         if not puzzle_active:

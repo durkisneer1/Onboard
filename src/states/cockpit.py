@@ -45,15 +45,15 @@ class CockPit:
                 (30, 9, 13),
                 (114, 13, 13),
                 (140, 49, 0),
-                (238, 0, 14)
+                (238, 0, 14),
             ],
             [
                 # Blue
                 (0, 51, 58),
                 (14, 50, 174),
                 (0, 147, 226),
-                (0, 237, 235)
-            ]
+                (0, 237, 235),
+            ],
         ]
         self.layers = [
             self._shift_colors(
@@ -62,8 +62,10 @@ class CockPit:
             for i in range(3)
         ]
 
-        self.particles: list[Particle] = []
-        self.particle_timer = 0.0
+        self.particles = [
+            Particle(x=0, y=random.randint(13, 53), vel=random.randint(100, 200))
+            for _ in range(6)
+        ]
 
         self.player = Player(engine)
 
@@ -75,7 +77,7 @@ class CockPit:
 
     @staticmethod
     def _shift_colors(
-            surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
+        surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
     ) -> pg.Surface:
         surface = surface.copy()
         array = pg.PixelArray(surface)
@@ -106,8 +108,8 @@ class CockPit:
                 surf,
                 "black",
                 (
-                    int(self.player.rect.centerx) - 32,
-                    int(self.player.rect.centery) - 27,
+                    self.player.rect.centerx - 32,
+                    self.player.rect.centery - 27,
                 ),
                 radius,
             )
@@ -119,12 +121,13 @@ class CockPit:
 
         self._move_particles()
 
-        self.keypad.render()
+        if not self.keypad_puzzle.done:
+            self.keypad.render()
 
         self.player.update(self.keypad_puzzle.active)
 
-        if self.keypad.event:
-            self.keypad_puzzle.keypad.user_in = []
+        if self.keypad.event and not self.keypad_puzzle.done:
+            self.keypad_puzzle.user_in = []
             self.keypad_puzzle.active = not self.keypad_puzzle.active
         self.keypad_puzzle.render()
 
@@ -138,47 +141,26 @@ class CockPit:
     def _render_particles(self, surface, color):
         for particle in self.particles:
             if self.cockpit_image.get_at((particle.x, particle.y)) == (
-                    0,
+                0,
             ) * 4 and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255):
                 surface.set_at((particle.x, particle.y), color)
 
     def _move_particles(self):
-        self.particles = [p for p in self.particles if p.x <= 80]
         for p in self.particles:
             p.x += p.vel * self.engine.dt
-
-        self.particle_timer += self.engine.dt
-        if self.particle_timer > 0.5:
-            self.particle_timer = 0
-
-            self.particles.append(
-                Particle(x=0, y=random.randint(13, 53), vel=random.randint(100, 200))
-            )
+            p.x %= 80
 
 
 class KeyPadPuzzle:
     def __init__(self, engine: "Engine"):
         self.engine = engine
-        self.keypad = KeyPad(engine)
 
         self.bg_dimmer = pg.Surface(WIN_SIZE)
         self.bg_dimmer.set_alpha(180)
 
         self.active = False
+        self.done = False
 
-    def render(self) -> None:
-        if not self.active:
-            return
-
-        self.engine.screen.blit(self.bg_dimmer, (0, 0))
-
-        keys = pg.key.get_just_pressed()
-
-        self.keypad.render()
-
-
-class KeyPad:
-    def __init__(self, engine: "Engine") -> None:
         self.engine = engine
         self.buttons = [
             NumButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, pg.Vector2(10, 10))
@@ -189,7 +171,12 @@ class KeyPad:
         self.code = [1, 2, 3, 4]
         self.user_in = []
 
-    def render(self):
+    def render(self) -> None:
+        if not self.active:
+            return
+
+        self.engine.screen.blit(self.bg_dimmer, (0, 0))
+
         for button in self.buttons:
             button.render()
             if not button.event:
@@ -199,5 +186,6 @@ class KeyPad:
             if len(self.user_in) != len(self.code):
                 continue
 
-        if self.user_in == self.code:
-            print("correct!")
+            if self.user_in == self.code:
+                self.active = False
+                self.done = True

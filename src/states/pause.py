@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import WIN_SIZE
+from core.settings import *
 from src.states.base import BaseState
 
 if TYPE_CHECKING:

@@ -24,4 +24,4 @@ class Interactable:
 
     def handle_states(self):
         self.active = self.player.rect.colliderect(self.rect)
-        self.event = pg.key.get_just_pressed()[pg.K_e] and self.active
+        self.event = pg.key.get_just_pressed()[pg.K_SPACE] and self.active
