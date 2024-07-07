@@ -15,7 +15,7 @@ class BaseState:
         self.surface_tint = pg.Surface(WIN_SIZE)
         self.surface_tint.fill((0, 0, 0))
         self.surface_tint.set_alpha(185)
-        self.last_frame = None
+        self.last_frame = pg.Surface((1, 1))
 
     def handle_events(self, event):
         ...

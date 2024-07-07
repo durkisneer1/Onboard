@@ -29,7 +29,7 @@ class Player:
         self.speed = 40
         self.vel = pg.Vector2()
         self.rect = self.frame.get_frect(
-            midbottom=(self.engine.screen.width / 2, GROUND_HEIGHT)
+            midbottom=(self.engine.screen.width / 2, ROOM_BOTTOMRIGHT[1])
         )
 
     def animate(self, puzzle_active: bool):
@@ -64,8 +64,8 @@ class Player:
         self.vel.x = direction * self.speed
 
         self.rect.topleft += self.vel * self.engine.dt
-        self.rect.left = max(0, self.rect.left)
-        self.rect.right = min(self.rect.right, WIN_WIDTH)
+        self.rect.left = max(ROOM_TOPLEFT[0], self.rect.left)
+        self.rect.right = min(self.rect.right, ROOM_BOTTOMRIGHT[0])
 
     def update(self, puzzle_active: bool):
         if not puzzle_active:

@@ -3,6 +3,7 @@ import pygame as pg
 from core.enums import AppState
 from src.player import Player
 from src.states.cockpit import CockPit
+from src.states.storage import StorageRoom
 from src.states.menu import Menu
 from src.states.pause import Pause
 
@@ -18,9 +19,10 @@ class Engine:
         self.dt = 0
 
         self.state_dict = {
-            AppState.COCKPIT: CockPit(self),
             AppState.PAUSE: Pause(self),
             AppState.MENU: Menu(self),
+            AppState.COCKPIT: CockPit(self),
+            AppState.STORAGE: StorageRoom(self),
         }
         self.current_state = AppState.COCKPIT
         self.last_state = self.current_state

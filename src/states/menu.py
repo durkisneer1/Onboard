@@ -28,6 +28,7 @@ class Menu(BaseState):
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
+
         # switch
         if self.transition.event:
             self.engine.current_state = self.engine.last_state

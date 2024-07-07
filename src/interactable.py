@@ -8,7 +8,7 @@ if TYPE_CHECKING:
 
 
 class Interactable:
-    def __init__(self, player: "Player", engine: "Engine", rect: pg.Rect):
+    def __init__(self, player: "Player", engine: "Engine", rect: pg.FRect):
         self.player = player
         self.engine = engine
         self.rect = rect
@@ -45,6 +45,7 @@ class InteractablePopUp:
 
         self.current_pos = pg.Vector2(0, self.rect.height)
         self.force = 1.5
+
         # to avoid visual bugs
         self.last_frame_pos = self.current_pos
         self.surface = pg.Surface(self.rect.size, pg.SRCALPHA)
@@ -53,10 +54,8 @@ class InteractablePopUp:
         self.animation_done = False
 
     def handle_fading(self):
-        if self.active:
-            self.current_pos.y -= 30 * self.force * self.engine.dt
-        else:
-            self.current_pos.y += 30 * self.force * self.engine.dt
+        dy = 30 * self.force * self.engine.dt
+        self.current_pos.y += -dy if self.active else dy
 
         self.current_pos.y = max(0, self.current_pos.y)
         self.current_pos.y = min(self.rect.height + 1, self.current_pos.y)
@@ -71,7 +70,7 @@ class InteractablePopUp:
         self.last_frame_pos = self.current_pos.copy()
 
         # we can just turn self.current_pos.y into an alpha value
-        self.surface.set_alpha(255 - self.current_pos.y * 19)
+        self.surface.set_alpha(int(255 - self.current_pos.y * 19))
 
         self.surface.blit(self.popup_image, self.current_pos)
 
