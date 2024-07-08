@@ -30,7 +30,7 @@ class Engine:
 
     def run(self):
         while self.running:
-            self.dt = self.clock.tick_busy_loop() / 1000
+            self.dt = self.clock.tick_busy_loop(30) / 1000
 
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:

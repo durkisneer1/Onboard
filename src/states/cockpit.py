@@ -50,7 +50,7 @@ class CockPit:
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
 
         pg.mixer_music.load("assets/cockpit.mp3")
-        pg.mixer_music.play()
+        # pg.mixer_music.play()
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:

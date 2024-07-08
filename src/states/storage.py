@@ -65,12 +65,10 @@ class StorageRoom:
         if not self.simon_puzzle.done:
             self.simon.render()
 
-        self.player.update(
-            self.simon_puzzle.active
-        )  # FIXME: Change when puzzle implemented
+        self.player.update(self.simon_puzzle.active)
 
         if self.simon.event and not self.simon_puzzle.done:
-            self.simon_puzzle.default_values()
+            self.simon_puzzle.reset()
             self.simon_puzzle.active = not self.simon_puzzle.active
         self.simon_puzzle.render()
 

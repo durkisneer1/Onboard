@@ -21,32 +21,30 @@ class SimonSaysPuzzle:
         self.done = False
 
         self.buttons = [
-            SimonButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, pg.Vector2(10, 10))
-            for x in range(1, 4)
-            for y in range(0, 3)
+            SimonButton(engine, 4 * y + x, pg.Vector2(x, y) * 12)
+            for x in range(1, 5)
+            for y in range(0, 4)
         ]
         self.buttons.sort(key=lambda btn: btn.num)
 
-        self.code = random.sample(list(range(1, 10)), 6)
+        self.code = random.sample(range(1, 17), 6)
         # define game vars
-        self.default_values()
+        self.reset()
 
         self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
         self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
         self.failure_sfx.set_volume(0.35)
 
-    def default_values(self) -> None:
+    def reset(self) -> None:
+        self.code = random.sample(range(1, 17), 6)
         self.user_in = []
         self.current_length = 2
-        # index
-        self.current_shown_num = 0
+        self.current_shown_num = 0  # index
 
         self.timer = 1
-
         self.player_turn = False
-        # cooldown between turns
-        self.wait_for_turns = False
+        self.wait_for_turns = False  # cooldown between turns
 
     def render(self) -> None:
         if not self.active:
@@ -54,54 +52,65 @@ class SimonSaysPuzzle:
 
         self.engine.screen.blit(self.bg_dimmer, (0, 0))
 
-        if not self.player_turn:
-            for button in self.buttons:
-                button.render(False)
-                button.hovering = False
+        self._player_turn() if self.player_turn else self._simon_turn()
 
-            # highlight button for some time
-            self.timer -= self.engine.dt
-            if self.timer <= 0:
-                self.timer = 1
-                if self.wait_for_turns:
-                    self.wait_for_turns = False
-                    return
-                self.current_shown_num += 1
-            elif self.wait_for_turns:
+    def _simon_turn(self):
+        for button in self.buttons:
+            button.render(False)
+            button.hovering = False
+
+        # highlight button for some time
+        self.timer -= self.engine.dt
+        if self.timer <= 0:
+            self.timer = 1
+            if self.wait_for_turns:
+                self.wait_for_turns = False
+                return
+            self.current_shown_num += 1
+        elif self.wait_for_turns:
+            return
+
+        # if we're done highlighting stuff
+        if self.current_shown_num > self.current_length - 1:
+            self.player_turn = True
+            self.current_shown_num = 0
+
+        # highlight current button
+        self.buttons[self.code[self.current_shown_num] - 1].hovering = True
+
+    def _player_turn(self):
+        for button in self.buttons:
+            button.render(True)
+
+            if not button.event:
+                continue
+
+            self.user_in.append(button.num)
+            if self.user_in == self.code:
+                self._on_success()
                 return
 
-            # if we're done highlighting stuff
-            if self.current_shown_num > self.current_length - 1:
-                self.player_turn = True
-                self.current_shown_num = 0
+            self.boop_sfx.play()
 
-            # highlight current button
-            self.buttons[self.code[self.current_shown_num] - 1].hovering = True
+            if len(self.user_in) != len(self.code[: self.current_length]):
+                continue
 
-        else:
-            for button in self.buttons:
-                button.render(True)
+            self._next_turn() if self.user_in == self.code[
+                : self.current_length
+            ] else self._on_failure()
 
-                if not button.event:
-                    continue
+    def _on_success(self):
+        self.active = False
+        self.done = True
+        self.success_sfx.play()
 
-                self.user_in.append(button.num)
-                if self.user_in == self.code:
-                    self.active = False
-                    self.done = True
-                    self.success_sfx.play()
-                    return
+    def _next_turn(self):
+        self.current_length += 1
+        self.user_in = []
+        self.wait_for_turns = True
+        self.player_turn = False
 
-                self.boop_sfx.play()
-
-                if len(self.user_in) == len(self.code[: self.current_length]):
-                    if self.user_in == self.code[: self.current_length]:
-                        self.current_length += 1
-                        self.user_in = []
-                        self.wait_for_turns = True
-                        self.player_turn = False
-                    else:
-                        # wrong combination entered
-                        self.active = False
-                        self.default_values()
-                        self.failure_sfx.play()
+    def _on_failure(self):
+        self.active = False
+        self.reset()
+        self.failure_sfx.play()

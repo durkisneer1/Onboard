@@ -2,14 +2,17 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import WIN_HEIGHT, WIN_WIDTH
+from core.surfaces import import_image
+
 if TYPE_CHECKING:
     from main import Engine
 
 
 class Button:
-    def __init__(self, engine: "Engine", pos: pg.Vector2, size: pg.Vector2):
+    def __init__(self, engine: "Engine", pos: pg.Vector2, surf: pg.Surface):
         self.engine = engine
-        self.surface = pg.Surface(size)
+        self.surface = surf
         self.pos = pos
 
         self.rect = self.surface.get_rect(topleft=pos)
@@ -40,19 +43,17 @@ class NumButton(Button):
         self, engine: "Engine", num: int, pos: pg.Vector2, size: pg.Vector2
     ) -> None:
         shifted_pos = pos + (95, 55)
-        super().__init__(engine, shifted_pos, size)
+        surf = pg.Surface(size)
+        super().__init__(engine, shifted_pos, surf)
         font = pg.font.SysFont("Arial", 8)
 
         self.num = num
-        self.rect = pg.Rect(shifted_pos, size)
+        self.rect = surf.get_rect(topleft=shifted_pos)
         self.text = font.render(str(num), False, (197, 205, 219))
         self.text_rect = self.text.get_rect(center=self.rect.center)
 
     def render(self):
-        if self.hovering:
-            self.surface.fill((139, 151, 182))
-        else:
-            self.surface.fill((24, 13, 47))
+        self.surface.fill((139, 151, 182) if self.hovering else (24, 13, 47))
 
         self.handle_states()
         self.engine.screen.blit(self.surface, self.rect)
@@ -61,20 +62,20 @@ class NumButton(Button):
 
 
 class SimonButton(Button):
-    def __init__(
-        self, engine: "Engine", num: int, pos: pg.Vector2, size: pg.Vector2
-    ) -> None:
-        shifted_pos = pos + (95, 55)
-        super().__init__(engine, shifted_pos, size)
+    def __init__(self, engine: "Engine", num: int, pos: pg.Vector2) -> None:
+        shifted_pos = pos + (WIN_WIDTH / 2 - 36, WIN_HEIGHT / 2 - 24)
+        self.idle = import_image("assets/simon_button_idle.png", is_alpha=False)
+        self.glow = import_image("assets/simon_button_glow.png", is_alpha=False)
+        self.pressed = import_image("assets/simon_button_pressed.png", is_alpha=False)
+
+        super().__init__(engine, shifted_pos, self.idle)
 
         self.num = num
-        self.rect = pg.Rect(shifted_pos, size)
 
     def render(self, handle_states: bool = True):
-        if self.hovering:
-            self.surface.fill((71, 246, 65))
-        else:
-            self.surface.fill((8, 178, 59))
+        self.surface = self.glow if self.hovering else self.idle
+        if self.holding:
+            self.surface = self.pressed
 
         if handle_states:
             self.handle_states()
