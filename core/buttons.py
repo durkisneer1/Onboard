@@ -61,6 +61,30 @@ class NumButton(Button):
         self.engine.screen.blit(self.text, self.text_rect)
 
 
+class TextButton(Button):
+    def __init__(
+        self, engine: "Engine", text: str, pos: pg.Vector2, size: pg.Vector2
+    ) -> None:
+        shifted_pos = pos + (95, 55)
+        surf = pg.Surface(size, pg.SRCALPHA)
+        super().__init__(engine, shifted_pos, surf)
+        font = pg.font.SysFont("Arial", 8)
+
+        self.rect = surf.get_rect(topleft=shifted_pos)
+        self.text_str = text
+        self.text = font.render(text, False, (197, 205, 219))
+        self.text_rect = self.text.get_rect(center=self.rect.center)
+
+    def render(self):
+        color = (139, 151, 182) if self.hovering else (24, 13, 47)
+        pg.draw.rect(self.surface, color, ((0, 0), self.surface.size), border_radius=4)
+
+        self.handle_states()
+        self.engine.screen.blit(self.surface, self.rect)
+
+        self.engine.screen.blit(self.text, self.text_rect)
+
+
 class SimonButton(Button):
     def __init__(self, engine: "Engine", num: int, pos: pg.Vector2) -> None:
         shifted_pos = pos + (WIN_WIDTH / 2 - 36, WIN_HEIGHT / 2 - 24)
