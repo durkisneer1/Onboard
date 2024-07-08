@@ -4,9 +4,11 @@ import pygame as pg
 
 from core.enums import AppState
 from core.settings import *
-from core.surfaces import import_image
+from core.surfaces import import_image, shift_colors
 from src.player import Player
+from src.interactable import Interactable
 from core.transitions import FadeTransition
+from src.puzzles.simon import SimonSaysPuzzle
 
 if TYPE_CHECKING:
     from main import Engine
@@ -17,53 +19,18 @@ class StorageRoom:
         self.engine = engine
         self.room_image = import_image("assets/storage.png", is_alpha=False)
 
-        color_sets = [
-            [
-                # Grey
-                (26, 12, 49),
-                (53, 54, 88),
-                (104, 107, 114),
-                (136, 151, 185),
-                (195, 205, 220),
-                (255, 255, 255),
-            ],
-            [
-                # Red
-                (30, 9, 13),
-                (114, 13, 13),
-                (140, 49, 0),
-                (238, 0, 14),
-            ],
-            [
-                # Blue
-                (0, 51, 58),
-                (14, 50, 174),
-                (0, 147, 226),
-                (0, 237, 235),
-            ],
-        ]
         self.layers = [
-            self._shift_colors(
-                surface=self.room_image, color_sets=color_sets, n=2 - i
-            )
+            shift_colors(surface=self.room_image, color_sets=COLOR_SETS, n=2 - i)
             for i in range(3)
         ]
 
         self.player = Player(engine)
 
+        simon_rect = pg.FRect(100, 100, 10, 10)
+        self.simon = Interactable(self.player, self.engine, simon_rect)
+        self.simon_puzzle = SimonSaysPuzzle(self.engine)
+
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
-
-    @staticmethod
-    def _shift_colors(
-        surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
-    ) -> pg.Surface:
-        surface = surface.copy()
-        array = pg.PixelArray(surface)
-        for colors in color_sets:
-            for old_color, new_color in zip(colors, [(0, 0, 0)] * n + colors):
-                array.replace(old_color, new_color)
-
-        return surface
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:

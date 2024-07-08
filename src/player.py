@@ -32,6 +32,20 @@ class Player:
             midbottom=(self.engine.screen.width / 2, ROOM_BOTTOMRIGHT[1])
         )
 
+    def move(self):
+        keys = pg.key.get_pressed()
+
+        direction = 0
+        if keys[pg.K_a] or keys[pg.K_LEFT]:
+            direction -= 1
+        if keys[pg.K_d] or keys[pg.K_RIGHT]:
+            direction += 1
+        self.vel.x = direction * self.speed
+
+        self.rect.topleft += self.vel * self.engine.dt
+        self.rect.left = max(ROOM_TOPLEFT[0], self.rect.left)
+        self.rect.right = min(self.rect.right, ROOM_BOTTOMRIGHT[0])
+
     def animate(self, puzzle_active: bool):
         if self.vel.x and not puzzle_active:
             self.anim_state = AnimState.WALK
@@ -52,20 +66,6 @@ class Player:
         dark.fill("white", special_flags=pg.BLEND_RGB_SUB)
         self.engine.screen.blit(dark, self.rect.move(3, 0))
         self.engine.screen.blit(self.frame, self.rect)
-
-    def move(self):
-        keys = pg.key.get_pressed()
-
-        direction = 0
-        if keys[pg.K_a] or keys[pg.K_LEFT]:
-            direction -= 1
-        if keys[pg.K_d] or keys[pg.K_RIGHT]:
-            direction += 1
-        self.vel.x = direction * self.speed
-
-        self.rect.topleft += self.vel * self.engine.dt
-        self.rect.left = max(ROOM_TOPLEFT[0], self.rect.left)
-        self.rect.right = min(self.rect.right, ROOM_BOTTOMRIGHT[0])
 
     def update(self, puzzle_active: bool):
         if not puzzle_active:

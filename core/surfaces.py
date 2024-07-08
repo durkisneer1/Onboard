@@ -69,9 +69,10 @@ def import_image(
 
 def import_anim(path: str, width: int, height: int) -> list[pg.Surface]:
     anim_surf = import_image(path)
-    anim_list = []
-    for x in range(0, anim_surf.width, width):
-        anim_list.append(anim_surf.subsurface((x, 0, width, height)))
+    anim_list = [
+        anim_surf.subsurface((x, 0, width, height))
+        for x in range(0, anim_surf.width, width)
+    ]
     return anim_list
 
 
@@ -92,20 +93,35 @@ def load_tmx_layers(
         return
 
     for layer in data.visible_layers:
-        if hasattr(layer, "data"):
-            if layer.name == layer_name:
-                for x, y, surface in layer.tiles():
-                    if surface is None:
-                        print(f"ERROR: Surface not found at {x}, {y}")
-                        continue
+        if not hasattr(layer, "data"):
+            continue
+        if layer.name != layer_name:
+            continue
 
-                    pos = pg.Vector2(x * TILE_WIDTH, y * TILE_HEIGHT) + MAP_OFFSET
-                    tile = Tile(engine, pos, surface, layer.name)
-                    if isinstance(targets, list):
-                        targets.append(tile)
-                    else:
-                        for target in targets:
-                            target.append(tile)
+        for x, y, surface in layer.tiles():
+            if surface is None:
+                print(f"ERROR: Surface not found at {x}, {y}")
+                continue
+
+            pos = pg.Vector2(x * TILE_WIDTH, y * TILE_HEIGHT) + MAP_OFFSET
+            tile = Tile(engine, pos, surface, layer.name)
+            if isinstance(targets, list):
+                targets.append(tile)
+            else:
+                for target in targets:
+                    target.append(tile)
+
+
+def shift_colors(
+    surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
+) -> pg.Surface:
+    surface = surface.copy()
+    array = pg.PixelArray(surface)
+    for colors in color_sets:
+        for old_color, new_color in zip(colors, [(0, 0, 0)] * n + colors):
+            array.replace(old_color, new_color)
+
+    return surface
 
 
 def new_image_load(*args, **kwargs):

@@ -7,7 +7,7 @@ import pygame.surfarray
 
 from core.enums import AppState
 from core.settings import *
-from core.surfaces import import_image
+from core.surfaces import import_image, shift_colors
 from core.transitions import FadeTransition
 from src.interactable import Interactable
 from src.player import Player
@@ -25,40 +25,14 @@ class Particle:
 
 
 class CockPit:
+    particle_colors = [(26, 12, 49), (53, 54, 88), (104, 107, 114)]
+
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
         self.cockpit_image = import_image("assets/cockpit.png")
 
-        self.particle_colors = [(26, 12, 49), (53, 54, 88), (104, 107, 114)]
-        color_sets = [
-            [
-                # Grey
-                (26, 12, 49),
-                (53, 54, 88),
-                (104, 107, 114),
-                (136, 151, 185),
-                (195, 205, 220),
-                (255, 255, 255),
-            ],
-            [
-                # Red
-                (30, 9, 13),
-                (114, 13, 13),
-                (140, 49, 0),
-                (238, 0, 14),
-            ],
-            [
-                # Blue
-                (0, 51, 58),
-                (14, 50, 174),
-                (0, 147, 226),
-                (0, 237, 235),
-            ],
-        ]
         self.layers = [
-            self._shift_colors(
-                surface=self.cockpit_image, color_sets=color_sets, n=2 - i
-            )
+            shift_colors(surface=self.cockpit_image, color_sets=COLOR_SETS, n=2 - i)
             for i in range(3)
         ]
 
@@ -77,18 +51,6 @@ class CockPit:
 
         pg.mixer_music.load("assets/cockpit.mp3")
         pg.mixer_music.play()
-
-    @staticmethod
-    def _shift_colors(
-        surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
-    ) -> pg.Surface:
-        surface = surface.copy()
-        array = pg.PixelArray(surface)
-        for colors in color_sets:
-            for old_color, new_color in zip(colors, [(0, 0, 0)] * n + colors):
-                array.replace(old_color, new_color)
-
-        return surface
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:

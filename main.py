@@ -1,6 +1,7 @@
 import pygame as pg
 
 from core.enums import AppState
+from core.settings import *
 from src.player import Player
 from src.states.cockpit import CockPit
 from src.states.storage import StorageRoom
@@ -11,7 +12,7 @@ from src.states.pause import Pause
 class Engine:
     def __init__(self) -> None:
         pg.init()
-        self.screen = pg.display.set_mode((240, 135), pg.SCALED | pg.FULLSCREEN)
+        self.screen = pg.display.set_mode(WIN_SIZE, pg.SCALED | pg.FULLSCREEN)
         pg.display.set_caption("The Astronaut")
 
         self.clock = pg.Clock()
@@ -24,7 +25,7 @@ class Engine:
             AppState.COCKPIT: CockPit(self),
             AppState.STORAGE: StorageRoom(self),
         }
-        self.current_state = AppState.COCKPIT
+        self.current_state = AppState.STORAGE
         self.last_state = self.current_state
 
     def run(self):
