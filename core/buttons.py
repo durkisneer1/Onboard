@@ -58,3 +58,24 @@ class NumButton(Button):
         self.engine.screen.blit(self.surface, self.rect)
 
         self.engine.screen.blit(self.text, self.text_rect)
+
+
+class SimonButton(Button):
+    def __init__(
+        self, engine: "Engine", num: int, pos: pg.Vector2, size: pg.Vector2
+    ) -> None:
+        shifted_pos = pos + (95, 55)
+        super().__init__(engine, shifted_pos, size)
+
+        self.num = num
+        self.rect = pg.Rect(shifted_pos, size)
+
+    def render(self, handle_states: bool = True):
+        if self.hovering:
+            self.surface.fill((71, 246, 65))
+        else:
+            self.surface.fill((8, 178, 59))
+
+        if handle_states:
+            self.handle_states()
+        self.engine.screen.blit(self.surface, self.rect)

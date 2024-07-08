@@ -1,6 +1,10 @@
+import random
 from typing import TYPE_CHECKING
 
 import pygame as pg
+
+from core.buttons import SimonButton
+from core.settings import *
 
 if TYPE_CHECKING:
     from main import Engine
@@ -9,3 +13,95 @@ if TYPE_CHECKING:
 class SimonSaysPuzzle:
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
+
+        self.bg_dimmer = pg.Surface(WIN_SIZE)
+        self.bg_dimmer.set_alpha(180)
+
+        self.active = False
+        self.done = False
+
+        self.buttons = [
+            SimonButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, pg.Vector2(10, 10))
+            for x in range(1, 4)
+            for y in range(0, 3)
+        ]
+        self.buttons.sort(key=lambda btn: btn.num)
+
+        self.code = random.sample(list(range(1, 10)), 6)
+        # define game vars
+        self.default_values()
+
+        self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
+        self.success_sfx = pg.mixer.Sound("assets/success.mp3")
+        self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
+        self.failure_sfx.set_volume(0.35)
+
+    def default_values(self) -> None:
+        self.user_in = []
+        self.current_length = 2
+        # index
+        self.current_shown_num = 0
+
+        self.timer = 1
+
+        self.player_turn = False
+        # cooldown between turns
+        self.wait_for_turns = False
+
+    def render(self) -> None:
+        if not self.active:
+            return
+
+        self.engine.screen.blit(self.bg_dimmer, (0, 0))
+
+        if not self.player_turn:
+            for button in self.buttons:
+                button.render(False)
+                button.hovering = False
+
+            # highlight button for some time
+            self.timer -= self.engine.dt
+            if self.timer <= 0:
+                self.timer = 1
+                if self.wait_for_turns:
+                    self.wait_for_turns = False
+                    return
+                self.current_shown_num += 1
+            elif self.wait_for_turns:
+                return
+
+            # if we're done highlighting stuff
+            if self.current_shown_num > self.current_length - 1:
+                self.player_turn = True
+                self.current_shown_num = 0
+
+            # highlight current button
+            self.buttons[self.code[self.current_shown_num] - 1].hovering = True
+
+        else:
+            for button in self.buttons:
+                button.render(True)
+
+                if not button.event:
+                    continue
+
+                self.user_in.append(button.num)
+                if self.user_in == self.code:
+                    self.active = False
+                    self.done = True
+                    self.success_sfx.play()
+                    return
+
+                self.boop_sfx.play()
+
+                if len(self.user_in) == len(self.code[: self.current_length]):
+                    if self.user_in == self.code[: self.current_length]:
+                        self.current_length += 1
+                        self.user_in = []
+                        self.wait_for_turns = True
+                        self.player_turn = False
+                    else:
+                        # wrong combination entered
+                        self.active = False
+                        self.default_values()
+                        self.failure_sfx.play()

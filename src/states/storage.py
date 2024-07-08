@@ -5,9 +5,9 @@ import pygame as pg
 from core.enums import AppState
 from core.settings import *
 from core.surfaces import import_image, shift_colors
-from src.player import Player
-from src.interactable import Interactable
 from core.transitions import FadeTransition
+from src.interactable import Interactable
+from src.player import Player
 from src.puzzles.simon import SimonSaysPuzzle
 
 if TYPE_CHECKING:
@@ -26,7 +26,7 @@ class StorageRoom:
 
         self.player = Player(engine)
 
-        simon_rect = pg.FRect(100, 100, 10, 10)
+        simon_rect = pg.FRect(108, 81, 15, 15)
         self.simon = Interactable(self.player, self.engine, simon_rect)
         self.simon_puzzle = SimonSaysPuzzle(self.engine)
 
@@ -62,7 +62,17 @@ class StorageRoom:
             self.engine.screen.blit(surf, (32, 27))
             radius -= 20
 
-        self.player.update(False)  # FIXME: Change when puzzle implemented
+        if not self.simon_puzzle.done:
+            self.simon.render()
+
+        self.player.update(
+            self.simon_puzzle.active
+        )  # FIXME: Change when puzzle implemented
+
+        if self.simon.event and not self.simon_puzzle.done:
+            self.simon_puzzle.default_values()
+            self.simon_puzzle.active = not self.simon_puzzle.active
+        self.simon_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
