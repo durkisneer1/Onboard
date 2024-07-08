@@ -31,6 +31,11 @@ class SimonSaysPuzzle:
         # define game vars
         self.reset()
 
+        self.tablet = pg.Surface((50, 50), pg.SRCALPHA)
+        tablet_rect = pg.Rect(0, 0, 50, 50)
+        pg.draw.rect(self.tablet, (104, 107, 114), tablet_rect, border_radius=2)
+        self.tablet_pos = self.buttons[0].rect.topleft - pg.Vector2(1, 1)
+
         self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
         self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
@@ -51,10 +56,11 @@ class SimonSaysPuzzle:
             return
 
         self.engine.screen.blit(self.bg_dimmer, (0, 0))
+        self.engine.screen.blit(self.tablet, self.tablet_pos)
 
         self._player_turn() if self.player_turn else self._simon_turn()
 
-    def _simon_turn(self):
+    def _simon_turn(self) -> None:
         for button in self.buttons:
             button.render(False)
             button.hovering = False
@@ -74,11 +80,12 @@ class SimonSaysPuzzle:
         if self.current_shown_num > self.current_length - 1:
             self.player_turn = True
             self.current_shown_num = 0
+            return
 
         # highlight current button
         self.buttons[self.code[self.current_shown_num] - 1].hovering = True
 
-    def _player_turn(self):
+    def _player_turn(self) -> None:
         for button in self.buttons:
             button.render(True)
 
@@ -99,18 +106,18 @@ class SimonSaysPuzzle:
                 : self.current_length
             ] else self._on_failure()
 
-    def _on_success(self):
+    def _on_success(self) -> None:
         self.active = False
         self.done = True
         self.success_sfx.play()
 
-    def _next_turn(self):
+    def _next_turn(self) -> None:
         self.current_length += 1
         self.user_in = []
         self.wait_for_turns = True
         self.player_turn = False
 
-    def _on_failure(self):
+    def _on_failure(self) -> None:
         self.active = False
         self.reset()
         self.failure_sfx.play()
