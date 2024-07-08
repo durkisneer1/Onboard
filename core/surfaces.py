@@ -5,11 +5,8 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.settings import *
-from core.tile import Tile
 
 if TYPE_CHECKING:
-    from pytmx import TiledMap
-
     from main import Engine
 
 
@@ -74,43 +71,6 @@ def import_anim(path: str, width: int, height: int) -> list[pg.Surface]:
         for x in range(0, anim_surf.width, width)
     ]
     return anim_list
-
-
-def load_tmx_layers(
-    engine: "Engine",
-    data: "TiledMap",
-    layer_name: str,
-    targets: tuple[list, ...] | list,
-) -> None:
-    if isinstance(targets, tuple) and not targets:
-        return
-
-    layer_names = [
-        layer.name for layer in data.visible_layers if hasattr(layer, "data")
-    ]
-    if layer_name not in layer_names:
-        print(f"ERROR: Layer '{layer_name}' not found in '{data.filename}'")
-        return
-
-    for layer in data.visible_layers:
-        if not hasattr(layer, "data"):
-            continue
-        if layer.name != layer_name:
-            continue
-
-        for x, y, surface in layer.tiles():
-            if surface is None:
-                print(f"ERROR: Surface not found at {x}, {y}")
-                continue
-
-            pos = pg.Vector2(x * TILE_WIDTH, y * TILE_HEIGHT) + MAP_OFFSET
-            tile = Tile(engine, pos, surface, layer.name)
-            if isinstance(targets, list):
-                targets.append(tile)
-            else:
-                for target in targets:
-                    target.append(tile)
-
 
 def shift_colors(
     surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
