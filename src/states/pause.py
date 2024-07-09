@@ -16,14 +16,16 @@ class Pause(BaseState):
         super().__init__(engine)
 
         self.buttons = [
-            TextButton(engine, "Continue", pg.Vector2(100, 10), (40, 16)),
-            TextButton(engine, "Settings", pg.Vector2(100, 30), (40, 16)),
-            TextButton(engine, "Menu", pg.Vector2(100, 50), (40, 16)),
+            TextButton(engine, "Continue", pg.Vector2(90, 30), (50, 16)),
+            TextButton(engine, "Menu", pg.Vector2(90, 50), (50, 16)),
         ]
 
     def handle_events(self, event) -> None:
         if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
             self.engine.current_state = self.engine.last_state
+            # fixes visual bug
+            for button in self.buttons:
+                button.hovering = False
 
     def render(self) -> None:
         self.engine.screen.blit(self.last_frame, (0, 0))
@@ -36,11 +38,15 @@ class Pause(BaseState):
             button.render()
 
             if button.event:
-                self.engine.last_state = AppState.PAUSE
+                button.hovering = False
                 match button.text_str:
                     case "Continue":
                         self.engine.current_state = self.engine.last_state
                     case "Menu":
                         self.engine.current_state = AppState.MENU
-                    case "Settings":
-                        self.engine.current_state = AppState.SETTINGS
+                        self.engine.state_dict[
+                            self.engine.last_state
+                        ].transition.fade_in = True
+                        self.engine.state_dict[
+                            self.engine.last_state
+                        ].transition.alpha = 255

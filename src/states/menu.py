@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.buttons import TextButton
-
 from core.enums import AppState
 from core.settings import *
 from core.transitions import FadeTransition
@@ -21,10 +20,10 @@ class Menu(BaseState):
         self.bg.fill("black")
 
         self.game_button = TextButton(
-            engine, "Start", pg.Vector2(100, 52), pg.Vector2(40, 16)
+            engine, "Start", pg.Vector2(90, 52), pg.Vector2(50, 16)
         )
         self.settings_button = TextButton(
-            engine, "Settings", pg.Vector2(100, 32), pg.Vector2(40, 16)
+            engine, "Settings", pg.Vector2(90, 32), pg.Vector2(50, 16)
         )
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
@@ -33,9 +32,7 @@ class Menu(BaseState):
         )  # Change this to the state you want to transition to initially (for debugging)
 
     def handle_events(self, event) -> None:
-        if event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
-            print("?")
-            self.transition.fade_in = False
+        pass
 
     def render(self) -> None:
         self.engine.screen.blit(self.bg, (0, 0))
@@ -47,14 +44,12 @@ class Menu(BaseState):
 
         # switch
         if self.transition.event:
-            # self.engine.current_state = self.engine.last_state
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
 
     def handle_buttons(self) -> None:
         self.game_button.render()
         self.settings_button.render()
-        self.engine.last_state = self.engine.current_state
         if self.game_button.event:
             self.transition.fade_in = False
             self.next_state = AppState.COCKPIT

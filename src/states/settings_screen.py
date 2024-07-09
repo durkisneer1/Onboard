@@ -1,12 +1,13 @@
 from __future__ import annotations
+
 from typing import TYPE_CHECKING
 
 import pygame as pg
 
 from core.buttons import TextButton
+from core.enums import AppState
 from core.picker import Picker
 from core.range_picker import RangePicker
-from core.enums import AppState
 from core.settings import *
 from core.transitions import FadeTransition
 from src.states.base import BaseState
@@ -100,4 +101,5 @@ class SettingsMenu(BaseState):
                     pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else None,
                     vsync=False,
                 )
-            self.engine.current_state = self.engine.last_state
+            self.next_state = AppState.MENU
+            self.transition.fade_in = False

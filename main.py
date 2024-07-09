@@ -1,14 +1,14 @@
 import pygame as pg
 
+import core.surfaces as surfaces
 from core.enums import AppState
 from core.settings import *
 from src.player import Player
 from src.states.cockpit import CockPit
 from src.states.menu import Menu
 from src.states.pause import Pause
-from src.states.storage import StorageRoom
 from src.states.settings_screen import SettingsMenu
-import core.surfaces as surfaces
+from src.states.storage import StorageRoom
 
 surfaces.surface_debug = False
 
