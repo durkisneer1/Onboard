@@ -33,6 +33,7 @@ class KeyPadPuzzle(Puzzle):
 
         self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
+        self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
 
     def _render(self) -> None:
         for button in self.buttons:
@@ -49,3 +50,6 @@ class KeyPadPuzzle(Puzzle):
                 self.active = False
                 self.done = True
                 self.success_sfx.play()
+            else:
+                self.user_in.clear()
+                self.failure_sfx.play()

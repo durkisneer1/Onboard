@@ -28,11 +28,11 @@ class Menu(BaseState):
             AppState.COCKPIT
         )  # Change this to the state you want to transition to initially (for debugging)
 
-    def handle_events(self, event) -> None:
+    def handle_events(self, event):
         if event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
             self.transition.fade_in = False
 
-    def render(self) -> None:
+    def render(self):
         self.engine.screen.blit(self.bg, (0, 0))
 
         self.handle_buttons()
@@ -46,7 +46,7 @@ class Menu(BaseState):
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
 
-    def handle_buttons(self) -> None:
+    def handle_buttons(self):
         self.game_button.render()
         if self.game_button.event:
             self.transition.fade_in = False

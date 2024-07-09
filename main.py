@@ -1,12 +1,17 @@
 import pygame as pg
 
+import core.surfaces as surfaces
 from core.enums import AppState
 from core.settings import *
 from src.player import Player
 from src.states.cockpit import CockPit
 from src.states.menu import Menu
 from src.states.pause import Pause
+from src.states.settings_screen import SettingsMenu
 from src.states.storage import StorageRoom
+from src.states.reactor import ReactorRoom
+
+surfaces.surface_debug = False
 
 
 class Engine:
@@ -14,7 +19,6 @@ class Engine:
         pg.init()
         self.screen = pg.display.set_mode(WIN_SIZE, pg.SCALED | pg.FULLSCREEN)
         pg.display.set_caption("The Astronaut")
-
         self.clock = pg.Clock()
         self.running = True
         self.dt = 0
@@ -24,8 +28,11 @@ class Engine:
             AppState.MENU: Menu(self),
             AppState.COCKPIT: CockPit(self),
             AppState.STORAGE: StorageRoom(self),
+            AppState.REACTOR: ReactorRoom(self),
+            AppState.SETTINGS: SettingsMenu(self),
         }
         self.current_state = AppState.COCKPIT
+        # Needed for accesing the settings and then going back to the last state
         self.last_state = self.current_state
 
     def run(self):

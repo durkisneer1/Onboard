@@ -13,6 +13,8 @@ if TYPE_CHECKING:
 image_load = pg.image.load
 pg_surface = pg.Surface
 
+surface_debug = True
+
 
 def import_folder(
     path: str,
@@ -92,7 +94,8 @@ def new_image_load(*args, **kwargs):
 
     calling_file = current_frame.f_back.f_globals["__file__"]
     calling_file = os.path.basename(calling_file)
-    print(f"IMAGE_LOAD: '{args[0]}' in '{calling_file}'")
+    if surface_debug:
+        print(f"IMAGE_LOAD: '{args[0]}' in '{calling_file}'")
     return image_load(*args, **kwargs)
 
 
@@ -103,7 +106,8 @@ def new_surface(*args, **kwargs):
 
     calling_file = current_frame.f_back.f_globals["__file__"]
     calling_file = os.path.basename(calling_file)
-    print(f"NEW_SURFACE: '{calling_file}'")
+    if surface_debug:
+        print(f"NEW_SURFACE: '{calling_file}'")
     return pg_surface(*args, **kwargs)
 
 
