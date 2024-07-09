@@ -31,7 +31,6 @@ class Engine:
         }
         self.current_state = AppState.COCKPIT
         # Needed for accesing the settings and then going back to the last state
-        self.last_state = AppState.COCKPIT
         self.last_state = self.current_state
 
     def run(self):
