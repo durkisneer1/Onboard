@@ -32,15 +32,15 @@ class CockPit(Room):
             for _ in range(6)
         ]
 
-        keypad_rect = pg.Rect(177, 77, 7, 9)
+        keypad_rect = pg.FRect(177, 77, 7, 9)
         self.keypad = Interactable(self.player, self.engine, keypad_rect)
         self.keypad_puzzle = KeyPadPuzzle(engine)
 
-        storage_rect = pg.Rect(203, 77, 5, 30)
+        storage_rect = pg.FRect(203, 77, 5, 30)
         self.storage_door = Interactable(self.player, self.engine, storage_rect)
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
-        self.next_state = None
+        self.next_state = AppState.EMPTY
 
         pg.mixer_music.load("assets/cockpit.mp3")
         # pg.mixer_music.play()
@@ -50,9 +50,9 @@ class CockPit(Room):
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[
-                    self.engine.current_state
-                ].last_frame = self.engine.screen.copy()
+                self.engine.state_dict[self.engine.current_state].last_frame = (
+                    self.engine.screen.copy()
+                )
 
     def render(self):
         self.engine.screen.fill("black")
@@ -82,7 +82,7 @@ class CockPit(Room):
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
 
-    def render_extra_background_items(self, surface: pg.Surface, n: int) -> None:
+    def render_extra_background_items(self, surface: pg.Surface, n: int):
         self._render_particles(surface, self.particle_colors[n])
 
     def _render_particles(self, surface, color):

@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from typing import TYPE_CHECKING
+from os import path, listdir
 
 import pygame as pg
 
 from core.settings import *
-from core.surfaces import import_image, shift_colors
+from core.surfaces import import_image, shift_colors, import_anim
 from src.player import Player
 
 if TYPE_CHECKING:
@@ -14,19 +15,26 @@ if TYPE_CHECKING:
 class Room:
     def __init__(self, engine: "Engine", room_image_path: str) -> None:
         self.engine = engine
-        self.player: Player = Player(engine)
+        self.player = Player(engine)
 
-        self.room_image = import_image(room_image_path)
-        self.layers = [
-            shift_colors(surface=self.room_image, color_sets=COLOR_SETS, n=2 - i)
-            for i in range(3)
-        ]
+        if path.isfile(room_image_path):
+            self.room_image = import_image(room_image_path)
+            self.layers = [
+                shift_colors(surface=self.room_image, color_sets=COLOR_SETS, n=2 - i)
+                for i in range(3)
+            ]
+        # elif path.isdir(room_image_path):
+        #     self.room_frames = [import_image(image_path, is_alpha=False) for image_path in listdir(room_image_path)]
+        #     self.layers = [
+        #         shift_colors(surface=frame, color_sets=COLOR_SETS, n=2 - i)
+        #         for i in range(3)
+        #         for frame in self.room_frames
+        #     ]
 
     @abstractmethod
-    def render(self) -> None:
-        ...
+    def render(self): ...
 
-    def render_background(self) -> None:
+    def render_background(self):
         radius = 74
         for n, layer in enumerate(self.layers):
             surf = pg.Surface(layer.size)
@@ -46,5 +54,4 @@ class Room:
             self.engine.screen.blit(surf, (32, 27))
             radius -= 20
 
-    def render_extra_background_items(self, surface: pg.Surface, n: int) -> None:
-        """Implemented by subclasses as necessary."""
+    def render_extra_background_items(self, surface: pg.Surface, n: int): ...

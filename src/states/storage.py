@@ -22,24 +22,27 @@ class StorageRoom(Room):
         self.simon = Interactable(self.player, self.engine, simon_rect)
         self.simon_puzzle = SimonSaysPuzzle(self.engine)
 
-        cockpit_rect = pg.Rect(32, 77, 5, 30)
+        cockpit_rect = pg.FRect(32, 77, 5, 30)
         self.cockpit_door = Interactable(self.player, self.engine, cockpit_rect)
+        reactor_rect = pg.FRect(203, 77, 5, 30)
+        self.reactor_door = Interactable(self.player, self.engine, reactor_rect)
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
-        self.next_state = None
+        self.next_state = AppState.EMPTY
+
+        self.player.rect.bottomleft = cockpit_rect.bottomright
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[
-                    self.engine.current_state
-                ].last_frame = self.engine.screen.copy()
+                self.engine.state_dict[self.engine.current_state].last_frame = (
+                    self.engine.screen.copy()
+                )
 
     def render(self):
         self.engine.screen.fill("black")
-
         self.render_background()
 
         if not self.simon_puzzle.done:
@@ -49,6 +52,11 @@ class StorageRoom(Room):
         if self.cockpit_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.COCKPIT
+
+        self.reactor_door.render()
+        if self.reactor_door.event:
+            self.transition.fade_in = False
+            self.next_state = AppState.REACTOR
 
         self.player.update(self.simon_puzzle.active)
 

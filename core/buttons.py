@@ -64,7 +64,8 @@ class NumButton(Button):
         self.handle_states()
         self.engine.screen.blit(self.surface, self.rect)
 
-        self.engine.screen.blit(self.text, self.text_rect)
+        offset = 1 if self.holding else 0
+        self.engine.screen.blit(self.text, self.text_rect.move(offset, offset))
 
 
 class TextButton(Button):
@@ -105,13 +106,17 @@ class SimonButton(Button):
         super().__init__(engine, shifted_pos, self.surf_dict["idle"])
 
         self.num = num
+        self.glow = False
 
     def render(self, handle_states: bool = True):
         self.surface = (
-            self.surf_dict["glow"] if self.hovering else self.surf_dict["idle"]
+            self.surf_dict["hover"] if self.hovering else self.surf_dict["idle"]
         )
         if self.holding:
             self.surface = self.surf_dict["pressed"]
+
+        if self.glow:
+            self.surface = self.surf_dict["glow"]
 
         if handle_states:
             self.handle_states()

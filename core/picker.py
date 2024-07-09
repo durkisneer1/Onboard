@@ -31,7 +31,7 @@ class Picker:
 
         self.index = self.values.index(self.default)
 
-    def val(self):
+    def val(self) -> str:
         return self.values[self.index]
 
     def render(self):

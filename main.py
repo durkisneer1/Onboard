@@ -9,6 +9,7 @@ from src.states.menu import Menu
 from src.states.pause import Pause
 from src.states.settings_screen import SettingsMenu
 from src.states.storage import StorageRoom
+from src.states.reactor import ReactorRoom
 
 surfaces.surface_debug = False
 
@@ -27,6 +28,7 @@ class Engine:
             AppState.MENU: Menu(self),
             AppState.COCKPIT: CockPit(self),
             AppState.STORAGE: StorageRoom(self),
+            AppState.REACTOR: ReactorRoom(self),
             AppState.SETTINGS: SettingsMenu(self),
         }
         self.current_state = AppState.COCKPIT

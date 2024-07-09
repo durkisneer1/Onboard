@@ -20,20 +20,20 @@ class Pause(BaseState):
             TextButton(engine, "Menu", pg.Vector2(90, 50), (50, 16)),
         ]
 
-    def handle_events(self, event) -> None:
+    def handle_events(self, event):
         if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
             self.engine.current_state = self.engine.last_state
             # fixes visual bug
             for button in self.buttons:
                 button.hovering = False
 
-    def render(self) -> None:
+    def render(self):
         self.engine.screen.blit(self.last_frame, (0, 0))
         self.engine.screen.blit(self.surface_tint, (0, 0))
 
         self.handle_buttons()
 
-    def handle_buttons(self) -> None:
+    def handle_buttons(self):
         for button in self.buttons:
             button.render()
 
