@@ -5,6 +5,7 @@ import pygame as pg
 
 from core.buttons import SimonButton
 from core.settings import *
+from core.surfaces import import_image
 
 if TYPE_CHECKING:
     from main import Engine
@@ -20,8 +21,14 @@ class SimonSaysPuzzle:
         self.active = False
         self.done = False
 
+        btn_surfs = {
+            "idle": import_image("assets/simon_button_idle.png", is_alpha=False),
+            "pressed": import_image("assets/simon_button_pressed.png", is_alpha=False),
+            "glow": import_image("assets/simon_button_glow.png", is_alpha=False),
+        }
+
         self.buttons = [
-            SimonButton(engine, 4 * y + x, pg.Vector2(x, y) * 12)
+            SimonButton(engine, 4 * y + x, pg.Vector2(x, y) * 12, btn_surfs)
             for x in range(1, 5)
             for y in range(0, 4)
         ]
@@ -102,9 +109,11 @@ class SimonSaysPuzzle:
             if len(self.user_in) != len(self.code[: self.current_length]):
                 continue
 
-            self._next_turn() if self.user_in == self.code[
-                : self.current_length
-            ] else self._on_failure()
+            (
+                self._next_turn()
+                if self.user_in == self.code[: self.current_length]
+                else self._on_failure()
+            )
 
     def _on_success(self) -> None:
         self.active = False

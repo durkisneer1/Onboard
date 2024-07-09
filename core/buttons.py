@@ -40,20 +40,26 @@ class Button:
 
 class NumButton(Button):
     def __init__(
-        self, engine: "Engine", num: int, pos: pg.Vector2, size: pg.Vector2
+        self,
+        engine: "Engine",
+        num: int,
+        pos: pg.Vector2,
+        surf_dict: dict[str, pg.Surface],
     ) -> None:
-        shifted_pos = pos + (95, 55)
-        surf = pg.Surface(size)
-        super().__init__(engine, shifted_pos, surf)
+        shifted_pos = pos + (WIN_WIDTH / 2 - 40, WIN_HEIGHT / 2 - 32)
+        self.surf_dict = surf_dict
+        super().__init__(engine, shifted_pos, surf_dict["idle"])
         font = pg.font.SysFont("Arial", 8)
 
         self.num = num
-        self.rect = surf.get_rect(topleft=shifted_pos)
-        self.text = font.render(str(num), False, (197, 205, 219))
+        self.rect = surf_dict["idle"].get_rect(topleft=shifted_pos)
+        self.text = font.render(str(num), False, (24, 13, 47))
         self.text_rect = self.text.get_rect(center=self.rect.center)
 
     def render(self):
-        self.surface.fill((139, 151, 182) if self.hovering else (24, 13, 47))
+        self.surface = (
+            self.surf_dict["pressed"] if self.holding else self.surf_dict["idle"]
+        )
 
         self.handle_states()
         self.engine.screen.blit(self.surface, self.rect)
@@ -86,20 +92,26 @@ class TextButton(Button):
 
 
 class SimonButton(Button):
-    def __init__(self, engine: "Engine", num: int, pos: pg.Vector2) -> None:
+    def __init__(
+        self,
+        engine: "Engine",
+        num: int,
+        pos: pg.Vector2,
+        surf_dict: dict[str, pg.Surface],
+    ) -> None:
         shifted_pos = pos + (WIN_WIDTH / 2 - 36, WIN_HEIGHT / 2 - 24)
-        self.idle = import_image("assets/simon_button_idle.png", is_alpha=False)
-        self.glow = import_image("assets/simon_button_glow.png", is_alpha=False)
-        self.pressed = import_image("assets/simon_button_pressed.png", is_alpha=False)
+        self.surf_dict = surf_dict
 
-        super().__init__(engine, shifted_pos, self.idle)
+        super().__init__(engine, shifted_pos, self.surf_dict["idle"])
 
         self.num = num
 
     def render(self, handle_states: bool = True):
-        self.surface = self.glow if self.hovering else self.idle
+        self.surface = (
+            self.surf_dict["glow"] if self.hovering else self.surf_dict["idle"]
+        )
         if self.holding:
-            self.surface = self.pressed
+            self.surface = self.surf_dict["pressed"]
 
         if handle_states:
             self.handle_states()

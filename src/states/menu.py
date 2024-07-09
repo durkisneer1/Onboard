@@ -19,10 +19,14 @@ class Menu(BaseState):
         self.bg = pg.Surface(WIN_SIZE)
         self.bg.fill("black")
 
-        self.game_button = TextButton(engine, "Start", pg.Vector2(100, 52), (40, 16))
+        self.game_button = TextButton(
+            engine, "Start", pg.Vector2(100, 52), pg.Vector2(40, 16)
+        )
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
-        self.next_state = None
+        self.next_state = (
+            AppState.COCKPIT
+        )  # Change this to the state you want to transition to initially (for debugging)
 
     def handle_events(self, event) -> None:
         if event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
@@ -46,4 +50,3 @@ class Menu(BaseState):
         self.game_button.render()
         if self.game_button.event:
             self.transition.fade_in = False
-            self.next_state = AppState.COCKPIT

@@ -25,12 +25,12 @@ class Engine:
             AppState.COCKPIT: CockPit(self),
             AppState.STORAGE: StorageRoom(self),
         }
-        self.current_state = AppState.STORAGE
+        self.current_state = AppState.MENU
         self.last_state = self.current_state
 
     def run(self):
         while self.running:
-            self.dt = self.clock.tick_busy_loop(30) / 1000
+            self.dt = self.clock.tick_busy_loop(60) / 1000
 
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:

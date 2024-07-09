@@ -4,6 +4,7 @@ import pygame as pg
 
 from core.buttons import NumButton
 from core.settings import *
+from core.surfaces import import_image
 
 if TYPE_CHECKING:
     from main import Engine
@@ -19,14 +20,19 @@ class KeyPadPuzzle:
         self.active = False
         self.done = False
 
-        self.engine = engine
+        btn_surfs = {
+            "idle": import_image("assets/keypad_button_idle.png"),
+            "pressed": import_image("assets/keypad_button_pressed.png"),
+        }
+
         self.buttons = [
-            NumButton(engine, 3 * y + x, pg.Vector2(x, y) * 10, pg.Vector2(10, 10))
+            NumButton(engine, 3 * y + x, pg.Vector2(x, y) * 16, btn_surfs)
             for x in range(1, 4)
             for y in range(0, 3)
         ]
+        self.buttons.append(NumButton(engine, 0, pg.Vector2(2, 3) * 16, btn_surfs))
 
-        self.code = [1, 2, 3, 4]
+        self.code = [1, 2, 3, 4, 0]
         self.user_in = []
 
         self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
