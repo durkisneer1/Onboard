@@ -10,6 +10,7 @@ from core.settings import *
 from core.transitions import FadeTransition
 from src.interactable import Interactable
 from src.puzzles.keypad import KeyPadPuzzle
+from src.puzzles.postit import PostItPuzzle
 
 if TYPE_CHECKING:
     from main import Engine
@@ -32,12 +33,13 @@ class CockPit(Room):
             for _ in range(6)
         ]
 
-        keypad_rect = pg.Rect(177, 77, 7, 9)
-        self.keypad = Interactable(self.player, self.engine, keypad_rect)
+        self.keypad = Interactable(self.player, self.engine, pg.FRect(177, 77, 7, 9))
         self.keypad_puzzle = KeyPadPuzzle(engine)
 
-        storage_rect = pg.Rect(203, 77, 5, 30)
-        self.storage_door = Interactable(self.player, self.engine, storage_rect)
+        self.postit = Interactable(self.player, self.engine, pg.FRect(164, 81, 5, 5))
+        self.postit_puzzle = PostItPuzzle(engine)
+
+        self.storage_door = Interactable(self.player, self.engine, pg.FRect(203, 77, 5, 30))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = None
@@ -63,6 +65,9 @@ class CockPit(Room):
         if not self.keypad_puzzle.done:
             self.keypad.render()
 
+        if not self.keypad.active:
+            self.postit.render()
+
         self.storage_door.render()
         if self.storage_door.event:
             self.transition.fade_in = False
@@ -74,6 +79,11 @@ class CockPit(Room):
             self.keypad_puzzle.user_in = []
             self.keypad_puzzle.active = not self.keypad_puzzle.active
         self.keypad_puzzle.render()
+
+        if self.postit.event:
+            self.postit_puzzle.active = not self.postit_puzzle.active
+
+        self.postit_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
