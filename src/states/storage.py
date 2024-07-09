@@ -22,8 +22,8 @@ class StorageRoom(Room):
         self.simon = Interactable(self.player, self.engine, simon_rect)
         self.simon_puzzle = SimonSaysPuzzle(self.engine)
 
-        cockpit_rect = pg.Rect(32, 77, 5, 30)
-        self.cockpit_door = Interactable(self.player, self.engine, cockpit_rect)
+        self.cockpit_door = Interactable(self.player, self.engine, pg.FRect(32, 77, 5, 30))
+        self.reactor_door = Interactable(self.player, self.engine, pg.FRect(203, 77, 5, 30))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = None
@@ -49,6 +49,11 @@ class StorageRoom(Room):
         if self.cockpit_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.COCKPIT
+
+        self.reactor_door.render()
+        if self.reactor_door.event:
+            self.transition.fade_in = False
+            self.next_state = AppState.REACTOR
 
         self.player.update(self.simon_puzzle.active)
 
