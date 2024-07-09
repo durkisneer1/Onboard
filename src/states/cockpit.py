@@ -78,7 +78,7 @@ class CockPit(Room):
     def _render_particles(self, surface, color):
         for particle in self.particles:
             if self.room_image.get_at((particle.x, particle.y)) == (
-                    0,
+                0,
             ) * 4 and surface.get_at((particle.x, particle.y)) == (0, 0, 0, 255):
                 surface.set_at((particle.x, particle.y), color)
 

@@ -17,12 +17,12 @@ class Room:
 
         self.room_image = import_image(room_image_path)
         self.layers = [
-            shift_colors(surface=self.room_image, color_sets=COLOR_SETS, n=2 - i) for i in range(3)
+            shift_colors(surface=self.room_image, color_sets=COLOR_SETS, n=2 - i)
+            for i in range(3)
         ]
 
     @abstractmethod
-    def render(self) -> None:
-        ...
+    def render(self) -> None: ...
 
     def render_background(self) -> None:
         radius = 74

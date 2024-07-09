@@ -72,6 +72,7 @@ def import_anim(path: str, width: int, height: int) -> list[pg.Surface]:
     ]
     return anim_list
 
+
 def shift_colors(
     surface: pg.Surface, color_sets: list[list[tuple[int, int, int]]], n: int
 ) -> pg.Surface:
