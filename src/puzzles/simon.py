@@ -4,21 +4,17 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.buttons import SimonButton
-from core.settings import *
 from core.surfaces import import_image
+
+from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:
     from main import Engine
 
 
-class SimonSaysPuzzle:
+class SimonSaysPuzzle(Puzzle):
     def __init__(self, engine: "Engine") -> None:
-        self.engine = engine
-
-        self.bg_dimmer = pg.Surface(WIN_SIZE)
-        self.bg_dimmer.set_alpha(180)
-
-        self.active = False
+        super().__init__(engine)
         self.done = False
 
         btn_surfs = {
@@ -59,11 +55,7 @@ class SimonSaysPuzzle:
         self.player_turn = False
         self.wait_for_turns = False  # cooldown between turns
 
-    def render(self) -> None:
-        if not self.active:
-            return
-
-        self.engine.screen.blit(self.bg_dimmer, (0, 0))
+    def _render(self) -> None:
         self.engine.screen.blit(self.tablet, self.tablet_pos)
 
         self._player_turn() if self.player_turn else self._simon_turn()
