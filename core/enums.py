@@ -6,6 +6,7 @@ class AppState(IntEnum):
     STORAGE = auto()
     PAUSE = auto()
     MENU = auto()
+    SETTINGS = auto()
 
 
 class AnimState(IntEnum):

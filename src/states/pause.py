@@ -16,7 +16,8 @@ class Pause(BaseState):
         super().__init__(engine)
 
         self.buttons = [
-            TextButton(engine, "Continue", pg.Vector2(100, 30), (40, 16)),
+            TextButton(engine, "Continue", pg.Vector2(100, 10), (40, 16)),
+            TextButton(engine, "Settings", pg.Vector2(100, 30), (40, 16)),
             TextButton(engine, "Menu", pg.Vector2(100, 50), (40, 16)),
         ]
 
@@ -35,8 +36,11 @@ class Pause(BaseState):
             button.render()
 
             if button.event:
+                self.engine.last_state = AppState.PAUSE
                 match button.text_str:
                     case "Continue":
                         self.engine.current_state = self.engine.last_state
                     case "Menu":
                         self.engine.current_state = AppState.MENU
+                    case "Settings":
+                        self.engine.current_state = AppState.SETTINGS

@@ -74,7 +74,7 @@ class TextButton(Button):
         shifted_pos = pos + (95, 55)
         surf = pg.Surface(size, pg.SRCALPHA)
         super().__init__(engine, shifted_pos, surf)
-        font = pg.font.SysFont("Arial", 8)
+        font = pg.font.Font("assets/m5x7.ttf", 16)
 
         self.rect = surf.get_rect(topleft=shifted_pos)
         self.text_str = text
