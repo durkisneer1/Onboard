@@ -1,9 +1,10 @@
-import pygame as pg
-from typing import TYPE_CHECKING
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
 
-from core.surfaces import import_image, shift_colors
+import pygame as pg
+
 from core.settings import *
+from core.surfaces import import_image, shift_colors
 from src.player import Player
 
 if TYPE_CHECKING:
@@ -22,7 +23,8 @@ class Room:
         ]
 
     @abstractmethod
-    def render(self) -> None: ...
+    def render(self) -> None:
+        ...
 
     def render_background(self) -> None:
         radius = 74

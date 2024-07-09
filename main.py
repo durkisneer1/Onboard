@@ -25,7 +25,7 @@ class Engine:
             AppState.COCKPIT: CockPit(self),
             AppState.STORAGE: StorageRoom(self),
         }
-        self.current_state = AppState.MENU
+        self.current_state = AppState.COCKPIT
         self.last_state = self.current_state
 
     def run(self):

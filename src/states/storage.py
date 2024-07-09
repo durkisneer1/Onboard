@@ -3,10 +3,10 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.enums import AppState
+from core.room import Room
 from core.settings import *
 from core.transitions import FadeTransition
 from src.interactable import Interactable
-from core.room import Room
 from src.puzzles.simon import SimonSaysPuzzle
 
 if TYPE_CHECKING:
@@ -22,16 +22,20 @@ class StorageRoom(Room):
         self.simon = Interactable(self.player, self.engine, simon_rect)
         self.simon_puzzle = SimonSaysPuzzle(self.engine)
 
+        cockpit_rect = pg.Rect(32, 77, 5, 30)
+        self.cockpit_door = Interactable(self.player, self.engine, cockpit_rect)
+
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
+        self.next_state = None
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+                self.engine.state_dict[
+                    self.engine.current_state
+                ].last_frame = self.engine.screen.copy()
 
     def render(self):
         self.engine.screen.fill("black")
@@ -40,6 +44,11 @@ class StorageRoom(Room):
 
         if not self.simon_puzzle.done:
             self.simon.render()
+
+        self.cockpit_door.render()
+        if self.cockpit_door.event:
+            self.transition.fade_in = False
+            self.next_state = AppState.COCKPIT
 
         self.player.update(self.simon_puzzle.active)
 
@@ -53,5 +62,5 @@ class StorageRoom(Room):
 
         if self.transition.event:
             self.engine.last_state = self.engine.current_state
-            self.engine.current_state = AppState.MENU
+            self.engine.current_state = self.next_state
             self.transition.fade_in = True

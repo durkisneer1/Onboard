@@ -1,14 +1,15 @@
 import random
 from dataclasses import dataclass
 from typing import TYPE_CHECKING
+
 import pygame as pg
 
 from core.enums import AppState
+from core.room import Room
 from core.settings import *
 from core.transitions import FadeTransition
 from src.interactable import Interactable
 from src.puzzles.keypad import KeyPadPuzzle
-from core.room import Room
 
 if TYPE_CHECKING:
     from main import Engine
@@ -31,11 +32,15 @@ class CockPit(Room):
             for _ in range(6)
         ]
 
-        keypad_rect = pg.FRect(177, 77, 7, 9)
+        keypad_rect = pg.Rect(177, 77, 7, 9)
         self.keypad = Interactable(self.player, self.engine, keypad_rect)
         self.keypad_puzzle = KeyPadPuzzle(engine)
 
+        storage_rect = pg.Rect(203, 77, 5, 30)
+        self.storage_door = Interactable(self.player, self.engine, storage_rect)
+
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
+        self.next_state = None
 
         pg.mixer_music.load("assets/cockpit.mp3")
         # pg.mixer_music.play()
@@ -45,9 +50,9 @@ class CockPit(Room):
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+                self.engine.state_dict[
+                    self.engine.current_state
+                ].last_frame = self.engine.screen.copy()
 
     def render(self):
         self.engine.screen.fill("black")
@@ -57,6 +62,11 @@ class CockPit(Room):
 
         if not self.keypad_puzzle.done:
             self.keypad.render()
+
+        self.storage_door.render()
+        if self.storage_door.event:
+            self.transition.fade_in = False
+            self.next_state = AppState.STORAGE
 
         self.player.update(self.keypad_puzzle.active)
 
@@ -69,7 +79,7 @@ class CockPit(Room):
         self.transition.draw(self.engine.screen)
         if self.transition.event:
             self.engine.last_state = self.engine.current_state
-            self.engine.current_state = AppState.MENU
+            self.engine.current_state = self.next_state
             self.transition.fade_in = True
 
     def render_extra_background_items(self, surface: pg.Surface, n: int) -> None:

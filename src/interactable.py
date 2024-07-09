@@ -39,7 +39,7 @@ class InteractablePopUp:
         self.interactable = interactable
 
         self.popup_image = pg.image.load("assets/popup1.png").convert_alpha()
-        self.rect = self.popup_image.get_frect(
+        self.rect = self.popup_image.get_rect(
             midbottom=interactable.rect.midtop - pg.Vector2(0, 1)
         )
 

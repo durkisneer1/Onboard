@@ -29,7 +29,7 @@ class Player:
         self.speed = 40
         self.vel = pg.Vector2()
         self.rect = self.frame.get_frect(
-            midbottom=(self.engine.screen.width / 2, ROOM_BOTTOMRIGHT[1])
+            midbottom=(self.engine.screen.width / 2, ROOM_BOTTOMRIGHT[1] - 1)
         )
 
     def move(self):
