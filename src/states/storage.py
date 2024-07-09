@@ -4,27 +4,19 @@ import pygame as pg
 
 from core.enums import AppState
 from core.settings import *
-from core.surfaces import import_image, shift_colors
 from core.transitions import FadeTransition
 from src.interactable import Interactable
-from src.player import Player
+from core.room import Room
 from src.puzzles.simon import SimonSaysPuzzle
 
 if TYPE_CHECKING:
     from main import Engine
 
 
-class StorageRoom:
+class StorageRoom(Room):
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
-        self.room_image = import_image("assets/storage.png", is_alpha=False)
-
-        self.layers = [
-            shift_colors(surface=self.room_image, color_sets=COLOR_SETS, n=2 - i)
-            for i in range(3)
-        ]
-
-        self.player = Player(engine)
+        super().__init__(engine, room_image_path="assets/storage.png")
 
         simon_rect = pg.FRect(108, 81, 15, 15)
         self.simon = Interactable(self.player, self.engine, simon_rect)
@@ -44,23 +36,7 @@ class StorageRoom:
     def render(self):
         self.engine.screen.fill("black")
 
-        radius = 74
-        for n, layer in enumerate(self.layers):
-            surf = pg.Surface(layer.size)
-            surf.fill("white")
-            pg.draw.circle(
-                surf,
-                "black",
-                (
-                    self.player.rect.centerx - 32,
-                    self.player.rect.centery - 27,
-                ),
-                radius,
-            )
-            surf.blit(layer, (0, 0), special_flags=pg.BLEND_RGB_ADD)
-            surf.set_colorkey("white")
-            self.engine.screen.blit(surf, (32, 27))
-            radius -= 20
+        self.render_background()
 
         if not self.simon_puzzle.done:
             self.simon.render()
