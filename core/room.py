@@ -32,7 +32,8 @@ class Room:
         #     ]
 
     @abstractmethod
-    def render(self): ...
+    def render(self):
+        ...
 
     def render_background(self):
         radius = 74
@@ -54,4 +55,5 @@ class Room:
             self.engine.screen.blit(surf, (32, 27))
             radius -= 20
 
-    def render_extra_background_items(self, surface: pg.Surface, n: int): ...
+    def render_extra_background_items(self, surface: pg.Surface, n: int):
+        ...

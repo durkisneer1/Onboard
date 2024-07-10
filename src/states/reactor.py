@@ -18,7 +18,7 @@ class ReactorRoom(Room):
         super().__init__(engine, room_image_path="assets/reactor.png")
 
         self.dots_tablet = Interactable(
-            self.player, self.engine, pg.FRect(108, 81, 15, 15)
+            self.player, self.engine, pg.FRect(153, 84, 4, 12)
         )
         self.dots_puzzle = DotsPuzzle(self.engine)
 
@@ -35,9 +35,9 @@ class ReactorRoom(Room):
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+                self.engine.state_dict[
+                    self.engine.current_state
+                ].last_frame = self.engine.screen.copy()
 
     def render(self):
         self.engine.screen.fill("black")
@@ -51,7 +51,7 @@ class ReactorRoom(Room):
             self.transition.fade_in = False
             self.next_state = AppState.STORAGE
 
-        self.player.update(False)
+        self.player.update(self.dots_puzzle.active)
 
         if self.dots_tablet.event and not self.dots_puzzle.done:
             self.dots_puzzle.active = not self.dots_puzzle.active

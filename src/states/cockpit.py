@@ -54,9 +54,9 @@ class CockPit(Room):
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+                self.engine.state_dict[
+                    self.engine.current_state
+                ].last_frame = self.engine.screen.copy()
 
     def render(self):
         self.engine.screen.fill("black")
