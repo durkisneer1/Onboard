@@ -17,16 +17,19 @@ class Interactable:
         self.event = False
         self.popup = InteractablePopUp(player, engine, self)
 
-    def render(self):
-        self.handle_states()
+    def render(self, handle_states: bool = True):
+        self.handle_states(handle_states)
 
         self.popup.render()
 
         if self.active:
             pg.draw.rect(self.engine.screen, (232, 255, 117), self.rect, 1)
 
-    def handle_states(self):
-        self.active = self.player.rect.colliderect(self.rect)
+    def handle_states(self, active: bool = True):
+        if active:
+            self.active = self.player.rect.colliderect(self.rect)
+        else:
+            self.active = False
         self.event = pg.key.get_just_pressed()[pg.K_e] and self.active
 
 

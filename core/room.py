@@ -1,11 +1,11 @@
 from abc import ABC, abstractmethod
+from os import listdir, path
 from typing import TYPE_CHECKING
-from os import path, listdir
 
 import pygame as pg
 
 from core.settings import *
-from core.surfaces import import_image, shift_colors, import_anim
+from core.surfaces import import_anim, import_image, shift_colors
 from src.player import Player
 
 if TYPE_CHECKING:
@@ -32,7 +32,8 @@ class Room:
         #     ]
 
     @abstractmethod
-    def render(self): ...
+    def render(self):
+        ...
 
     def render_background(self):
         radius = 74
@@ -54,4 +55,5 @@ class Room:
             self.engine.screen.blit(surf, (32, 27))
             radius -= 20
 
-    def render_extra_background_items(self, surface: pg.Surface, n: int): ...
+    def render_extra_background_items(self, surface: pg.Surface, n: int):
+        ...

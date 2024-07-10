@@ -4,7 +4,6 @@ import pygame as pg
 
 from core.buttons import NumButton
 from core.surfaces import import_image
-
 from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:

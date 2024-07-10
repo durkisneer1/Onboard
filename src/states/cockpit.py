@@ -54,9 +54,9 @@ class CockPit(Room):
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+                self.engine.state_dict[
+                    self.engine.current_state
+                ].last_frame = self.engine.screen.copy()
 
     def render(self):
         self.engine.screen.fill("black")
@@ -67,15 +67,14 @@ class CockPit(Room):
         if not self.keypad_puzzle.done:
             self.keypad.render()
 
-        if not self.keypad.active:
-            self.postit.render()
+        self.postit.render(not self.keypad.active)
 
         self.storage_door.render()
         if self.storage_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.STORAGE
 
-        self.player.update(self.keypad_puzzle.active)
+        self.player.update(self.keypad_puzzle.active or self.postit_puzzle.active)
 
         if self.keypad.event and not self.keypad_puzzle.done:
             self.keypad_puzzle.user_in = []

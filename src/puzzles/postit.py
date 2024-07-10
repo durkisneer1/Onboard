@@ -1,8 +1,8 @@
 from typing import TYPE_CHECKING
 
-from src.puzzles.puzzle import Puzzle
-from core.surfaces import import_image
 from core.settings import *
+from core.surfaces import import_image
+from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:
     from main import Engine

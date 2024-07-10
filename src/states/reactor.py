@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.room import Room
-from core.transitions import FadeTransition
-from core.settings import *
 from core.enums import AppState
+from core.room import Room
+from core.settings import *
+from core.transitions import FadeTransition
 from src.interactable import Interactable
 
 if TYPE_CHECKING:
@@ -29,9 +29,9 @@ class ReactorRoom(Room):
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+                self.engine.state_dict[
+                    self.engine.current_state
+                ].last_frame = self.engine.screen.copy()
 
     def render(self):
         self.engine.screen.fill("black")

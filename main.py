@@ -4,12 +4,11 @@ import core.surfaces as surfaces
 from core.enums import AppState
 from core.settings import *
 from src.states.cockpit import CockPit
-from src.states.reactor import ReactorRoom
 from src.states.menu import Menu
 from src.states.pause import Pause
+from src.states.reactor import ReactorRoom
 from src.states.settings_screen import SettingsMenu
 from src.states.storage import StorageRoom
-from src.states.reactor import ReactorRoom
 
 surfaces.surface_debug = False
 

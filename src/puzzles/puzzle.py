@@ -1,6 +1,7 @@
-from typing import TYPE_CHECKING
-import pygame as pg
 from abc import ABC, abstractmethod
+from typing import TYPE_CHECKING
+
+import pygame as pg
 
 from core.settings import *
 
@@ -26,4 +27,5 @@ class Puzzle(ABC):
         self._render()
 
     @abstractmethod
-    def _render(self) -> None: ...
+    def _render(self) -> None:
+        ...

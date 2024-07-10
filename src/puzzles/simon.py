@@ -5,7 +5,6 @@ import pygame as pg
 
 from core.buttons import SimonButton
 from core.surfaces import import_image
-
 from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:
