@@ -4,27 +4,24 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.buttons import SimonButton
-from core.settings import *
 from core.surfaces import import_image
+
+from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:
     from main import Engine
 
 
-class SimonSaysPuzzle:
+class SimonSaysPuzzle(Puzzle):
     def __init__(self, engine: "Engine") -> None:
-        self.engine = engine
-
-        self.bg_dimmer = pg.Surface(WIN_SIZE)
-        self.bg_dimmer.set_alpha(180)
-
-        self.active = False
+        super().__init__(engine)
         self.done = False
 
         btn_surfs = {
             "idle": import_image("assets/simon_button_idle.png", is_alpha=False),
             "pressed": import_image("assets/simon_button_pressed.png", is_alpha=False),
             "glow": import_image("assets/simon_button_glow.png", is_alpha=False),
+            "hover": import_image("assets/simon_button_hover.png", is_alpha=False),
         }
 
         self.buttons = [
@@ -48,7 +45,7 @@ class SimonSaysPuzzle:
         self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
         self.failure_sfx.set_volume(0.35)
 
-    def reset(self) -> None:
+    def reset(self):
         self.code = random.sample(range(1, 17), 6)
         self.user_in = []
         self.current_length = 2
@@ -58,11 +55,7 @@ class SimonSaysPuzzle:
         self.player_turn = False
         self.wait_for_turns = False  # cooldown between turns
 
-    def render(self) -> None:
-        if not self.active:
-            return
-
-        self.engine.screen.blit(self.bg_dimmer, (0, 0))
+    def _render(self) -> None:
         self.engine.screen.blit(self.tablet, self.tablet_pos)
 
         self._player_turn() if self.player_turn else self._simon_turn()
@@ -71,6 +64,7 @@ class SimonSaysPuzzle:
         for button in self.buttons:
             button.render(False)
             button.hovering = False
+            button.glow = False
 
         # highlight button for some time
         self.timer -= self.engine.dt
@@ -90,7 +84,7 @@ class SimonSaysPuzzle:
             return
 
         # highlight current button
-        self.buttons[self.code[self.current_shown_num] - 1].hovering = True
+        self.buttons[self.code[self.current_shown_num] - 1].glow = True
 
     def _player_turn(self) -> None:
         for button in self.buttons:
@@ -115,18 +109,18 @@ class SimonSaysPuzzle:
                 else self._on_failure()
             )
 
-    def _on_success(self) -> None:
+    def _on_success(self):
         self.active = False
         self.done = True
         self.success_sfx.play()
 
-    def _next_turn(self) -> None:
+    def _next_turn(self):
         self.current_length += 1
         self.user_in = []
         self.wait_for_turns = True
         self.player_turn = False
 
-    def _on_failure(self) -> None:
+    def _on_failure(self):
         self.active = False
         self.reset()
         self.failure_sfx.play()

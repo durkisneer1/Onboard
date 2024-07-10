@@ -54,11 +54,11 @@ class SettingsMenu(BaseState):
             [0, 100],
             100,
         )
-        self.next_state = None
+        self.next_state = AppState.EMPTY
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
 
-    def render(self) -> None:
+    def render(self):
         self.engine.screen.blit(self.bg, (0, 0))
         self.handle_ui()
 
@@ -68,38 +68,41 @@ class SettingsMenu(BaseState):
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
 
-        return super().render()
-
-    def handle_ui(self):
+    def handle_ui(self) -> None:
         self.save_button.render()
         self.vsync_pick.render()
         self.display_mode_pick.render()
         self.bgm_range.render()
         self.sfx_range.render()
-        if self.save_button.event:
-            if (
-                self.display_mode_pick.values[self.display_mode_pick.index]
-                == "WINDOWED"
-                and pg.display.is_fullscreen()
-            ):
-                pg.display.toggle_fullscreen()
-            if (
-                self.display_mode_pick.values[self.display_mode_pick.index]
-                == "FULLSCREEN"
-                and not pg.display.is_fullscreen()
-            ):
-                pg.display.toggle_fullscreen()
-            if self.vsync_pick.val() == "Active" and pg.display.is_vsync() == False:
-                pg.display.set_mode(
-                    WIN_SIZE,
-                    pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else None,
-                    vsync=True,
-                )
-            if self.vsync_pick.val() == "Disabled" and pg.display.is_vsync() == True:
-                pg.display.set_mode(
-                    WIN_SIZE,
-                    pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else None,
-                    vsync=False,
-                )
-            self.next_state = AppState.MENU
-            self.transition.fade_in = False
+
+        if not self.save_button.event:
+            return
+
+        if (
+            self.display_mode_pick.values[self.display_mode_pick.index] == "WINDOWED"
+            and pg.display.is_fullscreen()
+        ):
+            pg.display.toggle_fullscreen()
+
+        if (
+            self.display_mode_pick.values[self.display_mode_pick.index] == "FULLSCREEN"
+            and not pg.display.is_fullscreen()
+        ):
+            pg.display.toggle_fullscreen()
+
+        if self.vsync_pick.val() == "Active" and pg.display.is_vsync() == False:
+            pg.display.set_mode(
+                WIN_SIZE,
+                pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else 0,
+                vsync=True,
+            )
+
+        if self.vsync_pick.val() == "Disabled" and pg.display.is_vsync() == True:
+            pg.display.set_mode(
+                WIN_SIZE,
+                pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else 0,
+                vsync=False,
+            )
+
+        self.next_state = AppState.MENU
+        self.transition.fade_in = False

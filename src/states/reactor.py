@@ -2,10 +2,10 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.enums import AppState
 from core.room import Room
-from core.settings import *
 from core.transitions import FadeTransition
+from core.settings import *
+from core.enums import AppState
 from src.interactable import Interactable
 
 if TYPE_CHECKING:
@@ -14,36 +14,37 @@ if TYPE_CHECKING:
 
 class ReactorRoom(Room):
     def __init__(self, engine: "Engine") -> None:
-        self.engine = engine
         super().__init__(engine, room_image_path="assets/reactor.png")
 
         self.storage_door = Interactable(self.player, self.engine, pg.FRect(32, 77, 5, 30))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
-        self.next_state = None
+        self.next_state = AppState.EMPTY
+        
+        self.player.rect.bottomleft = storage_rect.bottomright
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[
-                    self.engine.current_state
-                ].last_frame = self.engine.screen.copy()
+                self.engine.state_dict[self.engine.current_state].last_frame = (
+                    self.engine.screen.copy()
+                )
 
     def render(self):
         self.engine.screen.fill("black")
-
         self.render_background()
+
         self.storage_door.render()
         if self.storage_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.STORAGE
 
+        self.player.update(False)
+
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
-
-        self.player.update(False)
 
         if self.transition.event:
             self.engine.last_state = self.engine.current_state
