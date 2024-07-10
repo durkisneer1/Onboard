@@ -14,16 +14,13 @@ if TYPE_CHECKING:
 
 class ReactorRoom(Room):
     def __init__(self, engine: "Engine") -> None:
-        super().__init__(
-            engine, room_image_path="assets/reactor frames/reactor_room_0001.png"
-        )
+        super().__init__(engine, room_image_path="assets/reactor.png")
 
-        storage_rect = pg.FRect(32, 77, 5, 30)
-        self.storage_door = Interactable(self.player, self.engine, storage_rect)
+        self.storage_door = Interactable(self.player, self.engine, pg.FRect(32, 77, 5, 30))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = AppState.EMPTY
-
+        
         self.player.rect.bottomleft = storage_rect.bottomright
 
     def handle_events(self, event):
