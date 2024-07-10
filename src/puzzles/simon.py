@@ -60,7 +60,7 @@ class SimonSaysPuzzle(Puzzle):
             button.glow = False
             button.hovering = False
 
-    def _render(self) -> None:
+    def _render(self):
         self.engine.screen.blit(self.tablet, self.tablet_pos)
 
         self._player_turn() if self.player_turn else self._simon_turn()

@@ -15,11 +15,9 @@ if TYPE_CHECKING:
 
 class StorageRoom(Room):
     def __init__(self, engine: "Engine") -> None:
-        self.engine = engine
         super().__init__(engine, room_image_path="assets/storage.png")
 
-        simon_rect = pg.FRect(108, 81, 15, 15)
-        self.simon = Interactable(self.player, self.engine, simon_rect)
+        self.simon = Interactable(self.player, self.engine, pg.FRect(108, 81, 15, 15))
         self.simon_puzzle = SimonSaysPuzzle(self.engine)
 
         cockpit_rect = pg.FRect(32, 77, 5, 30)
@@ -38,9 +36,9 @@ class StorageRoom(Room):
             if event.key == pg.K_ESCAPE:
                 self.engine.last_state = self.engine.current_state
                 self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[
-                    self.engine.current_state
-                ].last_frame = self.engine.screen.copy()
+                self.engine.state_dict[self.engine.current_state].last_frame = (
+                    self.engine.screen.copy()
+                )
 
     def render(self):
         self.engine.screen.fill("black")
