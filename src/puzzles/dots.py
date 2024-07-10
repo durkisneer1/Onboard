@@ -4,7 +4,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import WIN_HEIGHT, WIN_WIDTH
+from core.surfaces import import_image
+from core.settings import WIN_HEIGHT, WIN_SIZE, WIN_WIDTH
 from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:
@@ -29,7 +30,9 @@ class Node:
                 self.boop_sfx.play()
 
     def draw(self, screen: pg.Surface) -> None:
-        pg.draw.circle(screen, "white", self.pos, self.radius, 0 if self.active else 1)
+        pg.draw.circle(screen, "white", self.pos, 2, 0)
+        if self.active:
+            pg.draw.circle(screen, "white", self.pos, self.radius, 1)
 
 
 class DotsPuzzle(Puzzle):
@@ -46,6 +49,7 @@ class DotsPuzzle(Puzzle):
         ]
         self.active_nodes = []
 
+        # Tablet Background
         self.tablet = pg.Surface((80, 80), pg.SRCALPHA)
         self.tablet_rect = self.tablet.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
         pg.draw.rect(
@@ -57,32 +61,56 @@ class DotsPuzzle(Puzzle):
             ((3, 3), self.tablet.size - pg.Vector2(6, 6)),
             border_radius=2,
         )
+
+        # Bloom
+        self.tablet_bloom = pg.Surface((100, 100), pg.SRCALPHA)
         pg.draw.rect(
-            self.tablet,
+            self.tablet_bloom,
             (40, 144, 220),
-            ((4, 4), self.tablet.size - pg.Vector2(8, 8)),
+            ((5, 5), self.tablet.size + pg.Vector2(10, 10)),
             border_radius=2,
         )
+        self.tablet_bloom = pg.transform.gaussian_blur(self.tablet_bloom, 6)
+        self.tablet_bloom.set_alpha(100)
 
         self.password = [0, 1, 2, 5]
 
         self.done = False
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
 
+        self.checkmark_img = import_image("assets/check.png")
+        self.checkmark_rect = self.checkmark_img.get_rect(center=pg.Vector2(WIN_SIZE) / 2)
+        self.checkmark_timer = 2000  # 2s
+        self.done_time = 0
+        self.start_timer = False
+
     def _draw_tablet(self) -> None:
         self.engine.screen.blit(self.tablet, self.tablet_rect)
+        self.engine.screen.blit(self.tablet_bloom, self.tablet_rect.move(-10, -10))
+
+        # Screen
+        pg.draw.rect(
+            self.engine.screen,
+            (94, 233, 233),
+            (
+                self.tablet_rect.topleft + pg.Vector2(4, 4),
+                self.tablet.size - pg.Vector2(8, 8),
+            ),
+            border_radius=2,
+        )
 
     def _update_nodes(self) -> None:
-        # pg.draw.rect(self.engine.screen, (1, 237,235), ())
+        if not self.start_timer:
+            for node in self.nodes:
+                node.update(self.active_nodes)
+                node.draw(self.engine.screen)
 
-        for node in self.nodes:
-            node.update(self.active_nodes)
-            node.draw(self.engine.screen)
-
-        if pg.mouse.get_just_released()[0]:
-            for node in self.active_nodes:
-                node.active = False
-            self.active_nodes.clear()
+            if pg.mouse.get_just_released()[0]:
+                for node in self.active_nodes:
+                    node.active = False
+                self.active_nodes.clear()
+        else:
+            self.engine.screen.blit(self.checkmark_img, self.checkmark_rect)
 
         if len(self.active_nodes) > 1:
             pg.draw.lines(
@@ -109,9 +137,16 @@ class DotsPuzzle(Puzzle):
             )
 
         if self.password == [node.num for node in self.active_nodes]:
-            self.done = True
-            self.active = False
-            self.success_sfx.play()
+            self.active_nodes.clear()
+            if not self.start_timer:
+                self.success_sfx.play()
+                self.done_time = pg.time.get_ticks()
+                self.start_timer = True
+
+        if self.start_timer:
+            if pg.time.get_ticks() - self.done_time > self.checkmark_timer:
+                self.done = True
+                self.active = False
 
     def _render(self) -> None:
         self._draw_tablet()
