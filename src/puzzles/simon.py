@@ -54,6 +54,12 @@ class SimonSaysPuzzle(Puzzle):
         self.player_turn = False
         self.wait_for_turns = False  # cooldown between turns
 
+        # fixes bug when you re-enter the puzzle and the previous button is
+        # still in glowing/hovering state for 1 frame
+        for button in self.buttons:
+            button.glow = False
+            button.hovering = False
+
     def _render(self) -> None:
         self.engine.screen.blit(self.tablet, self.tablet_pos)
 
