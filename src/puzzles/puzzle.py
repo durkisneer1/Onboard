@@ -26,5 +26,4 @@ class Puzzle(ABC):
         self._render()
 
     @abstractmethod
-    def _render(self) -> None:
-        ...
+    def _render(self) -> None: ...

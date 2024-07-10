@@ -31,7 +31,7 @@ class Engine:
             AppState.REACTOR: ReactorRoom(self),
             AppState.SETTINGS: SettingsMenu(self),
         }
-        self.current_state = AppState.COCKPIT
+        self.current_state = AppState.MENU
         # Needed for accesing the settings and then going back to the last state
         self.last_state = self.current_state
 

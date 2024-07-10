@@ -39,7 +39,9 @@ class CockPit(Room):
         self.postit = Interactable(self.player, self.engine, pg.FRect(164, 81, 5, 5))
         self.postit_puzzle = PostItPuzzle(engine)
 
-        self.storage_door = Interactable(self.player, self.engine, pg.FRect(203, 77, 5, 30))
+        self.storage_door = Interactable(
+            self.player, self.engine, pg.FRect(203, 77, 5, 30)
+        )
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = AppState.EMPTY
