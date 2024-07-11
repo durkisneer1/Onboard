@@ -22,7 +22,7 @@ class ReactorRoom(Room):
         )
         self.dots_puzzle = DotsPuzzle(self.engine)
 
-        storage_rect = pg.FRect(23, 77, 5, 30)
+        storage_rect = pg.FRect(32, 77, 5, 30)
         self.storage_door = Interactable(self.player, self.engine, storage_rect)
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
@@ -40,6 +40,10 @@ class ReactorRoom(Room):
                 )
 
     def render(self):
+        if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
+            pg.mixer.music.load("assets/reactor.mp3")
+            pg.mixer.music.play(-1, fade_ms=500)
+
         self.engine.screen.fill("black")
         self.render_background()
 
@@ -50,6 +54,7 @@ class ReactorRoom(Room):
         if self.storage_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.STORAGE
+            pg.mixer.music.fadeout(700)
 
         self.player.update(self.dots_puzzle.active)
 
@@ -64,3 +69,4 @@ class ReactorRoom(Room):
             self.engine.last_state = self.engine.current_state
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
+            self.next_state = AppState.EMPTY

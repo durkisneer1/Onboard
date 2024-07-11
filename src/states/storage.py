@@ -41,6 +41,10 @@ class StorageRoom(Room):
                 )
 
     def render(self):
+        if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
+            pg.mixer.music.load("assets/storage.mp3")
+            pg.mixer.music.play(-1, fade_ms=500)
+
         self.engine.screen.fill("black")
         self.render_background()
 
@@ -51,11 +55,13 @@ class StorageRoom(Room):
         if self.cockpit_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.COCKPIT
+            pg.mixer.music.fadeout(700)
 
         self.reactor_door.render()
         if self.reactor_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.REACTOR
+            pg.mixer.music.fadeout(700)
 
         self.player.update(self.simon_puzzle.active)
 
@@ -71,3 +77,4 @@ class StorageRoom(Room):
             self.engine.last_state = self.engine.current_state
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
+            self.next_state = AppState.EMPTY

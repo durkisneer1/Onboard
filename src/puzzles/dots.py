@@ -4,8 +4,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.surfaces import import_image
 from core.settings import WIN_HEIGHT, WIN_SIZE, WIN_WIDTH
+from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:
@@ -79,7 +79,9 @@ class DotsPuzzle(Puzzle):
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
 
         self.checkmark_img = import_image("assets/check.png")
-        self.checkmark_rect = self.checkmark_img.get_rect(center=pg.Vector2(WIN_SIZE) / 2)
+        self.checkmark_rect = self.checkmark_img.get_rect(
+            center=pg.Vector2(WIN_SIZE) / 2
+        )
         self.checkmark_timer = 2000  # 2s
         self.done_time = 0
         self.start_timer = False

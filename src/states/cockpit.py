@@ -46,9 +46,6 @@ class CockPit(Room):
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = AppState.EMPTY
 
-        pg.mixer_music.load("assets/cockpit.mp3")
-        # pg.mixer_music.play()
-
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
             if event.key == pg.K_ESCAPE:
@@ -59,6 +56,10 @@ class CockPit(Room):
                 )
 
     def render(self):
+        if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
+            pg.mixer.music.load("assets/cockpit.mp3")
+            pg.mixer.music.play(-1, fade_ms=500)
+
         self.engine.screen.fill("black")
 
         self.render_background()
@@ -73,6 +74,7 @@ class CockPit(Room):
         if self.storage_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.STORAGE
+            pg.mixer.music.fadeout(700)
 
         self.player.update(self.keypad_puzzle.active or self.postit_puzzle.active)
 
@@ -92,6 +94,7 @@ class CockPit(Room):
             self.engine.last_state = self.engine.current_state
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
+            self.next_state = AppState.EMPTY
 
     def render_extra_background_items(self, surface: pg.Surface, n: int):
         self._render_particles(surface, self.particle_colors[n])
