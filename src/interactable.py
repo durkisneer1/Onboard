@@ -26,7 +26,6 @@ class Interactable:
         self.popup.render()
 
         if self.active:
-            print("REN", self.rect)
             pg.draw.rect(self.engine.screen, (232, 255, 117), self.rect, 1)
 
     def handle_states(self, active: bool = True):
