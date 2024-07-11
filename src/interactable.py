@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.surfaces import import_anim
+from core.settings import *
+from core.surfaces import import_anim, shift_colors
 
 if TYPE_CHECKING:
     from main import Engine
@@ -37,7 +38,7 @@ class Interactable:
 
 class InteractablePopUp:
     def __init__(
-        self, player: "Player", engine: "Engine", interactable: "Interactable"
+            self, player: "Player", engine: "Engine", interactable: "Interactable"
     ):
         self.player = player
         self.engine = engine
@@ -88,33 +89,35 @@ class InteractablePopUp:
 
 
 class DoorInteractable:
-    def __init__(self, player: "Player", engine: "Engine", pos: tuple[int]):
+    def __init__(self, player: "Player", engine: "Engine", pos: tuple[int, int]):
         self.player = player
         self.engine = engine
 
         self.anim = import_anim("assets/door.png", 22, 32)
-        self.rect = self.anim[0].get_rect(topleft=pos)
+        self.rect = self.anim[0].get_frect(topleft=pos)
 
         self.current_frame = 0
 
         self.active = False
         self.event = False
 
-        self.interactable = Interactable(player, engine, self.rect)
+        self.interactable = Interactable(player, engine, self.rect.inflate(1, 1))
 
-    def handle_anim(self):
+    def update(self):
         if self.active:
-            self.current_frame += 9 * self.engine.dt
+            self.current_frame += 16 * self.engine.dt
         else:
-            self.current_frame -= 9 * self.engine.dt
+            self.current_frame -= 16 * self.engine.dt
 
-        self.current_frame = min(len(self.anim) - 1, self.current_frame)
-        self.current_frame = max(0, self.current_frame)
+        self.current_frame = pg.math.clamp(self.current_frame, 0, len(self.anim) - 1)
 
-        self.engine.screen.blit(self.anim[int(self.current_frame)], self.rect)
-
-    def render(self):
-        self.handle_anim()
         self.interactable.render()
+
         self.active = self.interactable.active
         self.event = self.interactable.event
+
+    def render_layer(self, destination: pg.Surface, n: int = 0):
+        if self.current_frame != 0:
+            surf = self.anim[int(self.current_frame)]
+            new_surf = shift_colors(surface=surf, color_sets=COLOR_SETS, n=2 - n)
+            destination.blit(new_surf, (self.rect.x - ROOM_TOPLEFT[0], self.rect.y - ROOM_TOPLEFT[1]))
