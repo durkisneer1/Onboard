@@ -45,13 +45,15 @@ class Picker:
         holding: bool = pg.mouse.get_pressed()[0] and hovering
         event: bool = pg.mouse.get_just_released()[0] and hovering
 
-        if event:
-            self.index += 1
-            self.index %= len(self.values)
-
         self.engine.screen.blit(self.text_surface, self.pos)
+
         if hovering:
             pg.draw.rect(self.engine.screen, [30, 30, 30], rect.inflate(10, 2), 0, 5)
         if holding:
             pg.draw.rect(self.engine.screen, [30, 100, 30], rect.inflate(10, 2), 0, 5)
+
         self.engine.screen.blit(self.values_surfaces[self.index], rect)
+
+        if event:
+            self.index += 1
+            self.index %= len(self.values)
