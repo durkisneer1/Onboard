@@ -25,7 +25,7 @@ class Menu(BaseState):
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = (
-            AppState.COCKPIT
+            AppState.EMPTY
         )  # Change this to the state you want to transition to initially (for debugging)
 
     def handle_events(self, event):
@@ -45,8 +45,10 @@ class Menu(BaseState):
             # self.engine.current_state = self.engine.last_state
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
+            self.next_state = AppState.EMPTY
 
     def handle_buttons(self):
         self.game_button.render()
         if self.game_button.event:
             self.transition.fade_in = False
+            self.next_state = AppState.INTRO

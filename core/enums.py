@@ -9,6 +9,8 @@ class AppState(IntEnum):
     PAUSE = auto()
     MENU = auto()
     SETTINGS = auto()
+    INTRO = auto()
+    OUTRO = auto()
 
 
 class AnimState(IntEnum):

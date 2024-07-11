@@ -4,6 +4,7 @@ import core.surfaces as surfaces
 from core.enums import AppState
 from core.settings import *
 from src.states.cockpit import CockPit
+from src.states.cutscene import CutScene
 from src.states.menu import Menu
 from src.states.pause import Pause
 from src.states.reactor import ReactorRoom
@@ -29,6 +30,7 @@ class Engine:
             AppState.STORAGE: StorageRoom(self),
             AppState.REACTOR: ReactorRoom(self),
             AppState.SETTINGS: SettingsMenu(self),
+            AppState.INTRO: CutScene(self),
         }
         self.current_state = AppState.MENU  # MENU is default
         # Needed for accesing the settings and then going back to the last state
