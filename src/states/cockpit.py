@@ -33,13 +33,13 @@ class CockPit(Room):
             for _ in range(6)
         ]
 
-        self.keypad = Interactable(self.player, self.engine, pg.FRect(177, 77, 7, 9))
+        self.keypad = Interactable(self.player, self.engine, pg.FRect(177, 84, 7, 9))
         self.keypad_puzzle = KeyPadPuzzle(engine)
 
-        self.postit = Interactable(self.player, self.engine, pg.FRect(164, 81, 5, 5))
+        self.postit = Interactable(self.player, self.engine, pg.FRect(164, 88, 5, 5))
         self.postit_puzzle = PostItPuzzle(engine)
 
-        self.storage_door = DoorInteractable(self.player, self.engine, (130, 75))
+        self.storage_door = DoorInteractable(self.player, self.engine, (185, 76))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = AppState.EMPTY
@@ -68,11 +68,14 @@ class CockPit(Room):
 
         self.postit.render(not self.keypad.active)
 
-        self.storage_door.render()
-        if self.storage_door.event:
-            self.transition.fade_in = False
-            self.next_state = AppState.STORAGE
-            pg.mixer.music.fadeout(700)
+        if self.keypad_puzzle.done:
+            if self.storage_door.event:
+                self.transition.fade_in = False
+                self.next_state = AppState.STORAGE
+                pg.mixer.music.fadeout(700)
+
+        if self.keypad_puzzle.done:
+            self.storage_door.update()
 
         self.player.update(self.keypad_puzzle.active or self.postit_puzzle.active)
 
@@ -96,6 +99,8 @@ class CockPit(Room):
 
     def render_extra_background_items(self, surface: pg.Surface, n: int):
         self._render_particles(surface, self.particle_colors[n])
+        if self.keypad_puzzle.done:
+            self.storage_door.render_layer(surface, n=n)
 
     def _render_particles(self, surface, color):
         for particle in self.particles:
