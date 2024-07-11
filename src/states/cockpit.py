@@ -8,7 +8,7 @@ from core.enums import AppState
 from core.room import Room
 from core.settings import *
 from core.transitions import FadeTransition
-from src.interactable import Interactable
+from src.interactable import DoorInteractable, Interactable
 from src.puzzles.keypad import KeyPadPuzzle
 from src.puzzles.postit import PostItPuzzle
 
@@ -39,9 +39,7 @@ class CockPit(Room):
         self.postit = Interactable(self.player, self.engine, pg.FRect(164, 81, 5, 5))
         self.postit_puzzle = PostItPuzzle(engine)
 
-        self.storage_door = Interactable(
-            self.player, self.engine, pg.FRect(203, 77, 5, 30)
-        )
+        self.storage_door = DoorInteractable(self.player, self.engine, (130, 75))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = AppState.EMPTY

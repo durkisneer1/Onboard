@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.surfaces import import_anim
+
 if TYPE_CHECKING:
     from main import Engine
     from src.player import Player
@@ -83,3 +85,36 @@ class InteractablePopUp:
         self.handle_fading()
 
         self.engine.screen.blit(self.surface, self.rect)
+
+
+class DoorInteractable:
+    def __init__(self, player: "Player", engine: "Engine", pos: tuple[int]):
+        self.player = player
+        self.engine = engine
+
+        self.anim = import_anim("assets/door.png", 22, 32)
+        self.rect = self.anim[0].get_rect(topleft=pos)
+
+        self.current_frame = 0
+
+        self.active = False
+        self.event = False
+
+        self.interactable = Interactable(player, engine, self.rect)
+
+    def handle_anim(self):
+        if self.active:
+            self.current_frame += 9 * self.engine.dt
+        else:
+            self.current_frame -= 9 * self.engine.dt
+
+        self.current_frame = min(len(self.anim) - 1, self.current_frame)
+        self.current_frame = max(0, self.current_frame)
+
+        self.engine.screen.blit(self.anim[int(self.current_frame)], self.rect)
+
+    def render(self):
+        self.handle_anim()
+        self.interactable.render()
+        self.active = self.interactable.active
+        self.event = self.interactable.event
