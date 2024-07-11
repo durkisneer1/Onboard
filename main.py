@@ -32,7 +32,7 @@ class Engine:
             AppState.SETTINGS: SettingsMenu(self),
             AppState.INTRO: CutScene(self),
         }
-        self.current_state = AppState.COCKPIT  # MENU is default
+        self.current_state = AppState.STORAGE  # MENU is default
         # Needed for accesing the settings and then going back to the last state
         self.last_state = self.current_state
 

@@ -30,7 +30,6 @@ class SimonSaysPuzzle(Puzzle):
         ]
         self.buttons.sort(key=lambda btn: btn.num)
 
-        self.code = random.sample(range(1, 17), 6)
         # define game vars
         self.reset()
 
@@ -45,7 +44,7 @@ class SimonSaysPuzzle(Puzzle):
         self.failure_sfx.set_volume(0.35)
 
     def reset(self):
-        self.code = random.sample(range(1, 17), 6)
+        self.code = random.sample(range(1, 17), 2)
         self.user_in = []
         self.current_length = 2
         self.current_shown_num = 0  # index

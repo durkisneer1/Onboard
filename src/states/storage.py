@@ -8,6 +8,7 @@ from core.settings import *
 from core.transitions import FadeTransition
 from src.interactable import Interactable
 from src.puzzles.simon import SimonSaysPuzzle
+from src.puzzles.wirecut import WireCut
 
 if TYPE_CHECKING:
     from main import Engine
@@ -19,6 +20,8 @@ class StorageRoom(Room):
 
         self.simon = Interactable(self.player, self.engine, pg.FRect(108, 81, 15, 15))
         self.simon_puzzle = SimonSaysPuzzle(self.engine)
+        self.wires = Interactable(self.player, self.engine, pg.FRect(108, 81, 15, 15))
+        self.wirecut_puzzle = WireCut(self.engine)
 
         cockpit_rect = pg.FRect(32, 77, 5, 30)
         self.cockpit_door = Interactable(self.player, self.engine, cockpit_rect)
@@ -50,6 +53,8 @@ class StorageRoom(Room):
 
         if not self.simon_puzzle.done:
             self.simon.render()
+        elif self.simon_puzzle.done:
+            self.wires.render()
 
         self.cockpit_door.render()
         if self.cockpit_door.event:
@@ -65,10 +70,15 @@ class StorageRoom(Room):
 
         self.player.update(self.simon_puzzle.active)
 
-        if self.simon.event and not self.simon_puzzle.done:
-            self.simon_puzzle.reset()
-            self.simon_puzzle.active = not self.simon_puzzle.active
-        self.simon_puzzle.render()
+        if not self.simon_puzzle.done:
+            self.simon_puzzle.render()
+            if self.simon.event:
+                self.simon_puzzle.reset()
+                self.simon_puzzle.active = not self.simon_puzzle.active
+        else:
+            self.wirecut_puzzle.render()
+            if self.wires.event:
+                self.wirecut_puzzle.active = not self.wirecut_puzzle.active
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
