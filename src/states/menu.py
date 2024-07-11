@@ -20,7 +20,11 @@ class Menu(BaseState):
         self.bg.fill("black")
 
         self.game_button = TextButton(
-            engine, "Start", pg.Vector2(100, 52), pg.Vector2(40, 16)
+            engine, "Start", pg.Vector2(90, 32), pg.Vector2(50, 16)
+        )
+
+        self.settings_button = TextButton(
+            engine, "Settings", pg.Vector2(90, 52), pg.Vector2(50, 16)
         )
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
@@ -52,3 +56,8 @@ class Menu(BaseState):
         if self.game_button.event:
             self.transition.fade_in = False
             self.next_state = AppState.INTRO
+
+        self.settings_button.render()
+        if self.settings_button.event:
+            self.transition.fade_in = False
+            self.next_state = AppState.SETTINGS
