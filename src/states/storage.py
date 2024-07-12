@@ -6,7 +6,7 @@ from core.enums import AppState
 from core.room import Room
 from core.settings import *
 from core.transitions import FadeTransition
-from src.interactable import Interactable
+from src.interactable import Interactable, DoorInteractable
 from src.puzzles.simon import SimonSaysPuzzle
 from src.puzzles.wirecut import WireCut
 
@@ -23,16 +23,13 @@ class StorageRoom(Room):
         self.wires = Interactable(self.player, self.engine, pg.FRect(108, 81, 15, 15))
         self.wirecut_puzzle = WireCut(self.engine)
 
-        cockpit_rect = pg.FRect(32, 77, 5, 30)
-        self.cockpit_door = Interactable(self.player, self.engine, cockpit_rect)
-        self.reactor_door = Interactable(
-            self.player, self.engine, pg.FRect(203, 77, 5, 30)
-        )
+        self.cockpit_door = DoorInteractable(self.player, self.engine, (33, 76))
+        self.reactor_door = DoorInteractable(self.player, self.engine, (185, 76))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = AppState.EMPTY
 
-        self.player.rect.bottomleft = cockpit_rect.bottomright
+        self.player.rect.bottomleft = (32, 107)
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
@@ -56,19 +53,20 @@ class StorageRoom(Room):
         elif self.simon_puzzle.done:
             self.wires.render()
 
-        self.cockpit_door.render()
+        self.cockpit_door.update()
         if self.cockpit_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.COCKPIT
             pg.mixer.music.fadeout(700)
 
-        self.reactor_door.render()
+        # if self.wirecut_puzzle.done:
+        self.reactor_door.update()
         if self.reactor_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.REACTOR
             pg.mixer.music.fadeout(700)
 
-        self.player.update(self.simon_puzzle.active)
+        self.player.update(self.simon_puzzle.active or self.wirecut_puzzle.active)
 
         if not self.simon_puzzle.done:
             self.simon_puzzle.render()
@@ -88,3 +86,8 @@ class StorageRoom(Room):
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
             self.next_state = AppState.EMPTY
+
+    def render_extra_background_items(self, surface: pg.Surface, n: int):
+        self.cockpit_door.render_layer(surface, n=n)
+        # if self.wirecut_puzzle.done:
+        self.reactor_door.render_layer(surface, n=n)

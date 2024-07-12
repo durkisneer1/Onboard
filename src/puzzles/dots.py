@@ -74,7 +74,7 @@ class DotsPuzzle(Puzzle):
         self.tablet_bloom = pg.transform.gaussian_blur(self.tablet_bloom, 6)
         self.tablet_bloom.set_alpha(100)
 
-        self.password = [1, 3, 6, 7, 8, 5, 4]
+        self.password = [6, 3, 0, 4, 2, 1, 5, 7, 8]
 
         self.done = False
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")

@@ -6,7 +6,7 @@ from core.enums import AppState
 from core.room import Room
 from core.settings import *
 from core.transitions import FadeTransition
-from src.interactable import Interactable
+from src.interactable import Interactable, DoorInteractable
 from src.puzzles.dots import DotsPuzzle
 
 if TYPE_CHECKING:
@@ -22,13 +22,12 @@ class ReactorRoom(Room):
         )
         self.dots_puzzle = DotsPuzzle(self.engine)
 
-        storage_rect = pg.FRect(32, 77, 5, 30)
-        self.storage_door = Interactable(self.player, self.engine, storage_rect)
+        self.storage_door = DoorInteractable(self.player, self.engine, (33, 76))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
         self.next_state = AppState.EMPTY
 
-        self.player.rect.bottomleft = storage_rect.bottomright
+        self.player.rect.bottomleft = (32, 107)
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
@@ -50,7 +49,7 @@ class ReactorRoom(Room):
         if not self.dots_puzzle.done:
             self.dots_tablet.render()
 
-        self.storage_door.render()
+        self.storage_door.update()
         if self.storage_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.STORAGE
@@ -70,3 +69,6 @@ class ReactorRoom(Room):
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
             self.next_state = AppState.EMPTY
+    
+    def render_extra_background_items(self, surface: pg.Surface, n: int):
+        self.storage_door.render_layer(surface, n=n)

@@ -80,6 +80,8 @@ class WireCut(Puzzle):
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("cut in the order", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomright=(WIN_WIDTH - 4, WIN_HEIGHT))
+        
+        self.done = False
 
     def _render(self):
         pg.draw.rect(self.engine.screen, "darkgray", self.tablet_rect, border_radius=4)
