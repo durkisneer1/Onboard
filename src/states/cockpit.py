@@ -45,13 +45,12 @@ class CockPit(Room):
         self.next_state = AppState.EMPTY
 
     def handle_events(self, event):
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
-                self.engine.last_state = self.engine.current_state
-                self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            self.engine.last_state = self.engine.current_state
+            self.engine.current_state = AppState.PAUSE
+            self.engine.state_dict[self.engine.current_state].last_frame = (
+                self.engine.screen.copy()
+            )
 
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:

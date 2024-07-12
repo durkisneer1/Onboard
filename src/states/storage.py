@@ -32,13 +32,12 @@ class StorageRoom(Room):
         self.player.rect.bottomleft = (32, 107)
 
     def handle_events(self, event):
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
-                self.engine.last_state = self.engine.current_state
-                self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            self.engine.last_state = self.engine.current_state
+            self.engine.current_state = AppState.PAUSE
+            self.engine.state_dict[self.engine.current_state].last_frame = (
+                self.engine.screen.copy()
+            )
 
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
@@ -47,11 +46,6 @@ class StorageRoom(Room):
 
         self.engine.screen.fill("black")
         self.render_background()
-
-        if not self.simon_puzzle.done:
-            self.simon.render()
-        elif self.simon_puzzle.done:
-            self.wires.render()
 
         self.cockpit_door.update()
         if self.cockpit_door.event:
@@ -69,14 +63,17 @@ class StorageRoom(Room):
         self.player.update(self.simon_puzzle.active or self.wirecut_puzzle.active)
 
         if not self.simon_puzzle.done:
-            self.simon_puzzle.render()
+            self.simon.render()
             if self.simon.event:
                 self.simon_puzzle.reset()
                 self.simon_puzzle.active = not self.simon_puzzle.active
+            self.simon_puzzle.render()
         else:
-            self.wirecut_puzzle.render()
-            if self.wires.event:
-                self.wirecut_puzzle.active = not self.wirecut_puzzle.active
+            if not self.wirecut_puzzle.done:
+                self.wires.render()
+                if self.wires.event:
+                    self.wirecut_puzzle.active = not self.wirecut_puzzle.active
+                self.wirecut_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

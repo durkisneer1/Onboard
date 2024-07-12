@@ -24,10 +24,9 @@ class CutScene(BaseState):
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
 
     def handle_events(self, event):
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
-                self.next_state = AppState.MENU
-                self.transition.fade_in = False
+        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            self.next_state = AppState.MENU
+            self.transition.fade_in = False
 
     def handle_slide(self):
         self.timer -= self.engine.dt

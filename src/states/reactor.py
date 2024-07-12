@@ -8,6 +8,7 @@ from core.settings import SCN_SIZE
 from core.transitions import FadeTransition
 from src.interactable import DoorInteractable, Interactable
 from src.puzzles.dots import DotsPuzzle
+from src.puzzles.freq import FreqPuzzle
 
 if TYPE_CHECKING:
     from main import Engine
@@ -21,6 +22,10 @@ class ReactorRoom(Room):
             self.player, self.engine, pg.FRect(153, 84, 4, 12)
         )
         self.dots_puzzle = DotsPuzzle(self.engine)
+        self.freq_tablet = Interactable(
+            self.player, self.engine, pg.FRect(153, 84, 4, 12)
+        )
+        self.freq_puzzle = FreqPuzzle(self.engine)
 
         self.storage_door = DoorInteractable(self.player, self.engine, (33, 76))
 
@@ -29,14 +34,15 @@ class ReactorRoom(Room):
 
         self.player.rect.bottomleft = (32, 107)
 
+        self.dots_puzzle.done = True  # DELETE ME
+
     def handle_events(self, event):
-        if event.type == pg.KEYDOWN:
-            if event.key == pg.K_ESCAPE:
-                self.engine.last_state = self.engine.current_state
-                self.engine.current_state = AppState.PAUSE
-                self.engine.state_dict[self.engine.current_state].last_frame = (
-                    self.engine.screen.copy()
-                )
+        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            self.engine.last_state = self.engine.current_state
+            self.engine.current_state = AppState.PAUSE
+            self.engine.state_dict[self.engine.current_state].last_frame = (
+                self.engine.screen.copy()
+            )
 
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
@@ -46,9 +52,6 @@ class ReactorRoom(Room):
         self.engine.screen.fill("black")
         self.render_background()
 
-        if not self.dots_puzzle.done:
-            self.dots_tablet.render()
-
         self.storage_door.update()
         if self.storage_door.event:
             self.transition.fade_in = False
@@ -57,9 +60,17 @@ class ReactorRoom(Room):
 
         self.player.update(self.dots_puzzle.active)
 
-        if self.dots_tablet.event and not self.dots_puzzle.done:
-            self.dots_puzzle.active = not self.dots_puzzle.active
-        self.dots_puzzle.render()
+        if not self.dots_puzzle.done:
+            self.dots_tablet.render()
+            if self.dots_tablet.event:
+                self.dots_puzzle.active = not self.dots_puzzle.active
+            self.dots_puzzle.render()
+        else:
+            if not self.freq_puzzle.done:
+                self.freq_tablet.render()
+                if self.freq_tablet.event:
+                    self.freq_puzzle.active = not self.freq_puzzle.active
+                self.freq_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
