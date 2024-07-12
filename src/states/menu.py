@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import SCN_SIZE
 from core.buttons import TextButton
 from core.enums import AppState
+from core.settings import SCN_SIZE
 from core.transitions import FadeTransition
 from src.states.base import BaseState
 
@@ -20,11 +20,13 @@ class Menu(BaseState):
         self.bg.fill("black")
 
         self.game_button = TextButton(
-            engine, "Start", pg.Vector2(90, 32), pg.Vector2(50, 16)
+            engine, "Start", pg.Vector2(90, 12), pg.Vector2(50, 16)
         )
-
         self.settings_button = TextButton(
-            engine, "Settings", pg.Vector2(90, 52), pg.Vector2(50, 16)
+            engine, "Settings", pg.Vector2(90, 32), pg.Vector2(50, 16)
+        )
+        self.exit_button = TextButton(
+            engine, "Exit", pg.Vector2(90, 52), pg.Vector2(50, 16)
         )
 
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
@@ -55,9 +57,14 @@ class Menu(BaseState):
         self.game_button.render()
         if self.game_button.event:
             self.transition.fade_in = False
-            self.next_state = AppState.INTRO
+            # self.next_state = AppState.INTRO
+            self.next_state = self.engine.last_state
 
         self.settings_button.render()
         if self.settings_button.event:
             self.transition.fade_in = False
             self.next_state = AppState.SETTINGS
+
+        self.exit_button.render()
+        if self.exit_button.event:
+            self.engine.running = False

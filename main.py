@@ -1,8 +1,8 @@
 import pygame as pg
 
-from core.settings import WIN_SIZE, SCN_SIZE, FACTOR
 import core.surfaces as surfaces
 from core.enums import AppState
+from core.settings import FACTOR, SCN_SIZE, WIN_SIZE
 from src.states.cockpit import CockPit
 from src.states.cutscene import CutScene
 from src.states.menu import Menu
@@ -37,7 +37,7 @@ class Engine:
         self.current_state = AppState.MENU  # MENU is default
 
         # Needed for accesing the settings and then going back to the last state
-        self.last_state = self.current_state
+        self.last_state = AppState.INTRO
 
     def run(self):
         while self.running:

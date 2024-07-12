@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import SCN_SIZE
 from core.enums import AppState
+from core.settings import SCN_SIZE
 from core.transitions import FadeTransition
 from src.states.base import BaseState
 

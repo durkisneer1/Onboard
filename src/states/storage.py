@@ -2,11 +2,11 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import SCN_SIZE
 from core.enums import AppState
 from core.room import Room
+from core.settings import SCN_SIZE
 from core.transitions import FadeTransition
-from src.interactable import Interactable, DoorInteractable
+from src.interactable import DoorInteractable, Interactable
 from src.puzzles.simon import SimonSaysPuzzle
 from src.puzzles.wirecut import WireCut
 

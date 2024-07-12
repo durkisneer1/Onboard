@@ -3,8 +3,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import SCN_SIZE
 from core.buttons import SimonButton
+from core.settings import SCN_SIZE
 from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 

@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.settings import COLOR_SETS, ROOM_TOPLEFT
-from core.surfaces import import_anim, shift_colors, import_image
+from core.surfaces import import_anim, import_image, shift_colors
 
 if TYPE_CHECKING:
     from main import Engine
