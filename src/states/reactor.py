@@ -27,7 +27,7 @@ class ReactorRoom(Room):
         )
         self.freq_puzzle = FreqPuzzle(self.engine)
 
-        self.storage_door = DoorInteractable(self.player, self.engine, (33, 76))
+        self.storage_door = DoorInteractable(self.player, self.engine, (34, 76))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
