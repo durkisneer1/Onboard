@@ -24,7 +24,7 @@ class StorageRoom(Room):
         self.wirecut_puzzle = WireCut(self.engine)
 
         self.cockpit_door = DoorInteractable(self.player, self.engine, (33, 76))
-        self.reactor_door = DoorInteractable(self.player, self.engine, (185, 76))
+        self.reactor_door = DoorInteractable(self.player, self.engine, (186, 76))
 
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
