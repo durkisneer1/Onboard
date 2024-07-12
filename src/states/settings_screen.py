@@ -33,13 +33,6 @@ class SettingsMenu(BaseState):
             ["FULLSCREEN", "WINDOWED"],
             "FULLSCREEN",
         )
-        self.vsync_pick = Picker(
-            engine,
-            pg.Vector2(10, 30),
-            "VSync",
-            ["Active", "Disabled"],
-            "Disabled",
-        )
         self.sfx_range = RangePicker(
             engine,
             pg.Vector2(10, 50),
@@ -70,7 +63,6 @@ class SettingsMenu(BaseState):
 
     def handle_ui(self) -> None:
         self.save_button.render()
-        self.vsync_pick.render()
         self.display_mode_pick.render()
         self.bgm_range.render()
         self.sfx_range.render()
@@ -89,20 +81,6 @@ class SettingsMenu(BaseState):
             and not pg.display.is_fullscreen()
         ):
             pg.display.toggle_fullscreen()
-
-        if self.vsync_pick.val() == "Active" and not pg.display.is_vsync():
-            pg.display.set_mode(
-                SCN_SIZE,
-                pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else 0,
-                vsync=True,
-            )
-
-        if self.vsync_pick.val() == "Disabled" and pg.display.is_vsync():
-            pg.display.set_mode(
-                SCN_SIZE,
-                pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else 0,
-                vsync=False,
-            )
 
         self.next_state = AppState.MENU
         self.transition.fade_in = False
