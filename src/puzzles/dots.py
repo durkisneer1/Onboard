@@ -13,12 +13,12 @@ if TYPE_CHECKING:
 
 
 class Node:
-    def __init__(self, num: int, pos: pg.Vector2) -> None:
+    def __init__(self, engine: "Engine", num: int, pos: pg.Vector2) -> None:
         self.num = num
         self.pos = pos
         self.radius = 5
         self.active = False
-        self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
+        self.boop_sfx = engine.sfx["boop"]
 
     def update(self, active_list: list[Node], mouse_pos: pg.Vector2) -> None:
         left_click = pg.mouse.get_pressed()[0]
@@ -40,6 +40,7 @@ class DotsPuzzle(Puzzle):
 
         self.nodes = [
             Node(
+                engine,
                 x + y * 3,
                 pg.Vector2(x, y) * 24 + (SCN_SIZE[0] / 2 - 24, SCN_SIZE[1] / 2 - 24),
             )
@@ -77,7 +78,6 @@ class DotsPuzzle(Puzzle):
         self.password = [6, 3, 0, 4, 2, 1, 5, 7, 8]
 
         self.done = False
-        self.success_sfx = pg.mixer.Sound("assets/success.mp3")
 
         self.checkmark_img = import_image("assets/check.png")
         self.checkmark_rect = self.checkmark_img.get_rect(
@@ -147,7 +147,7 @@ class DotsPuzzle(Puzzle):
         if self.password == user_in or self.password[::-1] == user_in:
             self.active_nodes.clear()
             if not self.start_timer:
-                self.success_sfx.play()
+                self.engine.sfx["success"].play()
                 self.done_time = pg.time.get_ticks()
                 self.start_timer = True
 

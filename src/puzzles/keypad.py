@@ -31,10 +31,6 @@ class KeyPadPuzzle(Puzzle):
         self.code = [1, 5, 7, 2]
         self.user_in = []
 
-        self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
-        self.success_sfx = pg.mixer.Sound("assets/success.mp3")
-        self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
-
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("enter the code", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
@@ -47,15 +43,15 @@ class KeyPadPuzzle(Puzzle):
 
             self.user_in.append(button.num)
             if len(self.user_in) != len(self.code):
-                self.boop_sfx.play()
+                self.engine.sfx["boop"].play()
                 continue
 
             if self.user_in == self.code:
                 self.active = False
                 self.done = True
-                self.success_sfx.play()
+                self.engine.sfx["success"].play()
             else:
                 self.user_in.clear()
-                self.failure_sfx.play()
+                self.engine.sfx["failure"].play()
 
         self.engine.screen.blit(self.hint, self.hint_pos)

@@ -25,6 +25,15 @@ class Engine:
         self.dt = 0
         self.mouse_pos = pg.Vector2()
 
+        self.sfx = {
+            "boop": pg.mixer.Sound("assets/boop.mp3"),
+            "success": pg.mixer.Sound("assets/success.mp3"),
+            "failure": pg.mixer.Sound("assets/failure.mp3"),
+            "cut": pg.mixer.Sound("assets/cut.mp3"),
+            "door open": pg.mixer.Sound("assets/door open.mp3"),
+            "door close": pg.mixer.Sound("assets/door close.mp3"),
+        }
+
         self.state_dict = {
             AppState.PAUSE: Pause(self),
             AppState.MENU: Menu(self),

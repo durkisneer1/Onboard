@@ -82,5 +82,8 @@ class SettingsMenu(BaseState):
         ):
             pg.display.toggle_fullscreen()
 
+        for sfx in self.engine.sfx.values():
+            sfx.set_volume(self.sfx_range.default_per / 100)
+
         self.next_state = AppState.MENU
         self.transition.fade_in = False

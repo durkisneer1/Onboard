@@ -39,11 +39,6 @@ class SimonSaysPuzzle(Puzzle):
         pg.draw.rect(self.tablet, (104, 107, 114), tablet_rect, border_radius=2)
         self.tablet_pos = self.buttons[0].rect.topleft - pg.Vector2(1, 1)
 
-        self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
-        self.success_sfx = pg.mixer.Sound("assets/success.mp3")
-        self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
-        self.failure_sfx.set_volume(0.35)
-
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("repeat the pattern", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
@@ -109,7 +104,7 @@ class SimonSaysPuzzle(Puzzle):
                 self._on_success()
                 return
 
-            self.boop_sfx.play()
+            self.engine.sfx["boop"].play()
 
             if len(self.user_in) != len(self.code[: self.current_length]):
                 continue
@@ -123,7 +118,7 @@ class SimonSaysPuzzle(Puzzle):
     def _on_success(self):
         self.active = False
         self.done = True
-        self.success_sfx.play()
+        self.engine.sfx["success"].play()
 
     def _next_turn(self):
         self.current_length += 1
@@ -134,4 +129,4 @@ class SimonSaysPuzzle(Puzzle):
     def _on_failure(self):
         self.active = False
         self.reset()
-        self.failure_sfx.play()
+        self.engine.sfx["failure"].play()

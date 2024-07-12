@@ -76,7 +76,6 @@ class WireCut(Puzzle):
         # in what order to cut the wires
         self.combination = [0, 1, 2]
         self.user_in = []
-        self.success_sfx = pg.mixer.Sound("assets/success.mp3")
 
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("cut in the order", False, (24, 13, 47))
@@ -96,11 +95,12 @@ class WireCut(Puzzle):
                 )
 
             if wire.event:
+                self.engine.sfx["cut"].play()
                 self.user_in.append(self.wires.index(wire))
 
         if self.combination == self.user_in:
             self.active = False
             self.done = True
-            self.success_sfx.play()
+            self.engine.sfx["success"].play()
 
         self.engine.screen.blit(self.hint, self.hint_pos)
