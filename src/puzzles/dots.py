@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import *
 from core.settings import WIN_HEIGHT, WIN_SIZE, WIN_WIDTH
 from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
@@ -73,7 +74,7 @@ class DotsPuzzle(Puzzle):
         self.tablet_bloom = pg.transform.gaussian_blur(self.tablet_bloom, 6)
         self.tablet_bloom.set_alpha(100)
 
-        self.password = [0, 1, 2, 5]
+        self.password = [1, 3, 6, 7, 8, 5, 4]
 
         self.done = False
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
@@ -85,6 +86,10 @@ class DotsPuzzle(Puzzle):
         self.checkmark_timer = 2000  # 2s
         self.done_time = 0
         self.start_timer = False
+
+        font = pg.Font("assets/m5x7.ttf", 16)
+        self.hint = font.render("find the password", False, (24, 13, 47))
+        self.hint_pos = self.hint.get_rect(bottomleft=(4, WIN_HEIGHT))
 
     def _draw_tablet(self) -> None:
         self.engine.screen.blit(self.tablet, self.tablet_rect)
@@ -138,7 +143,9 @@ class DotsPuzzle(Puzzle):
                 clamped_mouse_pos,
             )
 
-        if self.password == [node.num for node in self.active_nodes]:
+        # so that it doesn't matter which node you start from
+        user_in = [node.num for node in self.active_nodes]
+        if self.password == user_in or self.password[::-1] == user_in:
             self.active_nodes.clear()
             if not self.start_timer:
                 self.success_sfx.play()
@@ -153,3 +160,4 @@ class DotsPuzzle(Puzzle):
     def _render(self) -> None:
         self._draw_tablet()
         self._update_nodes()
+        self.engine.screen.blit(self.hint, self.hint_pos)

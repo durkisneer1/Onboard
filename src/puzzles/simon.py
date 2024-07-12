@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.buttons import SimonButton
+from core.settings import *
 from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 
@@ -43,8 +44,12 @@ class SimonSaysPuzzle(Puzzle):
         self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
         self.failure_sfx.set_volume(0.35)
 
+        font = pg.Font("assets/m5x7.ttf", 16)
+        self.hint = font.render("repeat the pattern", False, (24, 13, 47))
+        self.hint_pos = self.hint.get_rect(bottomleft=(4, WIN_HEIGHT))
+
     def reset(self):
-        self.code = random.sample(range(1, 17), 2)
+        self.code = random.sample(range(1, 17), 6)
         self.user_in = []
         self.current_length = 2
         self.current_shown_num = 0  # index
@@ -63,6 +68,8 @@ class SimonSaysPuzzle(Puzzle):
         self.engine.screen.blit(self.tablet, self.tablet_pos)
 
         self._player_turn() if self.player_turn else self._simon_turn()
+
+        self.engine.screen.blit(self.hint, self.hint_pos)
 
     def _simon_turn(self) -> None:
         for button in self.buttons:

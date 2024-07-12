@@ -48,7 +48,13 @@ class RangePicker:
         holding: bool = pg.mouse.get_pressed()[0] and hovering
 
         masksurf = pg.Surface((rect.width, rect.height), pg.SRCALPHA).convert_alpha()
-        pg.draw.rect(masksurf, (255, 255, 255), (0, 0, rect.width, rect.height), width=0, border_radius=border_radius)
+        pg.draw.rect(
+            masksurf,
+            (255, 255, 255),
+            (0, 0, rect.width, rect.height),
+            width=0,
+            border_radius=border_radius,
+        )
         mask = pg.mask.from_surface(masksurf)
 
         self.engine.screen.blit(self.text_surface, self.pos)
@@ -57,7 +63,9 @@ class RangePicker:
         rect_base.left = rect.left
 
         masksurf.fill((0, 0, 0, 0))
-        pg.draw.rect(masksurf, [30, 70, 70], (0, 0, rect_base.width, rect_base.height), 0, 0)
+        pg.draw.rect(
+            masksurf, [30, 70, 70], (0, 0, rect_base.width, rect_base.height), 0, 0
+        )
         mask.to_surface(masksurf, setcolor=None, unsetcolor=(0, 0, 0, 0))
         self.engine.screen.blit(masksurf, (rect_base.topleft))
 

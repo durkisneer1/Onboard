@@ -38,7 +38,7 @@ class Interactable:
 
 class InteractablePopUp:
     def __init__(
-            self, player: "Player", engine: "Engine", interactable: "Interactable"
+        self, player: "Player", engine: "Engine", interactable: "Interactable"
     ):
         self.player = player
         self.engine = engine
@@ -120,4 +120,6 @@ class DoorInteractable:
         if self.current_frame != 0:
             surf = self.anim[int(self.current_frame)]
             new_surf = shift_colors(surface=surf, color_sets=COLOR_SETS, n=2 - n)
-            destination.blit(new_surf, (self.rect.x - ROOM_TOPLEFT[0], self.rect.y - ROOM_TOPLEFT[1]))
+            destination.blit(
+                new_surf, (self.rect.x - ROOM_TOPLEFT[0], self.rect.y - ROOM_TOPLEFT[1])
+            )

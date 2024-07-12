@@ -3,6 +3,7 @@ from typing import TYPE_CHECKING
 import pygame as pg
 
 from core.buttons import NumButton
+from core.settings import *
 from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 
@@ -34,6 +35,10 @@ class KeyPadPuzzle(Puzzle):
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
         self.failure_sfx = pg.mixer.Sound("assets/failure.mp3")
 
+        font = pg.Font("assets/m5x7.ttf", 16)
+        self.hint = font.render("enter the code", False, (24, 13, 47))
+        self.hint_pos = self.hint.get_rect(bottomleft=(4, WIN_HEIGHT))
+
     def _render(self) -> None:
         for button in self.buttons:
             button.render()
@@ -52,3 +57,5 @@ class KeyPadPuzzle(Puzzle):
             else:
                 self.user_in.clear()
                 self.failure_sfx.play()
+
+        self.engine.screen.blit(self.hint, self.hint_pos)

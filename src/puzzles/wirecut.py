@@ -77,6 +77,10 @@ class WireCut(Puzzle):
         self.user_in = []
         self.success_sfx = pg.mixer.Sound("assets/success.mp3")
 
+        font = pg.Font("assets/m5x7.ttf", 16)
+        self.hint = font.render("cut in the order", False, (24, 13, 47))
+        self.hint_pos = self.hint.get_rect(bottomright=(WIN_WIDTH - 4, WIN_HEIGHT))
+
     def _render(self):
         pg.draw.rect(self.engine.screen, "darkgray", self.tablet_rect, border_radius=4)
 
@@ -95,3 +99,5 @@ class WireCut(Puzzle):
             self.active = False
             self.done = True
             self.success_sfx.play()
+
+        self.engine.screen.blit(self.hint, self.hint_pos)
