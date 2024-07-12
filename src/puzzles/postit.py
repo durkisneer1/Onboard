@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from core.settings import *
+from core.settings import SCN_SIZE
 from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 
@@ -15,4 +15,6 @@ class PostItPuzzle(Puzzle):
         self.image = import_image("assets/post_it.png")
 
     def _render(self) -> None:
-        self.engine.screen.blit(self.image, (WIN_WIDTH / 2 - 32, WIN_HEIGHT / 2 - 32))
+        self.engine.screen.blit(
+            self.image, (SCN_SIZE[0] / 2 - 32, SCN_SIZE[1] / 2 - 32)
+        )

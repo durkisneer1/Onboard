@@ -3,7 +3,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import *
+from core.settings import SCN_SIZE
 
 if TYPE_CHECKING:
     from main import Engine
@@ -13,7 +13,7 @@ class Puzzle(ABC):
     def __init__(self, engine: "Engine") -> None:
         self.engine: "Engine" = engine
 
-        self.bg_dimmer: pg.Surface = pg.Surface(WIN_SIZE)
+        self.bg_dimmer: pg.Surface = pg.Surface(SCN_SIZE)
         self.bg_dimmer.set_alpha(180)
 
         self.active: bool = False

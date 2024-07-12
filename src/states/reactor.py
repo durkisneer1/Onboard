@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import SCN_SIZE
 from core.enums import AppState
 from core.room import Room
-from core.settings import *
 from core.transitions import FadeTransition
 from src.interactable import Interactable, DoorInteractable
 from src.puzzles.dots import DotsPuzzle
@@ -24,7 +24,7 @@ class ReactorRoom(Room):
 
         self.storage_door = DoorInteractable(self.player, self.engine, (33, 76))
 
-        self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
+        self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
 
         self.player.rect.bottomleft = (32, 107)
@@ -69,6 +69,6 @@ class ReactorRoom(Room):
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
             self.next_state = AppState.EMPTY
-    
+
     def render_extra_background_items(self, surface: pg.Surface, n: int):
         self.storage_door.render_layer(surface, n=n)

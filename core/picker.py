@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-import pygame as pg  # why
+import pygame as pg
 
-from core.settings import WIN_HEIGHT, WIN_WIDTH
-from core.surfaces import import_image  # why
+from core.settings import SCN_SIZE
+from core.surfaces import import_image
 
 if TYPE_CHECKING:
     from main import Engine
@@ -38,10 +38,8 @@ class Picker:
         click: bool = pg.mouse.get_just_pressed()[0]
         rect = self.values_surfaces[self.index].get_rect()
         rect.top = self.pos.y
-        rect.right = (
-            WIN_WIDTH - self.pos.x - 20
-        )  # the 20 is for the controls width actually no f*ck the controls
-        hovering: bool = rect.collidepoint(pg.mouse.get_pos())
+        rect.right = SCN_SIZE[0] - self.pos.x - 20
+        hovering: bool = rect.collidepoint(self.engine.mouse_pos)
         holding: bool = pg.mouse.get_pressed()[0] and hovering
         event: bool = pg.mouse.get_just_released()[0] and hovering
 

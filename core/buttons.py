@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import WIN_HEIGHT, WIN_WIDTH
+from core.settings import SCN_SIZE
 from core.surfaces import import_image
 
 if TYPE_CHECKING:
@@ -33,7 +33,7 @@ class Button:
         self.engine.screen.blit(self.surface, self.rect)
 
     def handle_states(self):
-        self.hovering: bool = self.rect.collidepoint(pg.mouse.get_pos())
+        self.hovering: bool = self.rect.collidepoint(self.engine.mouse_pos)
         self.holding: bool = pg.mouse.get_pressed()[0] and self.hovering
         self.event: bool = pg.mouse.get_just_released()[0] and self.hovering
 
@@ -46,7 +46,7 @@ class NumButton(Button):
         pos: pg.Vector2,
         surf_dict: dict[str, pg.Surface],
     ) -> None:
-        shifted_pos = pos + (WIN_WIDTH / 2 - 40, WIN_HEIGHT / 2 - 32)
+        shifted_pos = pos + (SCN_SIZE[0] / 2 - 40, SCN_SIZE[1] / 2 - 32)
         self.surf_dict = surf_dict
         super().__init__(engine, shifted_pos, surf_dict["idle"])
         font = pg.font.SysFont("Arial", 8)
@@ -100,7 +100,7 @@ class SimonButton(Button):
         pos: pg.Vector2,
         surf_dict: dict[str, pg.Surface],
     ) -> None:
-        shifted_pos = pos + (WIN_WIDTH / 2 - 36, WIN_HEIGHT / 2 - 24)
+        shifted_pos = pos + (SCN_SIZE[0] / 2 - 36, SCN_SIZE[1] / 2 - 24)
         self.surf_dict = surf_dict
 
         super().__init__(engine, shifted_pos, self.surf_dict["idle"])

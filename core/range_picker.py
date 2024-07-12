@@ -1,9 +1,9 @@
 from typing import TYPE_CHECKING
 
-import pygame as pg  # why
+import pygame as pg
 
-from core.settings import WIN_HEIGHT, WIN_WIDTH
-from core.surfaces import import_image  # why
+from core.settings import SCN_SIZE
+from core.surfaces import import_image
 
 if TYPE_CHECKING:
     from main import Engine
@@ -39,50 +39,49 @@ class RangePicker:
         rect.width = 100
         rect.top = self.pos.y
         rect.height = self.text_surface.get_rect().height
-        rect.right = (
-            WIN_WIDTH - self.pos.x - 20
-        )  # the 20 is for the controls width actually no f*ck the controls
+        rect.right = SCN_SIZE[0] - self.pos.x - 20
         rect.inflate_ip(10, 2)
 
-        hovering: bool = rect.collidepoint(pg.mouse.get_pos())
+        hovering: bool = rect.collidepoint(self.engine.mouse_pos)
         holding: bool = pg.mouse.get_pressed()[0] and hovering
 
-        masksurf = pg.Surface((rect.width, rect.height), pg.SRCALPHA).convert_alpha()
+        mask_surf = pg.Surface(rect.size, pg.SRCALPHA)
         pg.draw.rect(
-            masksurf,
+            mask_surf,
             (255, 255, 255),
             (0, 0, rect.width, rect.height),
             width=0,
             border_radius=border_radius,
         )
-        mask = pg.mask.from_surface(masksurf)
+        mask = pg.mask.from_surface(mask_surf)
 
         self.engine.screen.blit(self.text_surface, self.pos)
         rect_base = rect.copy()
         rect_base.width = rect.width * self.default_per / 100
         rect_base.left = rect.left
 
-        masksurf.fill((0, 0, 0, 0))
+        mask_surf.fill((0, 0, 0, 0))
         pg.draw.rect(
-            masksurf, [30, 70, 70], (0, 0, rect_base.width, rect_base.height), 0, 0
+            mask_surf, [30, 70, 70], (0, 0, rect_base.width, rect_base.height), 0, 0
         )
-        mask.to_surface(masksurf, setcolor=None, unsetcolor=(0, 0, 0, 0))
-        self.engine.screen.blit(masksurf, (rect_base.topleft))
+        mask.to_surface(mask_surf, setcolor=None, unsetcolor=(0, 0, 0, 0))
+        self.engine.screen.blit(mask_surf, (rect_base.topleft))
 
         if hovering:
             pg.draw.rect(self.engine.screen, [30, 50, 50], rect, 1, border_radius)
 
         if holding:
             pg.draw.rect(self.engine.screen, [30, 100, 30], rect, 1, border_radius)
-            mousepos = pg.mouse.get_pos()[0]
-            mousepos -= rect.left - 1
-            per = mousepos / rect.width
+            mouse_x = self.engine.mouse_pos.x
+            mouse_x -= rect.left - 1
+            per = mouse_x / rect.width
             self.default_per = per * 100
             self.overlay = self.font.render(
                 f"{int((self.maxmin[1] - self.maxmin[0])*(self.default_per / 100) ):.0f}",
                 False,
                 [200, 200, 200],
             )
+
         if not holding and not hovering:
             pg.draw.rect(self.engine.screen, [30, 30, 30], rect, 1, border_radius)
 

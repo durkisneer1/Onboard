@@ -2,9 +2,9 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import SCN_SIZE
 from core.buttons import TextButton
 from core.enums import AppState
-from core.settings import *
 from core.transitions import FadeTransition
 from src.states.base import BaseState
 
@@ -16,7 +16,7 @@ class Menu(BaseState):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
 
-        self.bg = pg.Surface(WIN_SIZE)
+        self.bg = pg.Surface(SCN_SIZE)
         self.bg.fill("black")
 
         self.game_button = TextButton(
@@ -27,7 +27,7 @@ class Menu(BaseState):
             engine, "Settings", pg.Vector2(90, 52), pg.Vector2(50, 16)
         )
 
-        self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
+        self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = (
             AppState.EMPTY
         )  # Change this to the state you want to transition to initially (for debugging)

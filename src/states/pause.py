@@ -4,7 +4,6 @@ import pygame as pg
 
 from core.buttons import TextButton
 from core.enums import AppState
-from core.settings import *
 from src.states.base import BaseState
 
 if TYPE_CHECKING:
@@ -16,8 +15,8 @@ class Pause(BaseState):
         super().__init__(engine)
 
         self.buttons = [
-            TextButton(engine, "Continue", pg.Vector2(90, 30), (50, 16)),
-            TextButton(engine, "Menu", pg.Vector2(90, 50), (50, 16)),
+            TextButton(engine, "Continue", pg.Vector2(90, 30), pg.Vector2(50, 16)),
+            TextButton(engine, "Menu", pg.Vector2(90, 50), pg.Vector2(50, 16)),
         ]
 
     def handle_events(self, event):

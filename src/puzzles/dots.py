@@ -4,8 +4,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import *
-from core.settings import WIN_HEIGHT, WIN_SIZE, WIN_WIDTH
+from core.settings import SCN_SIZE
 from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 
@@ -21,9 +20,8 @@ class Node:
         self.active = False
         self.boop_sfx = pg.mixer.Sound("assets/boop.mp3")
 
-    def update(self, active_list: list[Node]) -> None:
+    def update(self, active_list: list[Node], mouse_pos: pg.Vector2) -> None:
         left_click = pg.mouse.get_pressed()[0]
-        mouse_pos = pg.mouse.get_pos()
         if left_click and abs((self.pos - mouse_pos).length()) < self.radius:
             self.active = True
             if self not in active_list:
@@ -43,7 +41,7 @@ class DotsPuzzle(Puzzle):
         self.nodes = [
             Node(
                 x + y * 3,
-                pg.Vector2(x, y) * 24 + (WIN_WIDTH / 2 - 24, WIN_HEIGHT / 2 - 24),
+                pg.Vector2(x, y) * 24 + (SCN_SIZE[0] / 2 - 24, SCN_SIZE[1] / 2 - 24),
             )
             for x in range(0, 3)
             for y in range(0, 3)
@@ -52,7 +50,9 @@ class DotsPuzzle(Puzzle):
 
         # Tablet Background
         self.tablet = pg.Surface((80, 80), pg.SRCALPHA)
-        self.tablet_rect = self.tablet.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
+        self.tablet_rect = self.tablet.get_rect(
+            center=(SCN_SIZE[0] / 2, SCN_SIZE[1] / 2)
+        )
         pg.draw.rect(
             self.tablet, (53, 54, 88), ((0, 0), self.tablet.size), border_radius=2
         )
@@ -81,7 +81,7 @@ class DotsPuzzle(Puzzle):
 
         self.checkmark_img = import_image("assets/check.png")
         self.checkmark_rect = self.checkmark_img.get_rect(
-            center=pg.Vector2(WIN_SIZE) / 2
+            center=pg.Vector2(SCN_SIZE) / 2
         )
         self.checkmark_timer = 2000  # 2s
         self.done_time = 0
@@ -89,7 +89,7 @@ class DotsPuzzle(Puzzle):
 
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("find the password", False, (24, 13, 47))
-        self.hint_pos = self.hint.get_rect(bottomleft=(4, WIN_HEIGHT))
+        self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
     def _draw_tablet(self) -> None:
         self.engine.screen.blit(self.tablet, self.tablet_rect)
@@ -109,7 +109,7 @@ class DotsPuzzle(Puzzle):
     def _update_nodes(self) -> None:
         if not self.start_timer:
             for node in self.nodes:
-                node.update(self.active_nodes)
+                node.update(self.active_nodes, self.engine.mouse_pos)
                 node.draw(self.engine.screen)
 
             if pg.mouse.get_just_released()[0]:
@@ -127,13 +127,12 @@ class DotsPuzzle(Puzzle):
                 [node.pos for node in self.active_nodes],
             )
 
-        mouse_pos = pg.mouse.get_pos()
         # this is done so that the line toward mouse position
         # doesn't go outside the tablet's borders
         # (purely a visual change)
         clamped_mouse_pos = (
-            max(92, min(WIN_WIDTH - 92, mouse_pos[0])),
-            max(43, min(WIN_HEIGHT - 43, mouse_pos[1])),
+            max(92, min(SCN_SIZE[0] - 92, self.engine.mouse_pos.x)),
+            max(43, min(SCN_SIZE[1] - 43, self.engine.mouse_pos.y)),
         )
         if self.active_nodes:
             pg.draw.line(

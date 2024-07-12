@@ -4,9 +4,9 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import SCN_SIZE
 from core.enums import AppState
 from core.room import Room
-from core.settings import *
 from core.transitions import FadeTransition
 from src.interactable import DoorInteractable, Interactable
 from src.puzzles.keypad import KeyPadPuzzle
@@ -41,7 +41,7 @@ class CockPit(Room):
 
         self.storage_door = DoorInteractable(self.player, self.engine, (185, 76))
 
-        self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
+        self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
 
     def handle_events(self, event):

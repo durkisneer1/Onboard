@@ -4,8 +4,6 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import *
-
 if TYPE_CHECKING:
     from main import Engine
 

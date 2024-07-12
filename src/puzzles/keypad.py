@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import SCN_SIZE
 from core.buttons import NumButton
-from core.settings import *
 from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 
@@ -37,7 +37,7 @@ class KeyPadPuzzle(Puzzle):
 
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("enter the code", False, (24, 13, 47))
-        self.hint_pos = self.hint.get_rect(bottomleft=(4, WIN_HEIGHT))
+        self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
     def _render(self) -> None:
         for button in self.buttons:

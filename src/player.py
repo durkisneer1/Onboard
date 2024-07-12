@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import ROOM_TOPLEFT, ROOM_BOTTOMRIGHT
 from core.enums import AnimState
-from core.settings import *
 from core.surfaces import import_anim
 
 if TYPE_CHECKING:

@@ -1,8 +1,8 @@
 import pygame as pg
 
+from core.settings import WIN_SIZE, SCN_SIZE, FACTOR
 import core.surfaces as surfaces
 from core.enums import AppState
-from core.settings import *
 from src.states.cockpit import CockPit
 from src.states.cutscene import CutScene
 from src.states.menu import Menu
@@ -17,11 +17,13 @@ surfaces.surface_debug = False
 class Engine:
     def __init__(self) -> None:
         pg.init()
-        self.screen = pg.display.set_mode(WIN_SIZE, pg.SCALED | pg.FULLSCREEN)
+        self.display = pg.display.set_mode(WIN_SIZE, pg.FULLSCREEN)
+        self.screen = pg.Surface(SCN_SIZE, pg.SRCALPHA)
         pg.display.set_caption("The Astronaut")
         self.clock = pg.Clock()
         self.running = True
         self.dt = 0
+        self.mouse_pos = pg.Vector2()
 
         self.state_dict = {
             AppState.PAUSE: Pause(self),
@@ -32,13 +34,15 @@ class Engine:
             AppState.SETTINGS: SettingsMenu(self),
             AppState.INTRO: CutScene(self),
         }
-        self.current_state = AppState.REACTOR  # MENU is default
+        self.current_state = AppState.MENU  # MENU is default
+
         # Needed for accesing the settings and then going back to the last state
         self.last_state = self.current_state
 
     def run(self):
         while self.running:
             self.dt = self.clock.tick_busy_loop(60) / 1000
+            self.mouse_pos = pg.Vector2(pg.mouse.get_pos()) / FACTOR
 
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:
@@ -46,6 +50,9 @@ class Engine:
                 self.state_dict[self.current_state].handle_events(ev)
 
             self.state_dict[self.current_state].render()
+
+            scaled_screen = pg.transform.scale_by(self.screen, FACTOR)
+            self.display.blit(scaled_screen, (0, 0))
 
             pg.display.flip()
 

@@ -2,7 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import *
+from core.settings import SCN_SIZE
+from core.surfaces import import_image
 from src.puzzles.puzzle import Puzzle
 
 if TYPE_CHECKING:
@@ -14,8 +15,8 @@ class Wire:
         self,
         surface_uncut: pg.Surface,
         surface_cut: pg.Surface,
-        pos: tuple[int],
-        color: tuple[int],
+        pos: pg.Vector2,
+        color: tuple[int, int, int],
     ):
         self.surface_uncut = surface_uncut
         self.surface_cut = surface_cut
@@ -28,13 +29,13 @@ class Wire:
         self.event = False
         self.hovered = False
 
-    def render(self, screen: pg.Surface):
+    def render(self, screen: pg.Surface, mouse_pos: pg.Vector2):
         surf = self.surface_cut if self.cut else self.surface_uncut
         screen.blit(surf, self.rect)
 
         self.event = False
         self.hovered = False
-        if self.rect.collidepoint(pg.mouse.get_pos()) and not self.cut:
+        if self.rect.collidepoint(mouse_pos) and not self.cut:
             self.hovered = True
             # pg.draw.rect(screen, "yellow", self.rect, 1)
             if pg.mouse.get_just_pressed()[0]:
@@ -47,11 +48,11 @@ class WireCut(Puzzle):
         super().__init__(engine)
         self.engine = engine
 
-        self.scissors = pg.image.load("assets/scissors.png").convert_alpha()
-        wires_uncut = pg.image.load("assets/uncut.png").convert_alpha()
-        wires_cut = pg.image.load("assets/cut.png").convert_alpha()
+        self.scissors = import_image("assets/scissors.png")
+        wires_uncut = import_image("assets/uncut.png")
+        wires_cut = import_image("assets/cut.png")
 
-        self.rect = wires_cut.get_rect(center=(WIN_WIDTH / 2, WIN_HEIGHT / 2))
+        self.rect = wires_cut.get_rect(center=(SCN_SIZE[0] / 2, SCN_SIZE[1] / 2))
         self.tablet_rect = self.rect.inflate(0, 4)
         # subsurface each wire from global image
         wire_colors = [
@@ -79,19 +80,19 @@ class WireCut(Puzzle):
 
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("cut in the order", False, (24, 13, 47))
-        self.hint_pos = self.hint.get_rect(bottomright=(WIN_WIDTH - 4, WIN_HEIGHT))
-        
+        self.hint_pos = self.hint.get_rect(bottomright=(SCN_SIZE[0] - 4, SCN_SIZE[1]))
+
         self.done = False
 
     def _render(self):
         pg.draw.rect(self.engine.screen, "darkgray", self.tablet_rect, border_radius=4)
 
         for wire in self.wires:
-            wire.render(self.engine.screen)
+            wire.render(self.engine.screen, self.engine.mouse_pos)
 
             if wire.hovered:
                 self.engine.screen.blit(
-                    self.scissors, pg.mouse.get_pos() - pg.Vector2(6, 6)
+                    self.scissors, self.engine.mouse_pos - pg.Vector2(6, 6)
                 )
 
             if wire.event:

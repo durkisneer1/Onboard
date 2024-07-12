@@ -4,11 +4,11 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import SCN_SIZE
 from core.buttons import TextButton
 from core.enums import AppState
 from core.picker import Picker
 from core.range_picker import RangePicker
-from core.settings import *
 from core.transitions import FadeTransition
 from src.states.base import BaseState
 
@@ -20,7 +20,7 @@ class SettingsMenu(BaseState):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
 
-        self.bg = pg.Surface(WIN_SIZE)
+        self.bg = pg.Surface(SCN_SIZE)
         self.bg.fill("black")
 
         self.save_button = TextButton(
@@ -56,7 +56,7 @@ class SettingsMenu(BaseState):
         )
         self.next_state = AppState.EMPTY
 
-        self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
+        self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
 
     def render(self):
         self.engine.screen.blit(self.bg, (0, 0))
@@ -90,16 +90,16 @@ class SettingsMenu(BaseState):
         ):
             pg.display.toggle_fullscreen()
 
-        if self.vsync_pick.val() == "Active" and pg.display.is_vsync() == False:
+        if self.vsync_pick.val() == "Active" and not pg.display.is_vsync():
             pg.display.set_mode(
-                WIN_SIZE,
+                SCN_SIZE,
                 pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else 0,
                 vsync=True,
             )
 
-        if self.vsync_pick.val() == "Disabled" and pg.display.is_vsync() == True:
+        if self.vsync_pick.val() == "Disabled" and pg.display.is_vsync():
             pg.display.set_mode(
-                WIN_SIZE,
+                SCN_SIZE,
                 pg.SCALED | pg.FULLSCREEN if pg.display.is_fullscreen() else 0,
                 vsync=False,
             )

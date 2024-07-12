@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import *
-from core.surfaces import import_anim, shift_colors
+from core.settings import COLOR_SETS, ROOM_TOPLEFT
+from core.surfaces import import_anim, shift_colors, import_image
 
 if TYPE_CHECKING:
     from main import Engine
@@ -29,10 +29,7 @@ class Interactable:
             pg.draw.rect(self.engine.screen, (232, 255, 117), self.rect, 1)
 
     def handle_states(self, active: bool = True):
-        if active:
-            self.active = self.player.rect.colliderect(self.rect)
-        else:
-            self.active = False
+        self.active = self.player.rect.colliderect(self.rect) if active else False
         self.event = pg.key.get_just_pressed()[pg.K_e] and self.active
 
 
@@ -44,7 +41,7 @@ class InteractablePopUp:
         self.engine = engine
         self.interactable = interactable
 
-        self.popup_image = pg.image.load("assets/popup1.png").convert_alpha()
+        self.popup_image = import_image("assets/popup1.png")
         self.rect = self.popup_image.get_rect(
             midbottom=interactable.rect.midtop - pg.Vector2(0, 1)
         )

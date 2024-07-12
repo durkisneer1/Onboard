@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.settings import *
+from core.settings import COLOR_SETS
 from core.surfaces import import_anim, import_image, shift_colors
 from src.player import Player
 
@@ -23,13 +23,6 @@ class Room:
                 shift_colors(surface=self.room_image, color_sets=COLOR_SETS, n=2 - i)
                 for i in range(3)
             ]
-        # elif path.isdir(room_image_path):
-        #     self.room_frames = [import_image(image_path, is_alpha=False) for image_path in listdir(room_image_path)]
-        #     self.layers = [
-        #         shift_colors(surface=frame, color_sets=COLOR_SETS, n=2 - i)
-        #         for i in range(3)
-        #         for frame in self.room_frames
-        #     ]
 
     @abstractmethod
     def render(self): ...

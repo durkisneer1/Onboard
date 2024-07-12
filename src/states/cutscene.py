@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.settings import SCN_SIZE
 from core.enums import AppState
-from core.settings import *
 from core.transitions import FadeTransition
 from src.states.base import BaseState
 
@@ -15,13 +15,13 @@ class CutScene(BaseState):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
 
-        self.surf = pg.Surface((WIN_WIDTH * 2, WIN_HEIGHT))
-        pg.draw.rect(self.surf, "gray", ((0, 0), WIN_SIZE))
-        pg.draw.rect(self.surf, "white", ((WIN_WIDTH, 0), WIN_SIZE))
+        self.surf = pg.Surface((SCN_SIZE[0] * 2, SCN_SIZE[1]))
+        pg.draw.rect(self.surf, "gray", ((0, 0), SCN_SIZE))
+        pg.draw.rect(self.surf, "white", ((SCN_SIZE[0], 0), SCN_SIZE))
 
         self.reset()
 
-        self.transition = FadeTransition(True, 300, pg.Vector2(WIN_SIZE))
+        self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
 
     def handle_events(self, event):
         if event.type == pg.KEYDOWN:
@@ -34,7 +34,7 @@ class CutScene(BaseState):
         if self.timer <= 0:
             if self.scroll_dest.x > -self.surf.width:
                 self.timer = 3
-                self.scroll_dest.x -= WIN_WIDTH
+                self.scroll_dest.x -= SCN_SIZE[0]
             else:
                 self.done = True
                 self.next_state = AppState.COCKPIT
