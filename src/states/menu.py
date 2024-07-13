@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.buttons import TextButton
+from core.buttons import MenuButton
 from core.enums import AppState
 from core.settings import SCN_SIZE
 from core.transitions import FadeTransition
@@ -16,17 +16,16 @@ class Menu(BaseState):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
 
-        self.bg = pg.Surface(SCN_SIZE)
-        self.bg.fill("black")
+        self.bg = pg.image.load("assets/bg.png").convert()
 
-        self.game_button = TextButton(
-            engine, "Start", pg.Vector2(90, 12), pg.Vector2(50, 16)
+        self.game_button = MenuButton(
+            engine, "start", pg.Vector2(4, 4), pg.Vector2(50, 16), 0
         )
-        self.settings_button = TextButton(
-            engine, "Settings", pg.Vector2(90, 32), pg.Vector2(50, 16)
+        self.settings_button = MenuButton(
+            engine, "settings", pg.Vector2(4, 24), pg.Vector2(50, 16), 20
         )
-        self.exit_button = TextButton(
-            engine, "Exit", pg.Vector2(90, 52), pg.Vector2(50, 16)
+        self.exit_button = MenuButton(
+            engine, "exit", pg.Vector2(4, 44), pg.Vector2(50, 16), 40
         )
 
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))

@@ -121,3 +121,80 @@ class SimonButton(Button):
         if handle_states:
             self.handle_states()
         self.engine.screen.blit(self.surface, self.rect)
+
+
+class MenuButton(Button):
+    def __init__(
+        self,
+        engine: "Engine",
+        text: str,
+        pos: pg.Vector2,
+        size: pg.Vector2,
+        slide_offset: float,
+    ) -> None:
+        surf = pg.Surface(size, pg.SRCALPHA)
+        super().__init__(engine, pos, surf)
+        font = pg.font.Font("assets/m5x7.ttf", 16)
+
+        self.rect = surf.get_frect(topleft=pos)
+        self.text_str = text
+        self.text = font.render(text, False, "white")
+        self.text_rect = self.text.get_frect(center=self.rect.center)
+
+        self.dest_x = self.rect.x
+
+        self.scaled_surf = self.surface.copy()
+        self.factor = 1
+
+        self.slide_done = False
+        self.slide_offset = slide_offset
+        self.rect.x = -20 - self.slide_offset
+        self.force = 250
+        self.vel = pg.Vector2()
+
+    def _handle_hover(self):
+        if self.hovering:
+            self.factor += self.engine.dt
+        else:
+            self.factor -= self.engine.dt
+
+        self.factor = pg.math.clamp(self.factor, 1, 1.1)
+        self.scaled_surf = pg.transform.scale_by(self.surface, self.factor)
+
+    def _handle_interactions(self):
+        self.handle_states()
+        self._handle_hover()
+        scaled_rect = self.scaled_surf.get_rect(center=self.rect.center)
+        self.text_rect.center = self.rect.center
+        self.engine.screen.blit(self.scaled_surf, scaled_rect)
+        self.engine.screen.blit(self.text, self.text_rect)
+
+    def _handle_slide(self):
+        self.force -= 300 * self.engine.dt
+        self.vel.x += self.force * self.engine.dt
+        self.rect.x += self.vel.x * self.engine.dt
+        self.text_rect.centerx = self.rect.centerx
+
+        if self.rect.x >= self.dest_x:
+            self.slide_done = True
+            self.rect.x = self.dest_x
+            self.text_rect.centerx = self.rect.centerx
+
+        self.engine.screen.blit(self.surface, self.rect)
+        self.engine.screen.blit(self.text, self.text_rect)
+
+    def render(self):
+        color = (193, 36, 88) if self.hovering else (24, 13, 47)
+        pg.draw.rect(self.surface, color, ((0, 0), self.surface.size), border_radius=4)
+        pg.draw.rect(
+            self.surface,
+            (249, 78, 109),
+            ((0, 0), self.surface.size),
+            border_radius=4,
+            width=1,
+        )
+
+        if self.slide_done:
+            self._handle_interactions()
+        else:
+            self._handle_slide()

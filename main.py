@@ -45,7 +45,7 @@ class Engine:
             AppState.INTRO: CutScene(self),
             AppState.SPLASH: SplashScreen(self),
         }
-        self.current_state = AppState.SPLASH  # MENU is default
+        self.current_state = AppState.COCKPIT  # MENU is default
 
         # Needed for accesing the settings and then going back to the last state
         self.last_state = AppState.INTRO
