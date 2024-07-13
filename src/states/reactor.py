@@ -34,6 +34,10 @@ class ReactorRoom(Room):
 
         self.player.rect.bottomleft = (32, 107)
 
+    def handle_events(self, event):
+        if not any({self.dots_puzzle.active, self.freq_puzzle.active}):
+            super().handle_events(event)
+
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
             pg.mixer.music.load("assets/reactor.ogg")
@@ -58,13 +62,13 @@ class ReactorRoom(Room):
 
         if not self.dots_puzzle.done:
             self.dots_puzzle.render()
-            if self.dots_tablet.event:
-                self.dots_puzzle.active = not self.dots_puzzle.active
+            if self.dots_tablet.active:
+                self.dots_puzzle.listen_for_keypress()
         else:
             if not self.freq_puzzle.done:
                 self.freq_puzzle.render()
-                if self.freq_tablet.event:
-                    self.freq_puzzle.active = not self.freq_puzzle.active
+                if self.freq_tablet.active:
+                    self.freq_puzzle.listen_for_keypress()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

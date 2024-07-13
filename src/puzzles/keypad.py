@@ -35,6 +35,9 @@ class KeyPadPuzzle(Puzzle):
         self.hint = font.render("enter the code", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
+    def _reset(self) -> None:
+        self.user_in = []
+
     def _render(self):
         for button in self.buttons:
             button.render()

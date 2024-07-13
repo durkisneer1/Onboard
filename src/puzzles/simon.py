@@ -32,7 +32,7 @@ class SimonSaysPuzzle(Puzzle):
         self.buttons.sort(key=lambda btn: btn.num)
 
         # define game vars
-        self.reset()
+        self._reset()
 
         self.tablet = pg.Surface((50, 50), pg.SRCALPHA)
         tablet_rect = pg.Rect(0, 0, 50, 50)
@@ -43,7 +43,7 @@ class SimonSaysPuzzle(Puzzle):
         self.hint = font.render("repeat the pattern", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
-    def reset(self):
+    def _reset(self):
         self.code = random.sample(range(1, 17), 6)
         self.user_in = []
         self.current_length = 2

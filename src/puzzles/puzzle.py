@@ -16,7 +16,15 @@ class Puzzle(ABC):
         self.bg_dimmer: pg.Surface = pg.Surface(SCN_SIZE)
         self.bg_dimmer.set_alpha(180)
 
-        self.active: bool = False
+        self._active: bool = False
+
+    def listen_for_keypress(self):
+        if self.active:
+            if pg.key.get_just_pressed()[pg.K_ESCAPE]:
+                self.active = False
+        else:
+            if pg.key.get_just_pressed()[pg.K_e]:
+                self.active = True
 
     def render(self) -> None:
         if not self.active:
@@ -26,5 +34,19 @@ class Puzzle(ABC):
 
         self._render()
 
+    @property
+    def active(self):
+        return self._active
+
+    @active.setter
+    def active(self, value):
+        if value:
+            self._reset()
+        self._active = value
+
+    def _reset(self) -> None:
+        ...
+
     @abstractmethod
-    def _render(self) -> None: ...
+    def _render(self) -> None:
+        ...

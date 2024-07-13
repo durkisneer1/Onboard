@@ -51,9 +51,10 @@ class CockPit(Room):
         self.next_state = AppState.EMPTY
 
     def handle_events(self, event):
-        super().handle_events(event)
         if self.password_puzzle.active:
             self.password_puzzle.handle_events(event)
+        if not any({self.postit_puzzle.active, self.keypad_puzzle.active, self.password_puzzle.active}):
+            super().handle_events(event)
 
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
@@ -86,17 +87,16 @@ class CockPit(Room):
             or self.password_puzzle.active
         )
 
-        if self.keypad.event and not self.keypad_puzzle.done:
-            self.keypad_puzzle.user_in = []
-            self.keypad_puzzle.active = not self.keypad_puzzle.active
+        if self.keypad.active and not self.keypad_puzzle.done:
+            self.keypad_puzzle.listen_for_keypress()
         self.keypad_puzzle.render()
 
-        if self.postit.event:
-            self.postit_puzzle.active = not self.postit_puzzle.active
+        if self.postit.active:
+            self.postit_puzzle.listen_for_keypress()
 
         self.postit_puzzle.render()
-        if self.password_tablet.event and not self.password_puzzle.done:
-            self.password_puzzle.active = not self.password_puzzle.active
+        if self.password_tablet.active and not self.password_puzzle.done:
+            self.password_puzzle.listen_for_keypress()
         self.password_puzzle.render()
 
         self.transition.update(self.engine.dt)
