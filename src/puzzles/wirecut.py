@@ -75,7 +75,7 @@ class WireCut(Puzzle):
             self.wires.append(wire)
 
         # in what order to cut the wires
-        self.combination = [0, 1, 2]
+        self.combination = [2, 0, 3]
         self.user_in = []
 
         font = pg.Font("assets/m5x7.ttf", 16)

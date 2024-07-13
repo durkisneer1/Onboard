@@ -159,13 +159,15 @@ class MenuButton(Button):
             self.factor -= self.engine.dt
 
         self.factor = pg.math.clamp(self.factor, 1, 1.1)
-        self.scaled_surf = pg.transform.scale_by(self.surface, self.factor)
+        if self.factor != 1:
+            self.scaled_surf = pg.transform.scale_by(self.surface, self.factor)
+        else:
+            self.scaled_surf = self.surface
 
     def _handle_interactions(self):
         self.handle_states()
         self._handle_hover()
         scaled_rect = self.scaled_surf.get_rect(center=self.rect.center)
-        self.text_rect.center = self.rect.center
         self.engine.screen.blit(self.scaled_surf, scaled_rect)
         self.engine.screen.blit(self.text, self.text_rect)
 

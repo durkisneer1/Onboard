@@ -4,8 +4,8 @@ import pygame as pg
 
 from core.enums import AppState
 from core.room import Room
-from core.settings import SCN_SIZE, COLOR_SETS
-from core.surfaces import shift_colors, import_image
+from core.settings import COLOR_SETS, SCN_SIZE
+from core.surfaces import import_image, shift_colors
 from core.transitions import FadeTransition
 from src.interactable import DoorInteractable, Interactable
 from src.puzzles.simon import SimonSaysPuzzle
@@ -31,7 +31,11 @@ class StorageRoom(Room):
         self.next_state = AppState.EMPTY
 
         self.wirecut_layers = [
-            shift_colors(surface=import_image("assets/storage_wires.png"), color_sets=COLOR_SETS, n=2 - i)
+            shift_colors(
+                surface=import_image("assets/storage_wires.png"),
+                color_sets=COLOR_SETS,
+                n=2 - i,
+            )
             for i in range(3)
         ]
 
