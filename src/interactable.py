@@ -94,6 +94,8 @@ class DoorInteractable:
         self.rect = self.anim[0].get_frect(topleft=pos)
 
         self.current_frame = 0
+        self.anim_speed = 16
+        self.in_contact = False
 
         self.active = False
         self.event = False
@@ -102,9 +104,15 @@ class DoorInteractable:
 
     def update(self):
         if self.active:
-            self.current_frame += 16 * self.engine.dt
+            self.current_frame += self.anim_speed * self.engine.dt
+            if not self.in_contact:
+                self.engine.sfx["door open"].play()
+                self.in_contact = True
         else:
-            self.current_frame -= 16 * self.engine.dt
+            self.current_frame -= self.anim_speed * self.engine.dt
+            if self.in_contact:
+                self.engine.sfx["door close"].play()
+                self.in_contact = False
 
         self.current_frame = pg.math.clamp(self.current_frame, 0, len(self.anim) - 1)
 
@@ -113,10 +121,12 @@ class DoorInteractable:
         self.active = self.interactable.active
         self.event = self.interactable.event
 
-    def render_layer(self, destination: pg.Surface, n: int = 0):
-        if self.current_frame != 0:
-            surf = self.anim[int(self.current_frame)]
-            new_surf = shift_colors(surface=surf, color_sets=COLOR_SETS, n=2 - n)
-            destination.blit(
-                new_surf, (self.rect.x - ROOM_TOPLEFT[0], self.rect.y - ROOM_TOPLEFT[1])
-            )
+    def render_layer(self, destination: pg.Surface, n: int = 0) -> None:
+        if self.current_frame == 0:
+            return
+
+        surf = self.anim[int(self.current_frame)]
+        new_surf = shift_colors(surface=surf, color_sets=COLOR_SETS, n=2 - n)
+        destination.blit(
+            new_surf, (self.rect.x - ROOM_TOPLEFT[0], self.rect.y - ROOM_TOPLEFT[1])
+        )

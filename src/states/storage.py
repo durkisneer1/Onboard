@@ -31,6 +31,8 @@ class StorageRoom(Room):
 
         self.player.rect.bottomleft = (32, 107)
 
+        self.simon_puzzle.done = True  # DELETE ME
+
     def handle_events(self, event):
         if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
             self.engine.last_state = self.engine.current_state
@@ -47,14 +49,20 @@ class StorageRoom(Room):
         self.engine.screen.fill("black")
         self.render_background()
 
+        if not self.simon_puzzle.done:
+            self.simon.render()
+        else:
+            if not self.wirecut_puzzle.done:
+                self.wires.render()
+            else:
+                self.reactor_door.update()
+
         self.cockpit_door.update()
         if self.cockpit_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.COCKPIT
             pg.mixer.music.fadeout(700)
 
-        # if self.wirecut_puzzle.done:
-        self.reactor_door.update()
         if self.reactor_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.REACTOR
@@ -63,17 +71,15 @@ class StorageRoom(Room):
         self.player.update(self.simon_puzzle.active or self.wirecut_puzzle.active)
 
         if not self.simon_puzzle.done:
-            self.simon.render()
+            self.simon_puzzle.render()
             if self.simon.event:
                 self.simon_puzzle.reset()
                 self.simon_puzzle.active = not self.simon_puzzle.active
-            self.simon_puzzle.render()
         else:
             if not self.wirecut_puzzle.done:
-                self.wires.render()
+                self.wirecut_puzzle.render()
                 if self.wires.event:
                     self.wirecut_puzzle.active = not self.wirecut_puzzle.active
-                self.wirecut_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

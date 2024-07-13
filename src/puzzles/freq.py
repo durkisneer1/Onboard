@@ -16,11 +16,31 @@ class FreqPuzzle(Puzzle):
         self.done = False
         self.amount_completed = 0
 
-        self.tablet_surf = pg.Surface((100, 100))
-        self.tablet_surf.fill("white")
-        self.tablet_rect = self.tablet_surf.get_rect(
-            center=(SCN_SIZE[0] // 2, SCN_SIZE[1] // 2)
+        # Tablet
+        self.tablet = pg.Surface((80, 80), pg.SRCALPHA)
+        self.tablet_rect = self.tablet.get_rect(
+            center=(SCN_SIZE[0] / 2, SCN_SIZE[1] / 2)
         )
+        pg.draw.rect(
+            self.tablet, (53, 54, 88), ((0, 0), self.tablet.size), border_radius=2
+        )
+        pg.draw.rect(
+            self.tablet,
+            (139, 151, 182),
+            ((3, 3), self.tablet.size - pg.Vector2(6, 6)),
+            border_radius=2,
+        )
+
+        # Bloom
+        self.tablet_bloom = pg.Surface((100, 100), pg.SRCALPHA)
+        pg.draw.rect(
+            self.tablet_bloom,
+            "white",
+            ((8, 8), self.tablet.size - pg.Vector2(36, 36)),
+            border_radius=2,
+        )
+        self.tablet_bloom = pg.transform.gaussian_blur(self.tablet_bloom, 8)
+        self.tablet_bloom.set_alpha(10)
 
         self.template_wave = TemplateWave()
         self.matching_wave = MatchWave()
@@ -54,12 +74,25 @@ class FreqPuzzle(Puzzle):
             self.amount_completed += 1
             if self.amount_completed == 6:
                 self.done = True
+                self.active = False
                 self.success_sfx.play()
 
     def _render(self):
         self.update()
 
-        self.engine.screen.blit(self.tablet_surf, self.tablet_rect)
-        self.template_wave.draw(self.engine.screen, "blue")
-        self.matching_wave.draw(self.engine.screen, "red")
+        self.engine.screen.blit(self.tablet, self.tablet_rect)
+        # Screen
+        pg.draw.rect(
+            self.engine.screen,
+            "black",
+            (
+                self.tablet_rect.topleft + pg.Vector2(4, 4),
+                self.tablet.size - pg.Vector2(8, 8),
+            ),
+            border_radius=2,
+        )
+        self.engine.screen.blit(self.tablet_bloom, self.tablet_rect.move(10, 10))
+
+        self.template_wave.draw(self.engine.screen)
+        self.matching_wave.draw(self.engine.screen)
         self.engine.screen.blit(self.hint, self.hint_pos)

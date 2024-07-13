@@ -34,8 +34,6 @@ class ReactorRoom(Room):
 
         self.player.rect.bottomleft = (32, 107)
 
-        self.dots_puzzle.done = True  # DELETE ME
-
     def handle_events(self, event):
         if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
             self.engine.last_state = self.engine.current_state
@@ -52,25 +50,29 @@ class ReactorRoom(Room):
         self.engine.screen.fill("black")
         self.render_background()
 
+        if not self.dots_puzzle.done:
+            self.dots_tablet.render()
+        else:
+            if not self.freq_puzzle.done:
+                self.freq_tablet.render()
+
         self.storage_door.update()
         if self.storage_door.event:
             self.transition.fade_in = False
             self.next_state = AppState.STORAGE
             pg.mixer.music.fadeout(700)
 
-        self.player.update(self.dots_puzzle.active)
+        self.player.update(self.dots_puzzle.active or self.freq_puzzle.active)
 
         if not self.dots_puzzle.done:
-            self.dots_tablet.render()
+            self.dots_puzzle.render()
             if self.dots_tablet.event:
                 self.dots_puzzle.active = not self.dots_puzzle.active
-            self.dots_puzzle.render()
         else:
             if not self.freq_puzzle.done:
-                self.freq_tablet.render()
+                self.freq_puzzle.render()
                 if self.freq_tablet.event:
                     self.freq_puzzle.active = not self.freq_puzzle.active
-                self.freq_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

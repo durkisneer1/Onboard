@@ -64,17 +64,15 @@ class CockPit(Room):
 
         if not self.keypad_puzzle.done:
             self.keypad.render()
+        else:
+            self.storage_door.update()
 
         self.postit.render(not self.keypad.active)
 
-        if self.keypad_puzzle.done:
-            if self.storage_door.event:
-                self.transition.fade_in = False
-                self.next_state = AppState.STORAGE
-                pg.mixer.music.fadeout(700)
-
-        if self.keypad_puzzle.done:
-            self.storage_door.update()
+        if self.keypad_puzzle.done and self.storage_door.event:
+            self.transition.fade_in = False
+            self.next_state = AppState.STORAGE
+            pg.mixer.music.fadeout(700)
 
         self.player.update(self.keypad_puzzle.active or self.postit_puzzle.active)
 
