@@ -12,6 +12,7 @@ class AppState(IntEnum):
     INTRO = auto()
     OUTRO = auto()
     SPLASH = auto()
+    CREDITS = auto()
 
 
 class AnimState(IntEnum):

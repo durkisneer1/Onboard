@@ -10,8 +10,8 @@ from core.settings import SCN_SIZE
 from core.transitions import FadeTransition
 from src.interactable import DoorInteractable, Interactable
 from src.puzzles.keypad import KeyPadPuzzle
-from src.puzzles.postit import PostItPuzzle
 from src.puzzles.password import PasswordPuzzle
+from src.puzzles.postit import PostItPuzzle
 
 if TYPE_CHECKING:
     from main import Engine
@@ -53,7 +53,13 @@ class CockPit(Room):
     def handle_events(self, event):
         if self.password_puzzle.active:
             self.password_puzzle.handle_events(event)
-        if not any({self.postit_puzzle.active, self.keypad_puzzle.active, self.password_puzzle.active}):
+        if not any(
+            {
+                self.postit_puzzle.active,
+                self.keypad_puzzle.active,
+                self.password_puzzle.active,
+            }
+        ):
             super().handle_events(event)
 
     def render(self):
@@ -98,6 +104,11 @@ class CockPit(Room):
         if self.password_tablet.active and not self.password_puzzle.done:
             self.password_puzzle.listen_for_keypress()
         self.password_puzzle.render()
+
+        if self.password_puzzle.done:
+            self.transition.fade_in = False
+            self.next_state = AppState.CREDITS
+            pg.mixer.music.fadeout(700)
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

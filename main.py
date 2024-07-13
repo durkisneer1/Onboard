@@ -4,6 +4,7 @@ import core.surfaces as surfaces
 from core.enums import AppState
 from core.settings import FACTOR, SCN_SIZE, WIN_SIZE
 from src.states.cockpit import CockPit
+from src.states.credits import Credits
 from src.states.cutscene import CutScene
 from src.states.menu import Menu
 from src.states.pause import Pause
@@ -44,15 +45,16 @@ class Engine:
             AppState.SETTINGS: SettingsMenu(self),
             AppState.INTRO: CutScene(self),
             AppState.SPLASH: SplashScreen(self),
+            AppState.CREDITS: Credits(self),
         }
-        self.current_state = AppState.STORAGE  # MENU is default
+        self.current_state = AppState.COCKPIT  # MENU is default
 
         # Needed for accesing the settings and then going back to the last state
         self.last_state = AppState.INTRO
 
     def run(self):
         while self.running:
-            self.dt = self.clock.tick_busy_loop(60) / 1000
+            self.dt = self.clock.tick_busy_loop(30) / 1000
             self.mouse_pos = pg.Vector2(pg.mouse.get_pos()) / FACTOR
 
             for ev in pg.event.get():

@@ -1,5 +1,5 @@
-from typing import TYPE_CHECKING
 from random import choice
+from typing import TYPE_CHECKING
 
 import pygame as pg
 
@@ -15,7 +15,9 @@ class PasswordPuzzle(Puzzle):
         super().__init__(engine)
         self.done = False
 
-        self.sfx = [pg.mixer.Sound(f"assets/keypresses/key{i}.mp3") for i in range(1, 5)]
+        self.sfx = [
+            pg.mixer.Sound(f"assets/keypresses/key{i}.mp3") for i in range(1, 5)
+        ]
 
         # Tablet
         self.tablet = pg.Surface((100, 20), pg.SRCALPHA)
