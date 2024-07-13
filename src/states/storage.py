@@ -43,6 +43,10 @@ class StorageRoom(Room):
 
         self.simon_puzzle.done = True  # DELETE ME
 
+    def handle_events(self, event):
+        if not any({self.simon_puzzle.active, self.wirecut_puzzle.active}):
+            super().handle_events(event)
+
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
             pg.mixer.music.load("assets/storage.ogg")
@@ -74,15 +78,13 @@ class StorageRoom(Room):
 
         if not self.simon_puzzle.done:
             self.simon_puzzle.render()
-            if self.simon.event:
-                self.simon_puzzle.reset()
-                self.simon_puzzle.active = not self.simon_puzzle.active
+            if self.simon.active:
+                self.simon_puzzle.listen_for_keypress()
         else:
             if not self.wirecut_puzzle.done:
                 self.wirecut_puzzle.render()
-                if self.wires.event:
-                    self.wirecut_puzzle.reset()
-                    self.wirecut_puzzle.active = not self.wirecut_puzzle.active
+                if self.wires.active:
+                    self.wirecut_puzzle.listen_for_keypress()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

@@ -17,7 +17,6 @@ class Interactable:
         self.rect = rect
 
         self.active = False
-        self.event = False
         self.popup = InteractablePopUp(player, engine, self)
 
     def render(self, handle_states: bool = True):
@@ -30,7 +29,6 @@ class Interactable:
 
     def handle_states(self, active: bool = True):
         self.active = self.player.rect.colliderect(self.rect) if active else False
-        self.event = pg.key.get_just_pressed()[pg.K_e] and self.active
 
 
 class InteractablePopUp:
@@ -119,7 +117,7 @@ class DoorInteractable:
         self.interactable.render()
 
         self.active = self.interactable.active
-        self.event = self.interactable.event
+        self.event = self.active and pg.key.get_just_pressed()[pg.K_e]
 
     def render_layer(self, destination: pg.Surface, n: int = 0) -> None:
         if self.current_frame == 0:

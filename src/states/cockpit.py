@@ -49,6 +49,10 @@ class CockPit(Room):
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
 
+    def handle_events(self, event):
+        if not any({self.postit_puzzle.active, self.keypad_puzzle.active, self.last_keypad_puzzle.active}):
+            super().handle_events(event)
+
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
             pg.mixer.music.load("assets/cockpit.ogg")
@@ -80,18 +84,16 @@ class CockPit(Room):
             or self.last_keypad_puzzle.active
         )
 
-        if self.keypad.event and not self.keypad_puzzle.done:
-            self.keypad_puzzle.user_in = []
-            self.keypad_puzzle.active = not self.keypad_puzzle.active
+        if self.keypad.active and not self.keypad_puzzle.done:
+            self.keypad_puzzle.listen_for_keypress()
         self.keypad_puzzle.render()
 
-        if self.postit.event:
-            self.postit_puzzle.active = not self.postit_puzzle.active
+        if self.postit.active:
+            self.postit_puzzle.listen_for_keypress()
 
         self.postit_puzzle.render()
-        if self.last_keypad.event and not self.last_keypad_puzzle.done:
-            self.last_keypad_puzzle.user_in = []
-            self.last_keypad_puzzle.active = not self.last_keypad_puzzle.active
+        if self.last_keypad.active and not self.last_keypad_puzzle.done:
+            self.last_keypad_puzzle.listen_for_keypress()
         self.last_keypad_puzzle.render()
 
         self.transition.update(self.engine.dt)
