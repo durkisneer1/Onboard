@@ -48,18 +48,19 @@ class WireCut(Puzzle):
         super().__init__(engine)
         self.engine = engine
 
+        self.background = import_image("assets/wire_box.png")
         self.scissors = import_image("assets/scissors.png")
         wires_uncut = import_image("assets/uncut.png")
         wires_cut = import_image("assets/cut.png")
 
-        self.rect = wires_cut.get_rect(center=(SCN_SIZE[0] / 2, SCN_SIZE[1] / 2))
-        self.tablet_rect = self.rect.inflate(0, 4)
+        self.rect = wires_cut.get_frect(center=(SCN_SIZE[0] / 2, SCN_SIZE[1] / 2))
+        self.background_rect = self.rect.inflate(6, 6)
         # subsurface each wire from global image
         wire_colors = [
             (255, 70, 70),
             (70, 255, 70),
             (70, 70, 255),
-            (255, 255, 70),
+            (255, 200, 70),
             (70, 255, 255),
         ]
         wire_rects = [pg.Rect(pg.Vector2(5 + 16 * i, 0), (6, 64)) for i in range(5)]
@@ -68,7 +69,7 @@ class WireCut(Puzzle):
             wire = Wire(
                 wires_uncut.subsurface(rect),
                 wires_cut.subsurface(rect),
-                self.rect.topleft + pg.Vector2(rect.topleft),
+                self.rect.topleft + pg.Vector2(rect.topleft) + pg.Vector2(0, 1),
                 wire_colors[i],
             )
             self.wires.append(wire)
@@ -84,7 +85,7 @@ class WireCut(Puzzle):
         self.done = False
 
     def _render(self):
-        pg.draw.rect(self.engine.screen, "darkgray", self.tablet_rect, border_radius=4)
+        self.engine.screen.blit(self.background, self.background_rect)
 
         for wire in self.wires:
             wire.render(self.engine.screen, self.engine.mouse_pos)
