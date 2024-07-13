@@ -44,6 +44,8 @@ class StorageRoom(Room):
         self.simon_puzzle.done = True  # DELETE ME
 
     def handle_events(self, event):
+        self.engine.diary.handle_events(event)
+
         if not any({self.simon_puzzle.active, self.wirecut_puzzle.active}):
             super().handle_events(event)
 
@@ -85,6 +87,8 @@ class StorageRoom(Room):
                 self.wirecut_puzzle.render()
                 if self.wires.active:
                     self.wirecut_puzzle.listen_for_keypress()
+
+        self.engine.diary.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

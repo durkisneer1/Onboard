@@ -78,8 +78,7 @@ class WireCut(Puzzle):
         self.combination = [2, 0, 3]
         self.user_in = []
 
-        font = pg.Font("assets/m5x7.ttf", 16)
-        self.hint = font.render("cut in the order", False, (24, 13, 47))
+        self.hint = engine.px_font.render("cut in the order", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomright=(SCN_SIZE[0] - 4, SCN_SIZE[1]))
 
         self.done = False

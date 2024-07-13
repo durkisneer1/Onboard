@@ -23,10 +23,9 @@ class RangePicker:
         self.text = text
         self.maxmin = maxmin
         self.default_per = default_per
-        self.font = pg.font.Font("assets/m5x7.ttf", 16)
 
-        self.text_surface = self.font.render(self.text, False, "white")
-        self.overlay = self.font.render(
+        self.text_surface = engine.px_font.render(self.text, False, "white")
+        self.overlay = engine.px_font.render(
             f"{int((maxmin[1] - maxmin[0])*(self.default_per / 100) ):.0f}",
             False,
             [200, 200, 200],

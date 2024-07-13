@@ -51,8 +51,11 @@ class CockPit(Room):
         self.next_state = AppState.EMPTY
 
     def handle_events(self, event):
+        self.engine.diary.handle_events(event)
+
         if self.password_puzzle.active:
             self.password_puzzle.handle_events(event)
+
         if not any(
             {
                 self.postit_puzzle.active,
@@ -99,8 +102,8 @@ class CockPit(Room):
 
         if self.postit.active:
             self.postit_puzzle.listen_for_keypress()
-
         self.postit_puzzle.render()
+
         if self.password_tablet.active and not self.password_puzzle.done:
             self.password_puzzle.listen_for_keypress()
         self.password_puzzle.render()
@@ -109,6 +112,8 @@ class CockPit(Room):
             self.transition.fade_in = False
             self.next_state = AppState.CREDITS
             pg.mixer.music.fadeout(700)
+
+        self.engine.diary.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

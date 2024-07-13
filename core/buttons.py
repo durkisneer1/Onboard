@@ -75,11 +75,10 @@ class TextButton(Button):
         shifted_pos = pos + (95, 55)
         surf = pg.Surface(size, pg.SRCALPHA)
         super().__init__(engine, shifted_pos, surf)
-        font = pg.font.Font("assets/m5x7.ttf", 16)
 
         self.rect = surf.get_rect(topleft=shifted_pos)
         self.text_str = text
-        self.text = font.render(text, False, (197, 205, 219))
+        self.text = engine.px_font.render(text, False, (197, 205, 219))
         self.text_rect = self.text.get_rect(center=self.rect.center)
 
     def render(self):
@@ -134,11 +133,10 @@ class MenuButton(Button):
     ) -> None:
         surf = pg.Surface(size, pg.SRCALPHA)
         super().__init__(engine, pos, surf)
-        font = pg.font.Font("assets/m5x7.ttf", 16)
 
         self.rect = surf.get_frect(topleft=pos)
         self.text_str = text
-        self.text = font.render(text, False, "white")
+        self.text = engine.px_font.render(text, False, "white")
         self.text_rect = self.text.get_frect(center=self.rect.center)
 
         self.dest_x = self.rect.x

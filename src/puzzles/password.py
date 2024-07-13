@@ -48,11 +48,10 @@ class PasswordPuzzle(Puzzle):
         self.code = "amelia"
         self.user_in = ""
 
-        self.font = pg.Font("assets/m5x7.ttf", 16)
         self.text_coord = self.tablet_rect.midleft + pg.Vector2(6, -1)
-        self._generate_text()
+        self._generate_text(True)
 
-        self.hint = self.font.render("who do you love?", False, (24, 13, 47))
+        self.hint = engine.px_font.render("who do you love?", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
     def handle_events(self, event):
@@ -72,10 +71,11 @@ class PasswordPuzzle(Puzzle):
                 else:
                     self.engine.sfx["failure"].play()
 
-    def _generate_text(self):
-        self.text_surf = self.font.render(self.user_in, False, "white")
+    def _generate_text(self, first: bool = False):
+        self.text_surf = self.engine.px_font.render(self.user_in, False, "white")
         self.text_rect = self.text_surf.get_rect(midleft=self.text_coord)
-        choice(self.sfx).play()
+        if not first:
+            choice(self.sfx).play()
 
     def _render(self):
         # Screen

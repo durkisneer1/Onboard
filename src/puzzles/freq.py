@@ -52,8 +52,7 @@ class FreqPuzzle(Puzzle):
             pg.K_RIGHT: lambda: self.matching_wave.edit_stretch(inc=True),
         }
 
-        font = pg.Font("assets/m5x7.ttf", 16)
-        self.hint = font.render("match the sound", False, (24, 13, 47))
+        self.hint = engine.px_font.render("match the sound", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
     def update(self) -> None:

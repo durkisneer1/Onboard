@@ -35,6 +35,8 @@ class ReactorRoom(Room):
         self.player.rect.bottomleft = (32, 107)
 
     def handle_events(self, event):
+        self.engine.diary.handle_events(event)
+
         if not any({self.dots_puzzle.active, self.freq_puzzle.active}):
             super().handle_events(event)
 
@@ -69,6 +71,8 @@ class ReactorRoom(Room):
                 self.freq_puzzle.render()
                 if self.freq_tablet.active:
                     self.freq_puzzle.listen_for_keypress()
+
+        self.engine.diary.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

@@ -23,11 +23,10 @@ class Picker:
         self.text = text
         self.values = values
         self.default = default
-        font = pg.font.Font("assets/m5x7.ttf", 16)
         self.values_surfaces = list(
-            map(lambda x: font.render(x, False, "white"), self.values)
+            map(lambda x: engine.px_font.render(x, False, "white"), self.values)
         )
-        self.text_surface = font.render(self.text, False, "white")
+        self.text_surface = engine.px_font.render(self.text, False, "white")
 
         self.index = self.values.index(self.default)
 

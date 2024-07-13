@@ -87,8 +87,7 @@ class DotsPuzzle(Puzzle):
         self.done_time = 0
         self.start_timer = False
 
-        font = pg.Font("assets/m5x7.ttf", 16)
-        self.hint = font.render("find the password", False, (24, 13, 47))
+        self.hint = engine.px_font.render("find the password", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
     def _draw_tablet(self) -> None:

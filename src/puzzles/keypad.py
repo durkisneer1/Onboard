@@ -31,8 +31,7 @@ class KeyPadPuzzle(Puzzle):
         self.code = [1, 5, 7, 2]
         self.user_in = []
 
-        font = pg.Font("assets/m5x7.ttf", 16)
-        self.hint = font.render("enter the code", False, (24, 13, 47))
+        self.hint = engine.px_font.render("enter the code", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
     def _reset(self) -> None:

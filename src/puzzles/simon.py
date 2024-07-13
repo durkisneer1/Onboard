@@ -39,8 +39,7 @@ class SimonSaysPuzzle(Puzzle):
         pg.draw.rect(self.tablet, (104, 107, 114), tablet_rect, border_radius=2)
         self.tablet_pos = self.buttons[0].rect.topleft - pg.Vector2(1, 1)
 
-        font = pg.Font("assets/m5x7.ttf", 16)
-        self.hint = font.render("repeat the pattern", False, (24, 13, 47))
+        self.hint = engine.px_font.render("repeat the pattern", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
     def _reset(self):
@@ -128,5 +127,5 @@ class SimonSaysPuzzle(Puzzle):
 
     def _on_failure(self):
         self.active = False
-        self.reset()
+        self._reset()
         self.engine.sfx["failure"].play()
