@@ -51,7 +51,7 @@ class CockPit(Room):
         self.next_state = AppState.EMPTY
 
     def handle_events(self, event):
-        if not any({self.postit_puzzle.active, self.keypad_puzzle.active, self.last_keypad_puzzle.active}):
+        if not any({self.postit_puzzle.active, self.keypad_puzzle.active, self.password_puzzle.active}):
             super().handle_events(event)
 
     def render(self):
