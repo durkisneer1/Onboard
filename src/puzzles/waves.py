@@ -64,7 +64,7 @@ class MatchWave(BaseWave):
         elif dec and current_value > 1:
             setattr(self, attribute, current_value - 1)
 
-        self.points = self.calculate()
+        self.calculate()
 
     def edit_amp(self, inc: bool = False, dec: bool = False) -> None:
         self.edit_attribute("amplitude", inc, dec)

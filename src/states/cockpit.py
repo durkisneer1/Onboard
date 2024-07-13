@@ -35,6 +35,9 @@ class CockPit(Room):
 
         self.keypad = Interactable(self.player, self.engine, pg.FRect(177, 84, 7, 9))
         self.keypad_puzzle = KeyPadPuzzle(engine)
+        self.last_keypad = Interactable(self.player, self.engine, pg.FRect(44, 77, 5, 14))
+        self.last_keypad_puzzle = KeyPadPuzzle(engine)
+        self.last_keypad_puzzle.code = [1, 2, 3, 4]
 
         self.postit = Interactable(self.player, self.engine, pg.FRect(164, 88, 5, 5))
         self.postit_puzzle = PostItPuzzle(engine)
@@ -66,6 +69,9 @@ class CockPit(Room):
             self.keypad.render()
         else:
             self.storage_door.update()
+        
+        if not self.last_keypad_puzzle.done:
+            self.last_keypad.render()
 
         self.postit.render(not self.keypad.active)
 
@@ -85,6 +91,10 @@ class CockPit(Room):
             self.postit_puzzle.active = not self.postit_puzzle.active
 
         self.postit_puzzle.render()
+        if self.last_keypad.event and not self.last_keypad_puzzle.done:
+            self.last_keypad_puzzle.user_in = []
+            self.last_keypad_puzzle.active = not self.last_keypad_puzzle.active
+        self.last_keypad_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
