@@ -52,8 +52,6 @@ class FreqPuzzle(Puzzle):
             pg.K_RIGHT: lambda: self.matching_wave.edit_stretch(inc=True),
         }
 
-        self.success_sfx = pg.mixer.Sound("assets/success.mp3")
-
         font = pg.Font("assets/m5x7.ttf", 16)
         self.hint = font.render("match the sound", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
@@ -75,7 +73,7 @@ class FreqPuzzle(Puzzle):
             if self.amount_completed == 6:
                 self.done = True
                 self.active = False
-                self.success_sfx.play()
+                self.engine.sfx["success"].play()
 
     def _render(self):
         self.update()

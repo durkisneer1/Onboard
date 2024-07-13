@@ -11,6 +11,7 @@ from core.transitions import FadeTransition
 from src.interactable import DoorInteractable, Interactable
 from src.puzzles.keypad import KeyPadPuzzle
 from src.puzzles.postit import PostItPuzzle
+from src.puzzles.password import PasswordPuzzle
 
 if TYPE_CHECKING:
     from main import Engine
@@ -35,11 +36,11 @@ class CockPit(Room):
 
         self.keypad = Interactable(self.player, self.engine, pg.FRect(177, 84, 7, 9))
         self.keypad_puzzle = KeyPadPuzzle(engine)
-        self.last_keypad = Interactable(
+
+        self.password_tablet = Interactable(
             self.player, self.engine, pg.FRect(44, 77, 5, 14)
         )
-        self.last_keypad_puzzle = KeyPadPuzzle(engine)
-        self.last_keypad_puzzle.code = [1, 2, 3, 4]
+        self.password_puzzle = PasswordPuzzle(engine)
 
         self.postit = Interactable(self.player, self.engine, pg.FRect(164, 88, 5, 5))
         self.postit_puzzle = PostItPuzzle(engine)
@@ -64,8 +65,8 @@ class CockPit(Room):
         else:
             self.storage_door.update()
 
-        if not self.last_keypad_puzzle.done:
-            self.last_keypad.render()
+        if not self.password_puzzle.done:
+            self.password_tablet.render()
 
         self.postit.render(not self.keypad.active)
 
@@ -77,7 +78,7 @@ class CockPit(Room):
         self.player.update(
             self.keypad_puzzle.active
             or self.postit_puzzle.active
-            or self.last_keypad_puzzle.active
+            or self.password_puzzle.active
         )
 
         if self.keypad.event and not self.keypad_puzzle.done:
@@ -89,10 +90,9 @@ class CockPit(Room):
             self.postit_puzzle.active = not self.postit_puzzle.active
 
         self.postit_puzzle.render()
-        if self.last_keypad.event and not self.last_keypad_puzzle.done:
-            self.last_keypad_puzzle.user_in = []
-            self.last_keypad_puzzle.active = not self.last_keypad_puzzle.active
-        self.last_keypad_puzzle.render()
+        if self.password_tablet.event and not self.password_puzzle.done:
+            self.password_puzzle.active = not self.password_puzzle.active
+        self.password_puzzle.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)
