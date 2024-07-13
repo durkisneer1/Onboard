@@ -1,5 +1,5 @@
-from random import randint
 from math import sin
+from random import randint
 
 import pygame as pg
 

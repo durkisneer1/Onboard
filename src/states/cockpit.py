@@ -35,7 +35,9 @@ class CockPit(Room):
 
         self.keypad = Interactable(self.player, self.engine, pg.FRect(177, 84, 7, 9))
         self.keypad_puzzle = KeyPadPuzzle(engine)
-        self.last_keypad = Interactable(self.player, self.engine, pg.FRect(44, 77, 5, 14))
+        self.last_keypad = Interactable(
+            self.player, self.engine, pg.FRect(44, 77, 5, 14)
+        )
         self.last_keypad_puzzle = KeyPadPuzzle(engine)
         self.last_keypad_puzzle.code = [1, 2, 3, 4]
 
@@ -69,7 +71,7 @@ class CockPit(Room):
             self.keypad.render()
         else:
             self.storage_door.update()
-        
+
         if not self.last_keypad_puzzle.done:
             self.last_keypad.render()
 
@@ -80,7 +82,11 @@ class CockPit(Room):
             self.next_state = AppState.STORAGE
             pg.mixer.music.fadeout(700)
 
-        self.player.update(self.keypad_puzzle.active or self.postit_puzzle.active)
+        self.player.update(
+            self.keypad_puzzle.active
+            or self.postit_puzzle.active
+            or self.last_keypad_puzzle.active
+        )
 
         if self.keypad.event and not self.keypad_puzzle.done:
             self.keypad_puzzle.user_in = []

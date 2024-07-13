@@ -11,6 +11,7 @@ class AppState(IntEnum):
     SETTINGS = auto()
     INTRO = auto()
     OUTRO = auto()
+    SPLASH = auto()
 
 
 class AnimState(IntEnum):

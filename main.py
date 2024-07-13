@@ -9,6 +9,7 @@ from src.states.menu import Menu
 from src.states.pause import Pause
 from src.states.reactor import ReactorRoom
 from src.states.settings_screen import SettingsMenu
+from src.states.splash_screen import SplashScreen
 from src.states.storage import StorageRoom
 
 surfaces.surface_debug = False
@@ -42,8 +43,9 @@ class Engine:
             AppState.REACTOR: ReactorRoom(self),
             AppState.SETTINGS: SettingsMenu(self),
             AppState.INTRO: CutScene(self),
+            AppState.SPLASH: SplashScreen(self),
         }
-        self.current_state = AppState.COCKPIT # MENU is default
+        self.current_state = AppState.SPLASH  # MENU is default
 
         # Needed for accesing the settings and then going back to the last state
         self.last_state = AppState.INTRO

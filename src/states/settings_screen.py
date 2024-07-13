@@ -84,7 +84,7 @@ class SettingsMenu(BaseState):
 
         for sfx in self.engine.sfx.values():
             sfx.set_volume(self.sfx_range.default_per / 100)
-        
+
         pg.mixer.music.set_volume(self.bgm_range.default_per / 100)
 
         self.next_state = AppState.MENU
