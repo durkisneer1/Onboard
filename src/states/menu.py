@@ -56,8 +56,8 @@ class Menu(BaseState):
         self.game_button.render()
         if self.game_button.event:
             self.transition.fade_in = False
-            # self.next_state = AppState.INTRO
-            self.next_state = self.engine.last_state
+            self.next_state = AppState.INTRO
+            #self.next_state = self.engine.last_state
 
         self.settings_button.render()
         if self.settings_button.event:
