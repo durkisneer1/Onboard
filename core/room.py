@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
+from core.enums import AppState
 from core.settings import COLOR_SETS
 from core.surfaces import import_anim, import_image, shift_colors
 from src.player import Player
@@ -26,6 +27,14 @@ class Room:
 
     @abstractmethod
     def render(self): ...
+
+    def handle_events(self, event):
+        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
+            self.engine.last_state = self.engine.current_state
+            self.engine.current_state = AppState.PAUSE
+            self.engine.state_dict[self.engine.current_state].last_frame = (
+                self.engine.screen.copy()
+            )
 
     def render_background(self):
         radius = 74

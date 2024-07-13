@@ -49,14 +49,6 @@ class CockPit(Room):
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
 
-    def handle_events(self, event):
-        if event.type == pg.KEYDOWN and event.key == pg.K_ESCAPE:
-            self.engine.last_state = self.engine.current_state
-            self.engine.current_state = AppState.PAUSE
-            self.engine.state_dict[self.engine.current_state].last_frame = (
-                self.engine.screen.copy()
-            )
-
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
             pg.mixer.music.load("assets/cockpit.ogg")

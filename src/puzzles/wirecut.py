@@ -84,6 +84,11 @@ class WireCut(Puzzle):
 
         self.done = False
 
+    def reset(self):
+        for wire in self.wires:
+            wire.cut = False
+        self.user_in = []
+
     def _render(self):
         self.engine.screen.blit(self.background, self.background_rect)
 

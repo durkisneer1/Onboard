@@ -17,6 +17,4 @@ class BaseState:
         self.surface_tint.set_alpha(185)
         self.last_frame = pg.Surface((1, 1))
 
-    def handle_events(self, event): ...
-
     def render(self): ...
