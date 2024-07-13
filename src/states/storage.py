@@ -4,7 +4,8 @@ import pygame as pg
 
 from core.enums import AppState
 from core.room import Room
-from core.settings import SCN_SIZE
+from core.settings import SCN_SIZE, COLOR_SETS
+from core.surfaces import shift_colors, import_image
 from core.transitions import FadeTransition
 from src.interactable import DoorInteractable, Interactable
 from src.puzzles.simon import SimonSaysPuzzle
@@ -28,6 +29,11 @@ class StorageRoom(Room):
 
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
+
+        self.wirecut_layers = [
+            shift_colors(surface=import_image("assets/storage_wires.png"), color_sets=COLOR_SETS, n=2 - i)
+            for i in range(3)
+        ]
 
         self.player.rect.bottomleft = (32, 107)
 
@@ -92,5 +98,6 @@ class StorageRoom(Room):
 
     def render_extra_background_items(self, surface: pg.Surface, n: int):
         self.cockpit_door.render_layer(surface, n=n)
-        # if self.wirecut_puzzle.done:
         self.reactor_door.render_layer(surface, n=n)
+        if self.simon_puzzle.done:
+            surface.blit(self.wirecut_layers[n], (77, 55))
