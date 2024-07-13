@@ -50,6 +50,11 @@ class CockPit(Room):
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
         self.next_state = AppState.EMPTY
 
+    def handle_events(self, event):
+        super().handle_events(event)
+        if self.password_puzzle.active:
+            self.password_puzzle.handle_events(event)
+
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
             pg.mixer.music.load("assets/cockpit.ogg")

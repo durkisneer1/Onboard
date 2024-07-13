@@ -1,4 +1,5 @@
 from typing import TYPE_CHECKING
+from random import choice
 
 import pygame as pg
 
@@ -13,6 +14,8 @@ class PasswordPuzzle(Puzzle):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
         self.done = False
+
+        self.sfx = [pg.mixer.Sound(f"assets/keypresses/key{i}.mp3") for i in range(1, 5)]
 
         # Tablet
         self.tablet = pg.Surface((100, 20), pg.SRCALPHA)
@@ -59,6 +62,7 @@ class PasswordPuzzle(Puzzle):
                 self.user_in = self.user_in[:-1]
                 self._generate_text()
             elif event.key == pg.K_RETURN:
+                choice(self.sfx).play()
                 if self.user_in.lower() == self.code:
                     self.active = False
                     self.done = True
@@ -69,6 +73,7 @@ class PasswordPuzzle(Puzzle):
     def _generate_text(self):
         self.text_surf = self.font.render(self.user_in, False, "white")
         self.text_rect = self.text_surf.get_rect(midleft=self.text_coord)
+        choice(self.sfx).play()
 
     def _render(self):
         # Screen
