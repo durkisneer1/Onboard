@@ -43,7 +43,7 @@ class StorageRoom(Room):
 
     def render(self):
         if not pg.mixer.music.get_busy() and self.next_state == AppState.EMPTY:
-            pg.mixer.music.load("assets/storage.mp3")
+            pg.mixer.music.load("assets/storage.ogg")
             pg.mixer.music.play(-1, fade_ms=500)
 
         self.engine.screen.fill("black")
