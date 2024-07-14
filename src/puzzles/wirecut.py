@@ -107,5 +107,6 @@ class WireCut(Puzzle):
             self.active = False
             self.done = True
             self.engine.sfx["success"].play()
+            self.engine.diary.progress += 1
 
         self.engine.screen.blit(self.hint, self.hint_pos)

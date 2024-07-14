@@ -73,6 +73,8 @@ class FreqPuzzle(Puzzle):
                 self.done = True
                 self.active = False
                 self.engine.sfx["success"].play()
+                self.engine.diary.progress += 1
+
 
     def _render(self):
         self.update()
