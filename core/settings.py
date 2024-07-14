@@ -1,14 +1,4 @@
-from screeninfo import get_monitors
-
-WIN_SIZE = 0, 0
-for m in get_monitors():
-    if not m.is_primary:
-        continue
-    if m.width >= 1920 and m.height >= 1080:
-        WIN_SIZE = 1920, 1080
-    else:
-        WIN_SIZE = 1280, 720
-
+WIN_SIZE = 1280, 720
 SCN_SIZE = 240, 135
 FACTOR = WIN_SIZE[0] / SCN_SIZE[0]
 GRAVITY = 9.8 * 16

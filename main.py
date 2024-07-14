@@ -20,7 +20,7 @@ surfaces.surface_debug = False
 class Engine:
     def __init__(self) -> None:
         pg.init()
-        self.display = pg.display.set_mode(WIN_SIZE, pg.FULLSCREEN)
+        self.display = pg.display.set_mode(WIN_SIZE, pg.FULLSCREEN | pg.SCALED)
         self.screen = pg.Surface(SCN_SIZE, pg.SRCALPHA)
         pg.display.set_caption("The Astronaut")
         self.clock = pg.Clock()
@@ -35,8 +35,8 @@ class Engine:
             "success": pg.mixer.Sound("assets/success.mp3"),
             "failure": pg.mixer.Sound("assets/failure.mp3"),
             "cut": pg.mixer.Sound("assets/cut.mp3"),
-            "door open": pg.mixer.Sound("assets/door open.mp3"),
-            "door close": pg.mixer.Sound("assets/door close.mp3"),
+            "door open": pg.mixer.Sound("assets/door_open.mp3"),
+            "door close": pg.mixer.Sound("assets/door_close.mp3"),
         }
 
         self.state_dict = {
@@ -57,9 +57,9 @@ class Engine:
 
         self.diary = Diary(self)
 
-        # pg.mixer.music.set_volume(0)
-        # for sfx in self.sfx.values():
-        #     sfx.set_volume(0)
+        pg.mixer.music.set_volume(0.25)
+        for sfx in self.sfx.values():
+            sfx.set_volume(0.5)
 
     def run(self):
         while self.running:

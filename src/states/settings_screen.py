@@ -38,14 +38,14 @@ class SettingsMenu(BaseState):
             pg.Vector2(10, 50),
             "SFX",
             [0, 100],
-            100,
+            50,
         )
         self.bgm_range = RangePicker(
             engine,
             pg.Vector2(10, 70),
             "BGM",
             [0, 100],
-            100,
+            25,
         )
         self.next_state = AppState.EMPTY
 

@@ -28,7 +28,7 @@ class Credits(BaseState):
 
     def render(self):
         if not pg.mixer.music.get_busy():
-            pg.mixer.music.load("assets/The Astronaut (Mastered).ogg")
+            pg.mixer.music.load("assets/theme.ogg")
             pg.mixer.music.play(-1, fade_ms=500)
 
         self.engine.screen.blit(self.credits, (0, 0))

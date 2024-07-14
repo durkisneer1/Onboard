@@ -97,9 +97,11 @@ class Diary:
             if event.key == pg.K_SPACE:
                 self.closed = not self.closed
             elif event.key == pg.K_LEFT:
+                self.engine.diary.y_offset = 0
                 self.key_idx -= 1
                 self.update()
             elif event.key == pg.K_RIGHT:
+                self.engine.diary.y_offset = 0
                 self.key_idx += 1
                 self.update()
 

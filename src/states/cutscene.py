@@ -16,7 +16,7 @@ class CutScene(BaseState):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
 
-        self.surf = import_image("assets/intro_cutscene.png")
+        self.surf = import_image("assets/intro_cutscene.png", scale=2/3)
         self.initial_slides = 3
         self.slides = self.initial_slides
 
@@ -66,4 +66,5 @@ class CutScene(BaseState):
             self.engine.current_state = self.next_state
             self.transition.fade_in = True
             self.next_state = AppState.EMPTY
+            pg.mixer.music.fadeout(700)
             self.reset()
