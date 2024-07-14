@@ -19,6 +19,8 @@ class StorageRoom(Room):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine, room_image_path="assets/storage.png")
 
+        self.updated_diary = False
+
         self.simon = Interactable(self.player, self.engine, pg.FRect(108, 81, 15, 15))
         self.simon_puzzle = SimonSaysPuzzle(self.engine)
         self.wires = Interactable(self.player, self.engine, pg.FRect(108, 81, 15, 15))
@@ -40,8 +42,6 @@ class StorageRoom(Room):
         ]
 
         self.player.rect.bottomleft = (32, 107)
-
-        self.simon_puzzle.done = True  # DELETE ME
 
     def handle_events(self, event):
         self.engine.diary.handle_events(event)
@@ -87,6 +87,10 @@ class StorageRoom(Room):
                 self.wirecut_puzzle.render()
                 if self.wires.active:
                     self.wirecut_puzzle.listen_for_keypress()
+            elif self.wirecut_puzzle.done and not self.updated_diary:
+                self.engine.diary.progress += 1
+                self.updated_diary = True
+                self.engine.diary.update()
 
         self.engine.diary.render()
 

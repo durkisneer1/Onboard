@@ -18,6 +18,8 @@ class ReactorRoom(Room):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine, room_image_path="assets/reactor.png")
 
+        self.updated_diary = False
+
         self.dots_tablet = Interactable(
             self.player, self.engine, pg.FRect(153, 84, 4, 12)
         )
@@ -71,6 +73,10 @@ class ReactorRoom(Room):
                 self.freq_puzzle.render()
                 if self.freq_tablet.active:
                     self.freq_puzzle.listen_for_keypress()
+            elif self.freq_puzzle.done and not self.updated_diary:
+                self.engine.diary.progress += 1
+                self.updated_diary = True
+                self.engine.diary.update()
 
         self.engine.diary.render()
 
