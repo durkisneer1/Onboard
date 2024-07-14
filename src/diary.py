@@ -78,6 +78,12 @@ class Diary:
             SimonButton(engine, 1, pg.Vector2(self.view_rect.midbottom), btn_surfs),
         ]
 
+        self.closed = False
+        self.instruction = engine.px_font.render("SPACE to close", False, (24, 13, 47))
+        self.instruction_rect = self.instruction.get_rect(
+            bottomright=(SCN_SIZE[0] - 3, SCN_SIZE[1])
+        )
+
     def handle_events(self, event: pg.Event):
         if event.type == pg.MOUSEWHEEL:
             self.y_offset -= event.precise_y * 4
@@ -87,8 +93,12 @@ class Diary:
             self.view = self.current_log.subsurface(
                 (0, self.y_offset, self.clip_width, self.clip_height)
             )
+        elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
+            self.closed = True
 
     def render(self):
+        if self.closed:
+            return
         # Tablet
         self.engine.screen.blit(self.tablet, self.tablet_rect)
 
@@ -124,3 +134,4 @@ class Diary:
 
         # Text
         self.engine.screen.blit(self.view, self.view_rect)
+        self.engine.screen.blit(self.instruction, self.instruction_rect)
