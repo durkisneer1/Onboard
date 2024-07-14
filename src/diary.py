@@ -78,7 +78,7 @@ class Diary:
             SimonButton(engine, 1, pg.Vector2(self.view_rect.midbottom), btn_surfs),
         ]
 
-        self.closed = True
+        self.closed = False
         self.instruction = engine.px_font.render("SPACE to toggle", False, (24, 13, 47))
         self.instruction_rect = self.instruction.get_rect(
             bottomright=(SCN_SIZE[0] - 3, SCN_SIZE[1])

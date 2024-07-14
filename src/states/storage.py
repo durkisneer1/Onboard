@@ -71,6 +71,7 @@ class StorageRoom(Room):
         if not self.simon_puzzle.done:
             self.simon.render()
         else:
+            self.simon.active = False
             if not self.wirecut_puzzle.done:
                 self.wires.render()
             else:
