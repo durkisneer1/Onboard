@@ -4,9 +4,9 @@ import pygame as pg
 
 from core.enums import AppState
 from core.settings import SCN_SIZE, WIN_SIZE
+from core.surfaces import import_image
 from core.transitions import FadeTransition
 from src.states.base import BaseState
-from core.surfaces import import_image
 
 if TYPE_CHECKING:
     from main import Engine

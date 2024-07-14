@@ -8,6 +8,7 @@ from core.settings import COLOR_SETS, SCN_SIZE
 from core.surfaces import import_image, shift_colors
 from core.transitions import FadeTransition
 from src.interactable import DoorInteractable, Interactable
+from src.puzzles.postit import PoemPuzzle
 from src.puzzles.simon import SimonSaysPuzzle
 from src.puzzles.wirecut import WireCut
 
@@ -39,12 +40,22 @@ class StorageRoom(Room):
             for i in range(3)
         ]
 
+        postit_rect = pg.FRect(89, 85, 6, 6)
+        self.postit = Interactable(self.player, engine, postit_rect)
+        self.postit_puzzle = PoemPuzzle(engine)
+
         self.player.rect.bottomleft = (32, 107)
 
     def handle_events(self, event):
         self.engine.diary.handle_events(event)
 
-        if not any({self.simon_puzzle.active, self.wirecut_puzzle.active}):
+        if not any(
+            {
+                self.simon_puzzle.active,
+                self.wirecut_puzzle.active,
+                self.postit_puzzle.active,
+            }
+        ):
             super().handle_events(event)
 
     def render(self):
@@ -54,6 +65,8 @@ class StorageRoom(Room):
 
         self.engine.screen.fill("black")
         self.render_background()
+
+        self.postit.render(not self.simon.active and not self.wires.active)
 
         if not self.simon_puzzle.done:
             self.simon.render()
@@ -74,7 +87,11 @@ class StorageRoom(Room):
             self.next_state = AppState.REACTOR
             pg.mixer.music.fadeout(700)
 
-        self.player.update(self.simon_puzzle.active or self.wirecut_puzzle.active)
+        self.player.update(
+            self.simon_puzzle.active
+            or self.wirecut_puzzle.active
+            or self.postit_puzzle.active
+        )
 
         if not self.simon_puzzle.done:
             self.simon_puzzle.render()
@@ -85,6 +102,10 @@ class StorageRoom(Room):
                 self.wirecut_puzzle.render()
                 if self.wires.active:
                     self.wirecut_puzzle.listen_for_keypress()
+
+        if self.postit.active:
+            self.postit_puzzle.listen_for_keypress()
+        self.postit_puzzle.render()
 
         if not self.simon_puzzle.active and not self.wirecut_puzzle.active:
             self.engine.diary.render()

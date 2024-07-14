@@ -3,6 +3,7 @@ import pygame as pg
 import core.surfaces as surfaces
 from core.enums import AppState
 from core.settings import FACTOR, SCN_SIZE, WIN_SIZE
+from src.diary import Diary
 from src.states.cockpit import CockPit
 from src.states.credits import Credits
 from src.states.cutscene import CutScene
@@ -12,7 +13,6 @@ from src.states.reactor import ReactorRoom
 from src.states.settings_screen import SettingsMenu
 from src.states.splash_screen import SplashScreen
 from src.states.storage import StorageRoom
-from src.diary import Diary
 
 surfaces.surface_debug = False
 
@@ -50,7 +50,7 @@ class Engine:
             AppState.SPLASH: SplashScreen(self),
             AppState.CREDITS: Credits(self),
         }
-        self.current_state = AppState.COCKPIT  # MENU is default
+        self.current_state = AppState.STORAGE  # MENU is default
 
         # Needed for accesing the settings and then going back to the last state
         self.last_state = AppState.INTRO

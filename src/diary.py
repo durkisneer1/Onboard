@@ -1,11 +1,11 @@
-from typing import TYPE_CHECKING
 import json
+from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.surfaces import import_image
-from core.settings import SCN_SIZE
 from core.buttons import SimonButton
+from core.settings import SCN_SIZE
+from core.surfaces import import_image
 
 if TYPE_CHECKING:
     from main import Engine

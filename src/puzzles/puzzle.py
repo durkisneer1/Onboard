@@ -27,7 +27,6 @@ class Puzzle(ABC):
             if pg.key.get_just_pressed()[pg.K_e]:
                 self.active = True
                 self.reset()
-        
 
     def render(self) -> None:
         if not self.active:
@@ -48,7 +47,7 @@ class Puzzle(ABC):
         self._active = value
 
     def _reset(self) -> None: ...
-    
+
     def reset(self) -> None: ...
 
     @abstractmethod

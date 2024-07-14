@@ -77,7 +77,6 @@ class FreqPuzzle(Puzzle):
                 self.engine.diary.key_idx += 1
                 self.engine.diary.update()
 
-
     def _render(self):
         self.update()
 
