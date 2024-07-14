@@ -51,7 +51,7 @@ class Diary:
         with open("assets/logs.json", "r") as f:
             logs_dict = json.loads(f.read())
 
-        self.keys = ["cockpit", "storage", "reactor"]
+        self.keys = ["none", "cockpit", "storage", "reactor"]
         self.key_idx = 0
         self.logs = {
             key: engine.px_font.render(
@@ -60,7 +60,7 @@ class Diary:
             for key in self.keys
         }
 
-        self.current_log = self.logs["cockpit"]
+        self.current_log = self.logs[self.keys[self.key_idx]]
 
         self.y_offset = 0
         self.view = self.current_log.subsurface(
@@ -78,8 +78,8 @@ class Diary:
             SimonButton(engine, 1, pg.Vector2(self.view_rect.midbottom), btn_surfs),
         ]
 
-        self.closed = False
-        self.instruction = engine.px_font.render("SPACE to close", False, (24, 13, 47))
+        self.closed = True
+        self.instruction = engine.px_font.render("SPACE to toggle", False, (24, 13, 47))
         self.instruction_rect = self.instruction.get_rect(
             bottomright=(SCN_SIZE[0] - 3, SCN_SIZE[1])
         )
@@ -94,29 +94,30 @@ class Diary:
                 (0, self.y_offset, self.clip_width, self.clip_height)
             )
         elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-            self.closed = True
+            self.closed = not self.closed
+
+    def update(self):
+        self.key_idx %= self.progress
+        self.current_log = self.logs[self.keys[self.key_idx]]
+        self.view = self.current_log.subsurface(
+            (0, self.y_offset, self.clip_width, self.clip_height)
+        )
 
     def render(self):
         if self.closed:
             return
+
         # Tablet
         self.engine.screen.blit(self.tablet, self.tablet_rect)
 
-        # Buttons
-        for button in self.buttons:
-            button.render(True)
+        just_pressed = pg.key.get_just_pressed()
 
-            if not button.event:
-                continue
-
-            if button.num == 0 and self.progress > 0:
-                self.key_idx -= 1
-                self.key_idx %= self.progress
-                self.current_log = self.logs[self.keys[self.key_idx]]
-            elif button.num == 1 and self.progress > 0:
-                self.key_idx += 1
-                self.key_idx %= self.progress
-                self.current_log = self.logs[self.keys[self.key_idx]]
+        if just_pressed[pg.K_LEFT] and self.progress > 0:
+            self.key_idx -= 1
+            self.update()
+        elif just_pressed[pg.K_RIGHT] and self.progress > 0:
+            self.key_idx += 1
+            self.update()
 
         # Bloom
         self.engine.screen.blit(self.tablet_bloom, self.tablet_rect.move(-10, -10))
