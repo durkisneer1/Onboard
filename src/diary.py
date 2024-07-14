@@ -15,7 +15,7 @@ class Diary:
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
 
-        self.progress = 0
+        self.progress = 1
 
         self.clip_width = SCN_SIZE[0] // 2
         self.clip_height = SCN_SIZE[1] * 2 / 3
@@ -93,8 +93,15 @@ class Diary:
             self.view = self.current_log.subsurface(
                 (0, self.y_offset, self.clip_width, self.clip_height)
             )
-        elif event.type == pg.KEYDOWN and event.key == pg.K_SPACE:
-            self.closed = not self.closed
+        elif event.type == pg.KEYDOWN:
+            if event.key == pg.K_SPACE:
+                self.closed = not self.closed
+            elif event.key == pg.K_LEFT:
+                self.key_idx -= 1
+                self.update()
+            elif event.key == pg.K_RIGHT:
+                self.key_idx += 1
+                self.update()
 
     def update(self):
         self.key_idx %= self.progress
@@ -109,15 +116,6 @@ class Diary:
 
         # Tablet
         self.engine.screen.blit(self.tablet, self.tablet_rect)
-
-        just_pressed = pg.key.get_just_pressed()
-
-        if just_pressed[pg.K_LEFT] and self.progress > 0:
-            self.key_idx -= 1
-            self.update()
-        elif just_pressed[pg.K_RIGHT] and self.progress > 0:
-            self.key_idx += 1
-            self.update()
 
         # Bloom
         self.engine.screen.blit(self.tablet_bloom, self.tablet_rect.move(-10, -10))
