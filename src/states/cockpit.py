@@ -30,8 +30,6 @@ class CockPit(Room):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine, room_image_path="assets/cockpit.png")
 
-        self.updated_diary = False
-
         self.particles = [
             Particle(x=0, y=random.randint(13, 53), vel=random.randint(100, 200))
             for _ in range(6)
@@ -82,10 +80,6 @@ class CockPit(Room):
             self.keypad.render()
         else:
             self.storage_door.update()
-            if not self.updated_diary:
-                self.engine.diary.progress += 1
-                self.updated_diary = True
-                self.engine.diary.update()
 
         if not self.password_puzzle.done:
             self.password_tablet.render()
@@ -120,7 +114,8 @@ class CockPit(Room):
             self.next_state = AppState.CREDITS
             pg.mixer.music.fadeout(700)
 
-        self.engine.diary.render()
+        if not self.password_puzzle.active and not self.keypad_puzzle.active:
+            self.engine.diary.render()
 
         self.transition.update(self.engine.dt)
         self.transition.draw(self.engine.screen)

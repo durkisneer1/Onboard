@@ -52,6 +52,9 @@ class KeyPadPuzzle(Puzzle):
                 self.active = False
                 self.done = True
                 self.engine.sfx["success"].play()
+                self.engine.diary.progress += 1
+                self.engine.diary.key_idx += 1
+                self.engine.diary.update()
             else:
                 self.user_in.clear()
                 self.engine.sfx["failure"].play()
