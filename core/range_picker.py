@@ -75,7 +75,7 @@ class RangePicker:
             mouse_x -= rect.left - 1
             per = mouse_x / rect.width
             self.default_per = per * 100
-            self.overlay = self.font.render(
+            self.overlay = self.engine.px_font.render(
                 f"{int((self.maxmin[1] - self.maxmin[0])*(self.default_per / 100) ):.0f}",
                 False,
                 [200, 200, 200],

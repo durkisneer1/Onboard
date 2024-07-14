@@ -38,6 +38,10 @@ class Menu(BaseState):
             self.transition.fade_in = False
 
     def render(self):
+        if not pg.mixer.music.get_busy():
+            pg.mixer.music.load("assets/The Astronaut (Mastered).ogg")
+            pg.mixer.music.play(-1, fade_ms=500)
+
         self.engine.screen.blit(self.bg, (0, 0))
 
         self.handle_buttons()
@@ -57,6 +61,7 @@ class Menu(BaseState):
         if self.game_button.event:
             self.transition.fade_in = False
             self.next_state = AppState.INTRO
+            pg.mixer.music.fadeout(700)
             # self.next_state = self.engine.last_state
 
         self.settings_button.render()

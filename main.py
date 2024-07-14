@@ -50,16 +50,16 @@ class Engine:
             AppState.SPLASH: SplashScreen(self),
             AppState.CREDITS: Credits(self),
         }
-        self.current_state = AppState.COCKPIT  # MENU is default
+        self.current_state = AppState.MENU  # MENU is default
 
         # Needed for accesing the settings and then going back to the last state
         self.last_state = AppState.INTRO
 
         self.diary = Diary(self)
 
-        pg.mixer.music.set_volume(0)
-        for sfx in self.sfx.values():
-            sfx.set_volume(0)
+        # pg.mixer.music.set_volume(0)
+        # for sfx in self.sfx.values():
+        #     sfx.set_volume(0)
 
     def run(self):
         while self.running:
