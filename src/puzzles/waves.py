@@ -66,10 +66,10 @@ class MatchWave(BaseWave):
 
         self.calculate()
 
-    def edit_amp(self, inc: bool = False, dec: bool = False) -> None:
+    def edit_amp(self, inc: bool = False, dec: bool = False):
         self.edit_attribute("amplitude", inc, dec)
 
-    def edit_stretch(self, inc: bool = False, dec: bool = False) -> None:
+    def edit_stretch(self, inc: bool = False, dec: bool = False):
         self.edit_attribute("stretch", inc, dec)
 
 

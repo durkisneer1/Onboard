@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 
 import pygame as pg
 
-from core.buttons import SimonButton
 from core.settings import SCN_SIZE
 from core.surfaces import import_image
 
@@ -12,6 +11,9 @@ if TYPE_CHECKING:
 
 
 class Diary:
+    TOLERANCE = 0.1
+    LERP_SPEED = 10
+    
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
 
@@ -24,7 +26,7 @@ class Diary:
         self.tablet = pg.Surface(
             (self.clip_width + 3, self.clip_height + 8), pg.SRCALPHA
         )
-        self.tablet_rect = self.tablet.get_rect(midleft=(3, SCN_SIZE[1] / 2))
+        self.tablet_rect = self.tablet.get_frect(midleft=(-self.tablet.width, SCN_SIZE[1] / 2))
         pg.draw.rect(
             self.tablet, (53, 54, 88), ((0, 0), self.tablet.size), border_radius=2
         )
@@ -68,21 +70,11 @@ class Diary:
         )
         self.view_rect = self.view.get_frect(midleft=(8, SCN_SIZE[1] / 2))
 
-        btn_surfs = {
-            "idle": import_image("assets/arrow_normal.png"),
-            "hover": import_image("assets/arrow_hover.png"),
-            "pressed": import_image("assets/arrow_press.png"),
-        }
-        self.buttons = [
-            SimonButton(engine, 0, pg.Vector2(self.view_rect.bottomleft), btn_surfs),
-            SimonButton(engine, 1, pg.Vector2(self.view_rect.midbottom), btn_surfs),
-        ]
-
-        self.closed = False
-        self.instruction = engine.px_font.render("SPACE to toggle", False, (24, 13, 47))
-        self.instruction_rect = self.instruction.get_rect(
-            bottomright=(SCN_SIZE[0] - 3, SCN_SIZE[1])
-        )
+        self.closed_x = -self.tablet.width
+        self.open_x = 3
+        self.opening = False
+        self.on = False
+        self.hidden = True
 
     def handle_events(self, event: pg.Event):
         if event.type == pg.MOUSEWHEEL:
@@ -95,7 +87,11 @@ class Diary:
             )
         elif event.type == pg.KEYDOWN:
             if event.key == pg.K_SPACE:
-                self.closed = not self.closed
+                self.opening = not self.opening
+                if self.opening:
+                    self.hidden = False
+                else:
+                    self.on = False
             elif event.key == pg.K_LEFT:
                 self.engine.diary.y_offset = 0
                 self.key_idx -= 1
@@ -113,16 +109,38 @@ class Diary:
         )
 
     def render(self):
-        if self.closed:
+        if self.hidden:
             return
+        
+        target_x = self.open_x if self.opening else self.closed_x
+        if abs(self.tablet_rect.x - target_x) > self.TOLERANCE:
+            self.tablet_rect.x = pg.math.lerp(self.tablet_rect.x, target_x, self.engine.dt * self.LERP_SPEED)
+        else:
+            if self.opening:
+                self.on = True
+            else:
+                self.hidden = True
 
         # Tablet
         self.engine.screen.blit(self.tablet, self.tablet_rect)
 
+        if not self.on:
+            # Screen Off
+            pg.draw.rect(
+                self.engine.screen,
+                "black",
+                (
+                    self.tablet_rect.topleft + pg.Vector2(4, 4),
+                    self.tablet.size - pg.Vector2(8, 8),
+                ),
+                border_radius=2,
+            )
+            return
+
         # Bloom
         self.engine.screen.blit(self.tablet_bloom, self.tablet_rect.move(-10, -10))
 
-        # Screen
+        # Screen On
         pg.draw.rect(
             self.engine.screen,
             "white",
@@ -135,4 +153,3 @@ class Diary:
 
         # Text
         self.engine.screen.blit(self.view, self.view_rect)
-        self.engine.screen.blit(self.instruction, self.instruction_rect)

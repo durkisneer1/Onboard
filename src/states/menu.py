@@ -35,10 +35,6 @@ class Menu(BaseState):
 
         self.intro_shown = False
 
-    def handle_events(self, event):
-        if event.type == pg.KEYDOWN and event.key == pg.K_RETURN:
-            self.transition.fade_in = False
-
     def render(self):
         if not pg.mixer.music.get_busy():
             pg.mixer.music.load("assets/theme.ogg")
@@ -62,7 +58,9 @@ class Menu(BaseState):
         self.game_button.render()
         if self.game_button.event:
             self.transition.fade_in = False
-            self.next_state = self.engine.last_state if self.intro_shown else AppState.INTRO
+            self.next_state = (
+                self.engine.last_state if self.intro_shown else AppState.INTRO
+            )
             self.intro_shown = True
 
         self.settings_button.render()

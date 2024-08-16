@@ -20,7 +20,7 @@ class Node:
         self.active = False
         self.boop_sfx = engine.sfx["boop"]
 
-    def update(self, active_list: list[Node], mouse_pos: pg.Vector2) -> None:
+    def update(self, active_list: list[Node], mouse_pos: pg.Vector2):
         left_click = pg.mouse.get_pressed()[0]
         if left_click and abs((self.pos - mouse_pos).length()) < self.radius:
             self.active = True
@@ -28,7 +28,7 @@ class Node:
                 active_list.append(self)
                 self.boop_sfx.play()
 
-    def draw(self, screen: pg.Surface) -> None:
+    def draw(self, screen: pg.Surface):
         pg.draw.circle(screen, "white", self.pos, 2, 0)
         if self.active:
             pg.draw.circle(screen, "white", self.pos, self.radius, 1)
@@ -90,7 +90,7 @@ class DotsPuzzle(Puzzle):
         self.hint = engine.px_font.render("find the password", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
 
-    def _draw_tablet(self) -> None:
+    def _draw_tablet(self):
         self.engine.screen.blit(self.tablet, self.tablet_rect)
         self.engine.screen.blit(self.tablet_bloom, self.tablet_rect.move(-10, -10))
 
@@ -105,7 +105,7 @@ class DotsPuzzle(Puzzle):
             border_radius=2,
         )
 
-    def _update_nodes(self) -> None:
+    def _update_nodes(self):
         if not self.start_timer:
             for node in self.nodes:
                 node.update(self.active_nodes, self.engine.mouse_pos)
@@ -155,7 +155,7 @@ class DotsPuzzle(Puzzle):
                 self.done = True
                 self.active = False
 
-    def _render(self) -> None:
+    def _render(self):
         self._draw_tablet()
         self._update_nodes()
         self.engine.screen.blit(self.hint, self.hint_pos)

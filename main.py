@@ -50,20 +50,20 @@ class Engine:
             AppState.SPLASH: SplashScreen(self),
             AppState.CREDITS: Credits(self),
         }
-        self.current_state = AppState.SPLASH
+        self.current_state = AppState.COCKPIT  # default splash
 
         # Needed for accesing the settings and then going back to the last state
         self.last_state = AppState.INTRO
 
         self.diary = Diary(self)
 
-        pg.mixer.music.set_volume(0.25)
+        pg.mixer.music.set_volume(0)  # default 0.25
         for sfx in self.sfx.values():
-            sfx.set_volume(0.5)
+            sfx.set_volume(0)  # default 0.5
 
     def run(self):
         while self.running:
-            self.dt = self.clock.tick_busy_loop(30) / 1000
+            self.dt = self.clock.tick_busy_loop() / 1000
             self.mouse_pos = pg.Vector2(pg.mouse.get_pos()) / FACTOR
 
             for ev in pg.event.get():

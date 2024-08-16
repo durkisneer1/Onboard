@@ -16,7 +16,7 @@ class CutScene(BaseState):
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
 
-        self.surf = import_image("assets/intro_cutscene.png", scale=2/3)
+        self.surf = import_image("assets/intro_cutscene.png", scale=2 / 3)
         self.initial_slides = 3
         self.slides = self.initial_slides
 
@@ -43,7 +43,7 @@ class CutScene(BaseState):
 
         self.scroll.move_towards_ip(self.scroll_dest, 1500 * self.engine.dt)
 
-    def reset(self) -> None:
+    def reset(self):
         self.timer = 4
         self.slides = self.initial_slides
         self.scroll_dest = pg.Vector2()

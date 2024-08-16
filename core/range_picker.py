@@ -31,7 +31,7 @@ class RangePicker:
             [200, 200, 200],
         )
 
-    def render(self) -> None:
+    def render(self):
         border_radius = 7
 
         rect = pg.Rect(0, 0, 0, 0)
