@@ -32,7 +32,7 @@ class Puzzle(ABC):
         if not self.active:
             return
 
-        self.engine.screen.blit(self.bg_dimmer, (0, 0))
+        self.engine.screen.blit(self.bg_dimmer)
 
         self._render()
 

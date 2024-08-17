@@ -28,8 +28,8 @@ class Pause(BaseState):
                 button.hovering = False
 
     def render(self):
-        self.engine.screen.blit(self.last_frame, (0, 0))
-        self.engine.screen.blit(self.surface_tint, (0, 0))
+        self.engine.screen.blit(self.last_frame)
+        self.engine.screen.blit(self.surface_tint)
 
         self.handle_buttons()
 

@@ -52,7 +52,7 @@ class SettingsMenu(BaseState):
         self.transition = FadeTransition(True, 300, pg.Vector2(SCN_SIZE))
 
     def render(self):
-        self.engine.screen.blit(self.bg, (0, 0))
+        self.engine.screen.blit(self.bg)
         self.handle_ui()
 
         self.transition.update(self.engine.dt)

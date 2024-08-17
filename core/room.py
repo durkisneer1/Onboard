@@ -52,7 +52,7 @@ class Room:
             )
             layer = layer.copy()
             self.render_extra_background_items(layer, n)
-            surf.blit(layer, (0, 0), special_flags=pg.BLEND_RGB_ADD)
+            surf.blit(layer, special_flags=pg.BLEND_RGB_ADD)
             surf.set_colorkey("white")
             self.engine.screen.blit(surf, (32, 27))
             radius -= 20

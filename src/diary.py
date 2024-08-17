@@ -13,7 +13,7 @@ if TYPE_CHECKING:
 class Diary:
     TOLERANCE = 0.1
     LERP_SPEED = 10
-    
+
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
 
@@ -24,9 +24,11 @@ class Diary:
 
         # Tablet Background
         self.tablet = pg.Surface(
-            (self.clip_width + 3, self.clip_height + 8), pg.SRCALPHA
+            (self.clip_width + 4, self.clip_height + 10), pg.SRCALPHA
         )
-        self.tablet_rect = self.tablet.get_frect(midleft=(-self.tablet.width, SCN_SIZE[1] / 2))
+        self.tablet_rect = self.tablet.get_frect(
+            midleft=(-self.tablet.width, SCN_SIZE[1] / 2)
+        )
         pg.draw.rect(
             self.tablet, (53, 54, 88), ((0, 0), self.tablet.size), border_radius=2
         )
@@ -76,6 +78,36 @@ class Diary:
         self.on = False
         self.hidden = True
 
+        # Button to open and close diary
+        self.toggle_btn = import_image("assets/diary_toggle.png")
+        self.toggle_btn_rect = self.toggle_btn.get_frect(
+            midleft=(self.tablet_rect.right + 4, SCN_SIZE[1] / 2)
+        )
+
+        # Buttons to flip pages
+        self.left_btn = import_image("assets/tablet_flip.png")
+        self.right_btn = pg.transform.flip(self.left_btn, True, False)
+        self.right_btn_rect = self.right_btn.get_frect(
+            bottomright=(
+                self.tablet.width - 3,
+                self.tablet_rect.bottom - 5,
+            )  # 126 is from
+        )
+        self.left_btn_rect = self.left_btn.get_frect(
+            topright=self.right_btn_rect.topleft
+        ).move(-3, 0)
+
+        # Page index dots
+        self.dots_surface = pg.Surface((7, 1), pg.SRCALPHA)
+        self.dots_surface_rect = self.dots_surface.get_rect(
+            midtop=(self.tablet.width // 2 + 3, self.tablet_rect.top + 5)
+        )
+        self.dot_positions = [(x, 0) for x in range(0, 7, 2)]
+        for pos in self.dot_positions:
+            pg.draw.rect(self.dots_surface, (104, 107, 114), (pos, (1, 1)))
+        self.gray_dots = self.dots_surface.copy()
+        self.update()
+
     def handle_events(self, event: pg.Event):
         if event.type == pg.MOUSEWHEEL:
             self.y_offset -= event.precise_y * 4
@@ -85,18 +117,19 @@ class Diary:
             self.view = self.current_log.subsurface(
                 (0, self.y_offset, self.clip_width, self.clip_height)
             )
-        elif event.type == pg.KEYDOWN:
-            if event.key == pg.K_SPACE:
+        elif event.type == pg.MOUSEBUTTONDOWN and event.button == pg.BUTTON_LEFT:
+            if self.toggle_btn_rect.collidepoint(self.engine.mouse_pos):
                 self.opening = not self.opening
                 if self.opening:
                     self.hidden = False
                 else:
                     self.on = False
-            elif event.key == pg.K_LEFT:
+                self.toggle_btn = pg.transform.flip(self.toggle_btn, True, False)
+            elif self.left_btn_rect.collidepoint(self.engine.mouse_pos):
                 self.engine.diary.y_offset = 0
                 self.key_idx -= 1
                 self.update()
-            elif event.key == pg.K_RIGHT:
+            elif self.right_btn_rect.collidepoint(self.engine.mouse_pos):
                 self.engine.diary.y_offset = 0
                 self.key_idx += 1
                 self.update()
@@ -107,14 +140,23 @@ class Diary:
         self.view = self.current_log.subsurface(
             (0, self.y_offset, self.clip_width, self.clip_height)
         )
+        self.dots_surface.blit(self.gray_dots)
+        pg.draw.rect(
+            self.dots_surface, "black", (self.dot_positions[self.key_idx], (1, 1))
+        )
 
     def render(self):
+        self.engine.screen.blit(self.toggle_btn, self.toggle_btn_rect)
+
         if self.hidden:
             return
-        
+
         target_x = self.open_x if self.opening else self.closed_x
         if abs(self.tablet_rect.x - target_x) > self.TOLERANCE:
-            self.tablet_rect.x = pg.math.lerp(self.tablet_rect.x, target_x, self.engine.dt * self.LERP_SPEED)
+            self.tablet_rect.x = pg.math.lerp(
+                self.tablet_rect.x, target_x, self.engine.dt * self.LERP_SPEED
+            )
+            self.toggle_btn_rect.x = self.tablet_rect.right + 4
         else:
             if self.opening:
                 self.on = True
@@ -153,3 +195,10 @@ class Diary:
 
         # Text
         self.engine.screen.blit(self.view, self.view_rect)
+
+        # Page turn buttons
+        self.engine.screen.blit(self.left_btn, self.left_btn_rect)
+        self.engine.screen.blit(self.right_btn, self.right_btn_rect)
+
+        # Page index dots
+        self.engine.screen.blit(self.dots_surface, self.dots_surface_rect)

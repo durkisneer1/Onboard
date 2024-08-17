@@ -74,7 +74,7 @@ class Engine:
             self.state_dict[self.current_state].render()
 
             scaled_screen = pg.transform.scale_by(self.screen, FACTOR)
-            self.display.blit(scaled_screen, (0, 0))
+            self.display.blit(scaled_screen)
 
             pg.display.flip()
 

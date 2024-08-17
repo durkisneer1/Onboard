@@ -35,4 +35,4 @@ class FadeTransition:
         self.image.set_alpha(int(self.alpha))
 
     def draw(self, screen: pg.Surface):
-        screen.blit(self.image, (0, 0))
+        screen.blit(self.image)

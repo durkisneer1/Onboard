@@ -42,7 +42,7 @@ class BaseWave:
         self.bloom.set_alpha(80)
 
     def draw(self, screen: pg.Surface):
-        screen.blit(self.bloom, (0, 0))
+        screen.blit(self.bloom)
         pg.draw.lines(screen, self.color, False, self.points, 1)
 
 

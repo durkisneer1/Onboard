@@ -40,7 +40,7 @@ class Menu(BaseState):
             pg.mixer.music.load("assets/theme.ogg")
             pg.mixer.music.play(-1, fade_ms=500)
 
-        self.engine.screen.blit(self.bg, (0, 0))
+        self.engine.screen.blit(self.bg)
 
         self.handle_buttons()
 

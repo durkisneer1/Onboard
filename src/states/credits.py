@@ -31,7 +31,7 @@ class Credits(BaseState):
             pg.mixer.music.load("assets/theme.ogg")
             pg.mixer.music.play(-1, fade_ms=500)
 
-        self.engine.screen.blit(self.credits, (0, 0))
+        self.engine.screen.blit(self.credits)
 
         self.timer += self.engine.dt
         if self.timer > 10 and not self.timer_out:
