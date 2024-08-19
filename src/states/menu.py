@@ -70,4 +70,4 @@ class Menu(BaseState):
 
         self.exit_button.render()
         if self.exit_button.event:
-            self.engine.running = False
+            self.engine.handle_exit()

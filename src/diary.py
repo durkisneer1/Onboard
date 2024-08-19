@@ -17,7 +17,7 @@ class Diary:
     def __init__(self, engine: "Engine") -> None:
         self.engine = engine
 
-        self.progress = 1
+        self.progress = 4  # Default 1
 
         self.clip_width = SCN_SIZE[0] // 2
         self.clip_height = SCN_SIZE[1] * 2 / 3

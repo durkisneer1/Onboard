@@ -50,7 +50,7 @@ class Engine:
             AppState.SPLASH: SplashScreen(self),
             AppState.CREDITS: Credits(self),
         }
-        self.current_state = AppState.COCKPIT  # default splash
+        self.current_state = AppState.REACTOR  # default splash
 
         # Needed for accesing the settings and then going back to the last state
         self.last_state = AppState.INTRO
@@ -61,6 +61,10 @@ class Engine:
         for sfx in self.sfx.values():
             sfx.set_volume(0)  # default 0.5
 
+    def handle_exit(self):
+        self.running = False
+        self.state_dict[AppState.COCKPIT].password_puzzle._reset_json_name()
+
     def run(self):
         while self.running:
             self.dt = self.clock.tick_busy_loop() / 1000
@@ -68,7 +72,7 @@ class Engine:
 
             for ev in pg.event.get():
                 if ev.type == pg.QUIT:
-                    self.running = False
+                    self.handle_exit()
                 self.state_dict[self.current_state].handle_events(ev)
 
             self.state_dict[self.current_state].render()

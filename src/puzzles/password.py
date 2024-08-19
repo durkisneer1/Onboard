@@ -1,5 +1,6 @@
 from random import choice
 from typing import TYPE_CHECKING
+import json
 
 import pygame as pg
 
@@ -11,6 +12,19 @@ if TYPE_CHECKING:
 
 
 class PasswordPuzzle(Puzzle):
+    NAMES = [
+        "Amelia",
+        "Evelyn",
+        "Olivia",
+        "Charlotte",
+        "Isabella",
+        "Calista",
+        "Luna",
+        "Aurora",
+        "Scarlett",
+        "Maeve",
+    ]
+
     def __init__(self, engine: "Engine") -> None:
         super().__init__(engine)
         self.done = False
@@ -45,14 +59,29 @@ class PasswordPuzzle(Puzzle):
         self.tablet_bloom = pg.transform.gaussian_blur(self.tablet_bloom, 8)
         self.tablet_bloom.set_alpha(10)
 
-        self.code = "amelia"
+        self.chosen_name = choice(self.NAMES)
+        self.code = self.chosen_name.lower()
         self.user_in = ""
 
+        # Change name in json
+        with open("assets/logs.json", "r") as f:
+            data = json.loads(f.read())
+        data["reactor"] = data["reactor"].replace("$name$", self.chosen_name)
+        with open("assets/logs.json", "w") as f:
+            json.dump(data, f, indent=2)
+        
         self.text_coord = self.tablet_rect.midleft + pg.Vector2(6, -1)
         self._generate_text(True)
 
         self.hint = engine.px_font.render("who do you love?", False, (24, 13, 47))
         self.hint_pos = self.hint.get_rect(bottomleft=(4, SCN_SIZE[1]))
+
+    def _reset_json_name(self):
+        with open("assets/logs.json", "r") as f:
+            data = json.loads(f.read())
+        data["reactor"] = data["reactor"].replace(self.chosen_name, "$name$")
+        with open("assets/logs.json", "w") as f:
+            json.dump(data, f, indent=2)
 
     def handle_events(self, event):
         if event.type == pg.TEXTINPUT and len(self.user_in) < 14:
@@ -68,6 +97,7 @@ class PasswordPuzzle(Puzzle):
                     self.active = False
                     self.done = True
                     self.engine.sfx["success"].play()
+                    self._reset_json_name()
                 else:
                     self.engine.sfx["failure"].play()
 
